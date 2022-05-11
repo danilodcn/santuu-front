@@ -19,6 +19,10 @@ const routes: Array<RouteConfig> = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
+  {
+    path: "/proposal-values",
+    name: "proposal-values",
+  },
 ];
 
 const router = new VueRouter({
