@@ -84,9 +84,11 @@
 
         <v-row class="pa-0 ma-0 input-area">
           <v-text-field
-            v-model="model"
+            v-model="form.price"
             label="Valor"
             class="pa-0 ma-0"
+            prefix="R$ "
+            type="number"
             clearable
           >
           </v-text-field>
@@ -193,6 +195,11 @@ export default class HomeView extends Vue {
 
   @Watch("select")
   onSelectChange(val: string, oldVal: string) {
+    console.log(val, oldVal);
+  }
+
+  @Watch("form.price")
+  onPriceChange(val: string, oldVal: string) {
     console.log(val, oldVal);
   }
 

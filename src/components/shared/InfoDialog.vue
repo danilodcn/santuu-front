@@ -17,7 +17,7 @@
           </v-btn>
         </v-row>
       </v-card-title>
-      <v-card-text v-if="text" class="text-body1" v-text="text" />
+      <v-card-text v-if="text" class="text-body-1" v-text="text" />
     </v-card>
   </v-dialog>
 </template>

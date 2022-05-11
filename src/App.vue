@@ -16,7 +16,6 @@
 <style lang="scss">
 @import "@/scss/main.scss";
 * {
-  text-align: center;
   font-family: $main-font;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,6 +23,7 @@
 
 nav {
   padding: 30px;
+  text-align: center;
 
   a {
     font-weight: bold;
