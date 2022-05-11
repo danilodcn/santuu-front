@@ -1,64 +1,72 @@
 <template>
   <div class="proposal-values">
-    <BoxContent :data="a"></BoxContent>
+    <v-card class="box-content">
+      <v-btn class="success-santuu" elevation="0">Enviar por email</v-btn>
+      <DetailBox :table="table">Resumo da proposta</DetailBox>
+      <DetailBox :table="table">Bike</DetailBox>
+      <DetailBox :table="table">Coberturas</DetailBox>
+    </v-card>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import BoxContent from "@/components/BoxContent.vue"; // @ is an alias to /src
-import DetailBox from "@/components/DetailBox.vue";
-const a = {
-  desserts: [
-    {
-      name: "Frozen Yogurt",
-      calories: 159,
-    },
-    {
-      name: "Ice cream sandwich",
-      calories: 237,
-    },
-    {
-      name: "Eclair",
-      calories: 262,
-    },
-    {
-      name: "Cupcake",
-      calories: 305,
-    },
-    {
-      name: "Gingerbread",
-      calories: 356,
-    },
-    {
-      name: "Jelly bean",
-      calories: 375,
-    },
-    {
-      name: "Lollipop",
-      calories: 392,
-    },
-    {
-      name: "Honeycomb",
-      calories: 408,
-    },
-    {
-      name: "Donut",
-      calories: 452,
-    },
-    {
-      name: "KitKat",
-      calories: 518,
-    },
-  ],
+import DetailBox, {
+  IDetailedInfo,
+  ITableRow,
+} from "@/components/DetailBox.vue"; // @ is an alias to /src
+
+const titles: IDetailedInfo[] = [
+  {
+    value: "Name",
+    description: "Detalhe",
+  },
+  {
+    value: "Calories",
+    description: "Quantidade de calorias (Kcal)",
+  },
+];
+
+const items: ITableRow[] = [
+  {
+    values: [
+      {
+        value: "Frozen Yogurt",
+        description: "Bom",
+      },
+      {
+        value: 159,
+        description: "Muita Energia",
+      },
+    ],
+  },
+];
+
+const table = {
+  titles: titles,
+  rows: items,
 };
+
 @Component({
   components: {
-    BoxContent,
     DetailBox,
   },
 })
 export default class ProposalValues extends Vue {
-  a = a;
+  table = table;
+
+  log() {
+    console.log(this.table);
+  }
 }
 </script>
+
+<style scoped>
+.box-content {
+  margin: 30px;
+  padding: 50px;
+}
+.success-santuu {
+  color: #4caf50;
+}
+</style>
