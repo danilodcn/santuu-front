@@ -1,6 +1,6 @@
 <template>
   <v-content>
-    <h4><slot></slot></h4>
+    <h3><slot></slot></h3>
     <v-simple-table class="table">
       <template v-slot:default>
         <thead>
@@ -46,9 +46,9 @@ export default class DetailedBox extends Vue {
 </script>
 
 <style scoped>
-h4 {
+h3 {
   text-align: left;
-  padding: 30px;
+  padding: 30px 30px 10px 30px;
   color: #4caf50;
 }
 .table {
