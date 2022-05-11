@@ -2,7 +2,11 @@
   <v-app id="app">
     <nav>
       <router-link to="/">Home</router-link> |
-      <router-link to="/simulation/bike-info">Simulation</router-link> |
+      <router-link to="/simulation/bike-info">BikeInfo</router-link> |
+      <router-link to="/simulation/proposal-values">
+        Proposal Values
+      </router-link>
+      |
       <router-link to="/about">About</router-link>
     </nav>
     <router-view />
@@ -10,12 +14,12 @@
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+@import "@/scss/main.scss";
+* {
+  text-align: center;
+  font-family: $main-font;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
 }
 
 nav {
