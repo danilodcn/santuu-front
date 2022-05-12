@@ -51,6 +51,10 @@ import DetailBox, {
   ITableRow,
 } from "@/components/DetailBox.vue"; // @ is an alias to /src
 import PriceBox from "@/components/PriceBox.vue";
+import { ProposalService } from "@/api/proposal";
+import { IProposal } from "@/types/proposal";
+
+const proposalService = new ProposalService()
 
 const titles: IDetailedInfo[] = [
   {
@@ -108,6 +112,10 @@ const table = {
 })
 export default class ProposalValues extends Vue {
   table = table;
+  async getProposal(){
+    const response = await proposalService.getProposal(46577)
+
+  }
 }
 </script>
 
