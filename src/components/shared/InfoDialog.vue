@@ -5,14 +5,14 @@
         <slot />
       </v-btn>
     </template>
-    <v-card>
+    <v-card class="body">
       <v-card-title class="text-subtitle-1">
         <v-row justify="center" align="center">
-          <p style="max-width: 90%">
+          <p class="title">
             {{ title }}
           </p>
           <v-spacer></v-spacer>
-          <v-btn fab small text color="primary" @click="active = false">
+          <v-btn fab small text color="red" @click="active = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-row>
@@ -33,3 +33,16 @@ export default class InfoDialog extends Vue {
   @Prop() text = "";
 }
 </script>
+
+<style lang="scss" scoped>
+.title {
+  max-width: 90%;
+}
+.text-subtitle-1 {
+  background-color: #fafafa;
+}
+.text-body-1 {
+  text-indent: 10px;
+  margin-top: 20px;
+}
+</style>

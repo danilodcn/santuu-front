@@ -4,7 +4,8 @@
       <slot></slot>
     </v-row>
     <v-row>
-      <b :class="{ bold: bold }">R$ {{ price }}</b>
+      <p v-if="numberInstallments > 1">{{ numberInstallments }}x de&nbsp;</p>
+      <p :class="{ bold: bold }">R$ {{ priceFormated(price) }}</p>
     </v-row>
   </v-content>
 </template>
@@ -18,6 +19,11 @@ export default class PriceBox extends Vue {
   @Prop() bad!: boolean;
   @Prop() good!: boolean;
   @Prop() price!: number;
+  @Prop() numberInstallments!: number;
+
+  priceFormated(price: number) {
+    return price.toFixed(2);
+  }
 }
 </script>
 

@@ -7,6 +7,9 @@
           <tr>
             <th v-for="item in table.titles" :key="item.value">
               {{ item.value }}
+              <InfoDialog :text="item.description">
+                <v-icon small color="gray">mdi-information</v-icon>
+              </InfoDialog>
             </th>
           </tr>
         </thead>
@@ -24,6 +27,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import InfoDialog from "@/components/shared/InfoDialog.vue";
 
 export interface IDetailedInfo {
   value: string | number;
@@ -39,9 +43,13 @@ interface ITable {
   rows: ITableRow[];
 }
 
-@Component
+@Component({
+  components: {
+    InfoDialog,
+  },
+})
 export default class DetailedBox extends Vue {
-  @Prop() table!: ITable[];
+  @Prop() table!: ITable;
 }
 </script>
 

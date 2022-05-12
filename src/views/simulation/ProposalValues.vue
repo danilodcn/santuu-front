@@ -12,7 +12,9 @@
       <DetailBox :table="table">Coberturas</DetailBox>
       <v-row class="prices">
         <v-col class="col-3">
-          <PriceBox :bad="true" price="136.08">Valor do IOF</PriceBox>
+          <PriceBox :bad="true" :bold="false" price="136.08"
+            >Valor do IOF</PriceBox
+          >
         </v-col>
         <v-col class="col-3">
           <PriceBox :bold="true" :good="true" price="136.08"
@@ -20,7 +22,13 @@
           >
         </v-col>
         <v-col class="col-3">
-          <PriceBox :bold="true" :good="true" price="136.08">Em até</PriceBox>
+          <PriceBox
+            :bold="true"
+            :good="true"
+            numberInstallments="10"
+            price="13.608"
+            >Em até</PriceBox
+          >
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -29,7 +37,7 @@
           <v-btn>Voltar</v-btn>
         </v-col>
         <v-col class="col-2">
-          <v-btn>Avançar</v-btn>
+          <v-btn class="success-santuu">Avançar</v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -42,12 +50,13 @@ import DetailBox, {
   IDetailedInfo,
   ITableRow,
 } from "@/components/DetailBox.vue"; // @ is an alias to /src
-import PriceBox from "@/components/PriceBox.vue"; // @ is an alias to /src
+import PriceBox from "@/components/PriceBox.vue";
 
 const titles: IDetailedInfo[] = [
   {
     value: "Data de criação da proposta:",
-    description: "Detalhe",
+    description:
+      "Bacon ipsum dolor amet andouille rump in fatback in turducken, enim nisi nostrud quis veniam pariatur boudin frankfurter.",
   },
   {
     value: "Vigência:",
