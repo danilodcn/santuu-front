@@ -21,8 +21,8 @@ export default class PriceBox extends Vue {
   @Prop() price!: number;
   @Prop() numberInstallments!: number;
 
-  priceFormated(price: number) {
-    return price.toFixed(2);
+  priceFormated(price: number): string {
+    return Number(price).toFixed(2);
   }
 }
 </script>
