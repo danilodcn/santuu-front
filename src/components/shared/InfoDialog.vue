@@ -29,8 +29,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 export default class InfoDialog extends Vue {
   active = false;
 
-  @Prop() title = "";
-  @Prop() text = "";
+  @Prop({ required: false }) title!: string;
+  @Prop({ required: false }) text!: string;
 }
 </script>
 
