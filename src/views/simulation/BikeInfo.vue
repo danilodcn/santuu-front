@@ -82,7 +82,7 @@
           </info-dialog>
         </v-row>
 
-        <v-row class="pa-0 ma-0 input-area">
+        <v-row class="input-area">
           <v-text-field
             v-model="form.price"
             label="Valor"
