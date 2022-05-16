@@ -1,14 +1,14 @@
-export interface Brand {
+export interface IBrand {
   id: string;
   name: string;
 }
 
-export interface Category {
+export interface ICategory {
   id: string;
   name: string;
 }
 
-export interface Model {
+export interface IModel {
   id: string;
   description_1: string;
   price: number;
@@ -16,7 +16,7 @@ export interface Model {
   brand: number;
 }
 
-export interface Store {
+export interface IStore {
   id: string;
   trading_name: string;
 }
