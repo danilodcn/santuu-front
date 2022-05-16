@@ -291,16 +291,16 @@
       <v-card-title>
         <h3>Meu form</h3>
       </v-card-title>
-
+      {{ form }}
       <v-card-text>
         <v-form class="px-3">
           <v-container fluid class="content">
             <div class="item">
               <v-autocomplete
-                v-model="model"
+                v-model="form.brand"
                 attach
                 label="Marca"
-                :items="brands"
+                :items="formItems.brand"
                 item-text="name"
                 item-value="id"
                 dense
@@ -314,7 +314,7 @@
             </div>
             <div class="item">
               <v-select
-                v-model="model"
+                v-model="form.situation"
                 attach
                 label="Sua Bike é:"
                 :items="[
@@ -337,10 +337,10 @@
 
             <div class="item">
               <v-autocomplete
-                v-model="model"
+                v-model="form.category"
                 attach
                 label="Categoria"
-                :items="brands"
+                :items="formItems.category"
                 item-text="name"
                 item-value="id"
                 persistent-hint
@@ -356,17 +356,19 @@
             </div>
 
             <div class="item">
-              <v-autocomplete
-                v-model="model"
+              <v-combobox
+                v-model="form.model"
                 attach
                 label="Modelo"
-                :items="brands"
-                item-text="name"
-                item-value="id"
+                :items="formItems.model"
+                item-text="description_1"
+                item-value="description_1"
                 persistent-hint
                 dense
+                clearable
+                open-on-clear
               >
-              </v-autocomplete>
+              </v-combobox>
               <info-dialog
                 :text="`Caso não encontre aqui seu modelo, favor digita-lo e pressionar Enter.`"
               >
@@ -394,10 +396,10 @@
 
             <div class="item">
               <v-autocomplete
-                v-model="model"
+                v-model="form.originStore"
                 attach
                 label="Loja de origem"
-                :items="brands"
+                :items="formItems.originStore"
                 item-text="name"
                 item-value="id"
                 persistent-hint
@@ -414,7 +416,7 @@
 
             <div class="item">
               <v-text-field
-                v-model="model"
+                v-model="form.voucher"
                 label="Voucher"
                 class="pa-0 ma-0"
                 clearable
@@ -440,10 +442,10 @@ import { BikeService } from "../../api/bike";
 import InfoDialog from "../../components/shared/InfoDialog.vue";
 
 interface IForm {
-  brand: IBrand;
-  situation: number;
-  category: ICategory;
-  model: IModel;
+  brand: string;
+  situation: null | number;
+  category: string;
+  model: any;
   price: number;
   originStore: IStore;
   voucher: string;
@@ -451,7 +453,6 @@ interface IForm {
 
 interface IFormItems {
   brand: IBrand[];
-  situation: number;
   category: ICategory[];
   model: IModel[];
   originStore: IStore[];
@@ -460,13 +461,20 @@ interface IFormItems {
 const bikeService = new BikeService();
 
 const form: IForm = {
-  brand: {} as IBrand,
-  situation: 0,
-  category: {} as ICategory,
-  model: {} as IModel,
+  brand: "",
+  situation: null,
+  category: "",
+  model: "",
   price: 0,
   originStore: {} as IStore,
   voucher: "",
+};
+
+const formItems: IFormItems = {
+  brand: [] as IBrand[],
+  category: [] as ICategory[],
+  model: [] as IModel[],
+  originStore: [] as IStore[],
 };
 
 @Component({
@@ -479,7 +487,7 @@ const form: IForm = {
 })
 export default class HomeView extends Vue {
   form = form;
-  formItens = {} as IFormItems;
+  formItems = formItems;
   brands: IBrand[] = [];
   search = null;
 
@@ -488,14 +496,52 @@ export default class HomeView extends Vue {
   dialog = { active: false, title: "", text: "" };
 
   async getBrands() {
-    console.log("brands");
     const response = await bikeService.getBrands();
-    this.brands = response;
+    this.formItems.brand = response;
+  }
+
+  async getCategories(brand_id: string) {
+    const response = await bikeService.getCategories(brand_id);
+    this.formItems.category = response;
+  }
+
+  async getModels(brand_id: string, category_id: string) {
+    const response = await bikeService.getModels(brand_id, category_id);
+    console.log(response);
+    this.formItems.model = response;
   }
 
   @Watch("select")
   onSelectChange(val: string, oldVal: string) {
     console.log(val, oldVal);
+  }
+
+  @Watch("form.situation")
+  onSituationChange(val: number, oldVal: number) {
+    console.log(val, oldVal);
+    if (val != oldVal) {
+      this.getCategories(this.form.brand || "");
+    }
+  }
+
+  @Watch("form.category")
+  onCategoryChange(val: number, oldVal: number) {
+    console.log(val, oldVal);
+    if (val != oldVal) {
+      this.getModels(this.form.brand || "", this.form.category || "");
+    }
+  }
+
+  @Watch("form.model")
+  onModelChange(val: number, oldVal: number) {
+    console.log(val, oldVal, "mudou", this.form.model);
+    if (val != oldVal) {
+      const description = this.form.model?.description_1 || this.form.model;
+      const model = this.formItems.model.filter(
+        (a) => a.description_1 == description
+      );
+      this.form.price = (model[0] || model).price;
+    }
   }
 
   @Watch("form.price")
@@ -506,6 +552,9 @@ export default class HomeView extends Vue {
   created() {
     console.log("criando");
     this.getBrands();
+  }
+  log(event: Event) {
+    console.log(event);
   }
 }
 </script>
