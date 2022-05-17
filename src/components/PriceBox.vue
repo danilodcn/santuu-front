@@ -1,5 +1,5 @@
 <template>
-  <v-content class="price-box">
+  <v-main class="price-box">
     <v-row :class="{ bad: bad, good: good }">
       <slot></slot>
     </v-row>
@@ -9,7 +9,7 @@
         R$ {{ formatPrice(price / (numberInstallments || 1)) }}
       </p>
     </v-row>
-  </v-content>
+  </v-main>
 </template>
 
 <script lang="ts">

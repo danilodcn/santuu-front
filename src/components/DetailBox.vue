@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-main>
     <h3><slot></slot></h3>
     <v-simple-table class="table">
       <template v-slot:default>
@@ -15,14 +15,20 @@
         </thead>
         <tbody>
           <tr v-for="(item, i) in table.rows" :key="i">
-            <td v-for="sub_item in item.values" :key="sub_item.value">
-              {{ sub_item.value }}
-            </td>
+            <td
+              :style="{
+                width: widthCell,
+                padding: `${table.padding}px !important`,
+              }"
+              v-for="sub_item in item.values"
+              :key="sub_item.value"
+              v-html="sub_item.value"
+            ></td>
           </tr>
         </tbody>
       </template>
     </v-simple-table>
-  </v-content>
+  </v-main>
 </template>
 
 <script lang="ts">
@@ -41,6 +47,7 @@ export interface ITableRow {
 interface ITable {
   titles: ITableRow;
   rows: ITableRow[];
+  padding: number;
 }
 
 @Component({
@@ -50,6 +57,14 @@ interface ITable {
 })
 export default class DetailedBox extends Vue {
   @Prop() table!: ITable;
+  widthCell!: string;
+  collumnsNumber!: number;
+
+  created() {
+    if (this.collumnsNumber) {
+      this.widthCell = `${(1 / this.collumnsNumber) * 100}%`;
+    }
+  }
 }
 </script>
 
@@ -61,5 +76,9 @@ h3 {
 }
 .table {
   background-color: #fcfcfc !important;
+}
+td,
+th {
+  text-align: center !important;
 }
 </style>

@@ -7,9 +7,9 @@
           <v-btn class="success-santuu" elevation="0">Baixar proposta</v-btn>
         </v-col>
       </v-row>
-      <DetailBox :table="table">Resumo da proposta</DetailBox>
-      <DetailBox :table="table">Bike</DetailBox>
-      <DetailBox :table="table">Coberturas</DetailBox>
+      <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
+      <DetailBox :table="tableBike">Bike</DetailBox>
+      <DetailBox :table="tableCoverage">Coberturas</DetailBox>
       <v-row class="prices">
         <v-col class="col-3">
           <PriceBox :bad="true" :bold="false" :price="proposal.iof"
@@ -79,32 +79,66 @@ const titlesResume: IDetailedInfo[] = [
   },
 ];
 
-const itemsResume: ITableRow[] = [
+var itemsResume: ITableRow[] = [
   {
-    values: [
-      {
-        value: "",
-        description: "",
-      },
-      {
-        value: "",
-        description: "",
-      },
-      {
-        value: "",
-        description: "",
-      },
-      {
-        value: "",
-        description: "",
-      },
-    ],
+    values: [],
   },
 ];
 
 const tableResume = {
   titles: titlesResume,
   rows: itemsResume,
+  collumnsNumber: 4,
+};
+
+const titlesBike: IDetailedInfo[] = [
+  {
+    value: "Marca",
+    description: "",
+  },
+  {
+    value: "N° de Série",
+    description: "",
+  },
+  {
+    value: "Categoria",
+    description: "",
+  },
+  {
+    value: "Modelo",
+    description: "",
+  },
+  {
+    value: "Valor da Bicicleta nova",
+    description: "",
+  },
+];
+
+var itemsBike: ITableRow[] = [
+  {
+    values: [],
+  },
+];
+
+const tableBike = {
+  titles: titlesBike,
+  rows: itemsBike,
+  collumnsNumber: 5,
+};
+
+const titlesCoverage: IDetailedInfo[] = [];
+
+var itemsCoverage: ITableRow[] = [
+  {
+    values: [],
+  },
+];
+
+const tableCoverage = {
+  titles: titlesCoverage,
+  rows: itemsCoverage,
+  padding: 30,
+  collumnsNumber: 3,
 };
 
 @Component({
@@ -114,7 +148,9 @@ const tableResume = {
   },
 })
 export default class ProposalValues extends Vue {
-  table = tableResume;
+  tableResume = tableResume;
+  tableBike = tableBike;
+  tableCoverage = tableCoverage;
   proposal = {} as IProposal;
 
   formatPrice = formatPrice;
@@ -124,6 +160,7 @@ export default class ProposalValues extends Vue {
     const response = await proposalService.getProposal(id);
     this.proposal = response;
 
+    // Criando tabela de resumo da proposta
     const numberInstallments =
       this.proposal.proposal_bids[0].number_of_installments;
 
@@ -149,6 +186,53 @@ export default class ProposalValues extends Vue {
     ];
 
     tableResume.rows[0].values = resume;
+
+    // Criando tabela de dados da bike
+    const bike = [
+      {
+        value: this.proposal.associate_bikes[0].brand,
+        description: "",
+      },
+      {
+        value: this.proposal.associate_bikes[0].serial_number,
+        description: "",
+      },
+      {
+        value: this.proposal.associate_bikes[0].category,
+        description: "",
+      },
+      {
+        value: this.proposal.associate_bikes[0].model,
+        description: "",
+      },
+      {
+        value: this.proposal.associate_bikes[0].price,
+        description: "",
+      },
+    ];
+
+    tableBike.rows[0].values = bike;
+
+    // Criando tabela de coberturas
+    this.proposal.proposal_coverages.forEach(function (coverage) {
+      const bike = [
+        {
+          value: coverage.name,
+          description: "",
+        },
+        {
+          value: `<b> Franquia/POS: </b> ${coverage.deductible_text}`,
+          description: "",
+        },
+        {
+          value: `<b>Prêmio Líquido:</b> ${coverage.amount} </br> LMI: ${coverage.lmi}`,
+          description: "",
+        },
+      ];
+      tableCoverage.rows.push({
+        values: bike,
+      });
+    });
   }
 
   created() {
