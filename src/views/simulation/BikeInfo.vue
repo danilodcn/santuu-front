@@ -1,292 +1,5 @@
 <template>
-  <div>
-    <!-- <v-container>
-      <v-col>
-        <v-row>
-          <v-row>
-            <v-autocomplete
-              v-model="model"
-              attach
-              label="Marca"
-              :items="brands"
-              item-text="name"
-              item-value="id"
-              dense
-            >
-            </v-autocomplete>
-            <info-dialog
-              :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
-            >
-              <v-icon>mdi-information</v-icon>
-            </info-dialog>
-          </v-row>
-
-          <v-row>
-            <v-select
-              v-model="model"
-              attach
-              label="Sua Bike é:"
-              :items="[
-                { name: 'Nova', id: 0 },
-                { name: 'Usada', id: 1 },
-              ]"
-              item-text="name"
-              item-value="id"
-              persistent-hint
-              dense
-            >
-            </v-select>
-            <info-dialog
-              :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
-                todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
-            >
-              <v-icon>mdi-information</v-icon>
-            </info-dialog>
-          </v-row>
-
-          <v-row>
-            <v-autocomplete
-              v-model="model"
-              attach
-              label="Categoria"
-              :items="brands"
-              item-text="name"
-              item-value="id"
-              persistent-hint
-              dense
-            >
-            </v-autocomplete>
-            <info-dialog
-              :text="`Categoria de acordo com o modelo da sua bicicleta.
-                Pode ser urbana, Mountain Bike (MTB), Estrada, etc.`"
-            >
-              <v-icon>mdi-information</v-icon>
-            </info-dialog>
-          </v-row>
-        </v-row>
-
-        <v-row>
-          <v-row>
-            <v-autocomplete
-              v-model="model"
-              attach
-              label="Modelo"
-              :items="brands"
-              item-text="name"
-              item-value="id"
-              persistent-hint
-              dense
-            >
-            </v-autocomplete>
-            <info-dialog
-              :text="`Caso não encontre aqui seu modelo, favor digita-lo e pressionar Enter.`"
-            >
-              <v-icon>mdi-information</v-icon>
-            </info-dialog>
-          </v-row>
-          <v-row>
-            <v-text-field
-              v-model="form.price"
-              label="Valor"
-              class="pa-0 ma-0"
-              prefix="R$ "
-              type="number"
-              clearable
-            >
-            </v-text-field>
-            <info-dialog
-              :text="`Preço Sugerido ao Consumidor (PSC), 
-            definido pelo fabricante em seu website, para o modelo da sua bicicleta no ano vigente... 
-            ou seja, o preço da sua bicicleta NOVA.`"
-            >
-              <v-icon>mdi-information</v-icon>
-            </info-dialog>
-          </v-row>
-
-          <v-row>
-            <v-autocomplete
-              v-model="model"
-              attach
-              label="Loja de origem"
-              :items="brands"
-              item-text="name"
-              item-value="id"
-              persistent-hint
-              dense
-            >
-            </v-autocomplete>
-            <info-dialog
-              :text="`Loja de origem na qual foi comprada a bike!
-                Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
-            >
-              <v-icon>mdi-information</v-icon>
-            </info-dialog>
-          </v-row>
-        </v-row>
-
-        <v-row>
-          <v-row>
-            <v-text-field
-              v-model="model"
-              label="Voucher"
-              class="pa-0 ma-0"
-              clearable
-            >
-            </v-text-field>
-            <info-dialog
-              text="Caso voce tenha um voucher promocional insira-o aqui."
-            >
-              <v-icon>mdi-information</v-icon>
-            </info-dialog>
-          </v-row>
-        </v-row>
-      </v-col>
-    </v-container>
-    {{ model }}
-    <v-spacer class="my-6"></v-spacer>
-    <v-container>
-      <v-card elevation="8">
-        <v-container fluid>
-          <v-row>
-            <v-col>
-              <v-row>
-                <v-autocomplete
-                  v-model="model"
-                  attach
-                  label="Marca"
-                  :items="brands"
-                  item-text="name"
-                  item-value="id"
-                  dense
-                >
-                </v-autocomplete>
-                <info-dialog
-                  :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
-                >
-                  <v-icon>mdi-information</v-icon>
-                </info-dialog>
-              </v-row>
-              <v-row>
-                <v-autocomplete
-                  v-model="model"
-                  attach
-                  label="Modelo"
-                  :items="brands"
-                  item-text="name"
-                  item-value="id"
-                  persistent-hint
-                  dense
-                >
-                </v-autocomplete>
-                <info-dialog
-                  :text="`Caso não encontre aqui seu modelo, favor digita-lo e pressionar Enter.`"
-                >
-                  <v-icon>mdi-information</v-icon>
-                </info-dialog>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  v-model="model"
-                  label="Voucher"
-                  class="pa-0 ma-0"
-                  clearable
-                >
-                </v-text-field>
-                <info-dialog
-                  text="Caso voce tenha um voucher promocional insira-o aqui."
-                >
-                  <v-icon>mdi-information</v-icon>
-                </info-dialog>
-              </v-row>
-            </v-col>
-            <v-col>
-              <v-row>
-                <v-select
-                  v-model="model"
-                  attach
-                  label="Sua Bike é:"
-                  :items="[
-                    { name: 'Nova', id: 0 },
-                    { name: 'Usada', id: 1 },
-                  ]"
-                  item-text="name"
-                  item-value="id"
-                  persistent-hint
-                  dense
-                >
-                </v-select>
-                <info-dialog
-                  :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
-                todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
-                >
-                  <v-icon>mdi-information</v-icon>
-                </info-dialog>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  v-model="form.price"
-                  label="Valor"
-                  class="pa-0 ma-0"
-                  prefix="R$ "
-                  type="number"
-                  clearable
-                >
-                </v-text-field>
-                <info-dialog
-                  :text="`Preço Sugerido ao Consumidor (PSC), 
-            definido pelo fabricante em seu website, para o modelo da sua bicicleta no ano vigente... 
-            ou seja, o preço da sua bicicleta NOVA.`"
-                >
-                  <v-icon>mdi-information</v-icon>
-                </info-dialog>
-              </v-row>
-            </v-col>
-            <v-col>
-              <v-row>
-                <v-autocomplete
-                  v-model="model"
-                  attach
-                  label="Categoria"
-                  :items="brands"
-                  item-text="name"
-                  item-value="id"
-                  persistent-hint
-                  dense
-                >
-                </v-autocomplete>
-                <info-dialog
-                  :text="`Categoria de acordo com o modelo da sua bicicleta.
-                Pode ser urbana, Mountain Bike (MTB), Estrada, etc.`"
-                >
-                  <v-icon>mdi-information</v-icon>
-                </info-dialog>
-              </v-row>
-
-              <v-row>
-                <v-autocomplete
-                  v-model="model"
-                  attach
-                  label="Loja de origem"
-                  :items="brands"
-                  item-text="name"
-                  item-value="id"
-                  persistent-hint
-                  dense
-                >
-                </v-autocomplete>
-                <info-dialog
-                  :text="`Loja de origem na qual foi comprada a bike!
-                Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
-                >
-                  <v-icon>mdi-information</v-icon>
-                </info-dialog>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
-    </v-container>
-    <v-spacer class="ma-8" /> -->
+  <v-container>
     <v-card>
       <v-card-title>
         <h3>Meu form</h3>
@@ -432,11 +145,28 @@
         </v-form>
       </v-card-text>
     </v-card>
-  </div>
+
+    <v-card class="pa-3">
+      <vue-recaptcha
+        sitekey="6LcAzuUfAAAAAMtsHHnn9o1XvRewVsv6DNAGdjX6"
+        @verify="onCaptchaVerified"
+        @expired="onCaptchaExpired"
+        language="pt-br"
+      ></vue-recaptcha>
+      <v-spacer class="my-6" />
+      <v-card-actions>
+        <v-row justify="space-between" class="mx-4">
+          <v-btn text>Voltar</v-btn>
+          <v-btn text color="primary" @click="alert('Ola')">Avançar</v-btn>
+        </v-row>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "../../types/bike";
 import { BikeService } from "../../api/bike";
 import InfoDialog from "../../components/shared/InfoDialog.vue";
@@ -445,7 +175,7 @@ interface IForm {
   brand: string;
   situation: null | number;
   category: string;
-  model: any;
+  model: string | IModel;
   price: number;
   originStore: IStore;
   voucher: string;
@@ -480,6 +210,7 @@ const formItems: IFormItems = {
 @Component({
   components: {
     InfoDialog,
+    VueRecaptcha,
   },
   beforeCreate() {
     console.log("ao criar");
@@ -490,6 +221,7 @@ export default class HomeView extends Vue {
   formItems = formItems;
   brands: IBrand[] = [];
   search = null;
+  recaptchaToken = "";
 
   isEditing = false;
   model = null;
@@ -509,6 +241,23 @@ export default class HomeView extends Vue {
     const response = await bikeService.getModels(brand_id, category_id);
     console.log(response);
     this.formItems.model = response;
+  }
+
+  async onCaptchaVerified(token: string) {
+    this.recaptchaToken = token;
+  }
+
+  async onCaptchaExpired() {
+    console.log("nao funciona");
+    this.recaptchaToken = "";
+  }
+
+  alert(value: string) {
+    if (this.recaptchaToken != "") {
+      alert(value);
+    } else {
+      alert("Validação necessária");
+    }
   }
 
   @Watch("select")
@@ -535,13 +284,13 @@ export default class HomeView extends Vue {
   @Watch("form.model")
   onModelChange(val: number, oldVal: number) {
     console.log(val, oldVal, "mudou", this.form.model);
-    if (val != oldVal) {
-      const description = this.form.model?.description_1 || this.form.model;
-      const model = this.formItems.model.filter(
-        (a) => a.description_1 == description
-      );
-      this.form.price = (model[0] || model).price;
-    }
+    // if (val != oldVal) {
+    //   const description = this.form.model?.description_1 || this.form.model;
+    //   const model = this.formItems.model.filter(
+    //     (a) => a.description_1 == description
+    //   );
+    //   this.form.price = (model[0] || model).price;
+    // }
   }
 
   @Watch("form.price")
