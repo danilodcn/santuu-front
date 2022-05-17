@@ -5,13 +5,16 @@
     </v-row>
     <v-row>
       <p v-if="numberInstallments > 1">{{ numberInstallments }}x de&nbsp;</p>
-      <p :class="{ bold: bold }">R$ {{ priceFormated(price) }}</p>
+      <p :class="{ bold: bold }">
+        R$ {{ formatPrice(price / (numberInstallments || 1)) }}
+      </p>
     </v-row>
   </v-content>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { formatPrice } from "@/utils/utils";
 
 @Component
 export default class PriceBox extends Vue {
@@ -20,10 +23,7 @@ export default class PriceBox extends Vue {
   @Prop() good!: boolean;
   @Prop() price!: number;
   @Prop() numberInstallments!: number;
-
-  priceFormated(price: number): string {
-    return Number(price).toFixed(2);
-  }
+  formatPrice = formatPrice;
 }
 </script>
 
