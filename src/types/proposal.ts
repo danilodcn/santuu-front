@@ -33,12 +33,13 @@ export interface IProposalBid {
 
 export interface IProposal {
   id: number;
+  created_at: string;
   proposal_coverages: ICoverage[];
   associate_bikes: IAssociateBike[];
   iof: number;
   gross_insurance_premium: number;
   program: IProgram;
-  proposal_bids: IProposalBid;
+  proposal_bids: IProposalBid[];
   insurance_premium_discount: number;
   insurance_premium: number;
   calculated_insurance_premium: number;

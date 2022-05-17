@@ -7,7 +7,7 @@
           <tr>
             <th v-for="item in table.titles" :key="item.value">
               {{ item.value }}
-              <InfoDialog :text="item.description">
+              <InfoDialog v-if="item.description" :text="item.description">
                 <v-icon small color="gray">mdi-information</v-icon>
               </InfoDialog>
             </th>

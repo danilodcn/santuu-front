@@ -12,12 +12,15 @@
       <DetailBox :table="table">Coberturas</DetailBox>
       <v-row class="prices">
         <v-col class="col-3">
-          <PriceBox :bad="true" :bold="false" price="136.08"
+          <PriceBox :bad="true" :bold="false" :price="proposal.iof"
             >Valor do IOF</PriceBox
           >
         </v-col>
         <v-col class="col-3">
-          <PriceBox :bold="true" :good="true" price="136.08"
+          <PriceBox
+            :bold="true"
+            :good="true"
+            :price="proposal.gross_insurance_premium"
             >Prêmio a pagar</PriceBox
           >
         </v-col>
@@ -25,8 +28,8 @@
           <PriceBox
             :bold="true"
             :good="true"
-            numberInstallments="10"
-            price="13.608"
+            numberInstallments="12"
+            :price="proposal.gross_insurance_premium"
             >Em até</PriceBox
           >
         </v-col>
@@ -53,55 +56,55 @@ import DetailBox, {
 import PriceBox from "@/components/PriceBox.vue";
 import { IProposal } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
+import { formatPrice, formatDate } from "@/utils/utils";
 
 const proposalService = new ProposalService();
 
-const titles: IDetailedInfo[] = [
+const titlesResume: IDetailedInfo[] = [
   {
     value: "Data de criação da proposta:",
-    description:
-      "Bacon ipsum dolor amet andouille rump in fatback in turducken, enim nisi nostrud quis veniam pariatur boudin frankfurter.",
+    description: "",
   },
   {
     value: "Vigência:",
-    description: "Quantidade de calorias (Kcal)",
+    description: "Prazo de vigência do seguro",
   },
   {
     value: "Valor total do prêmio:",
-    description: "Quantidade de calorias (Kcal)",
+    description: "",
   },
   {
     value: "Em até:",
-    description: "Quantidade de calorias (Kcal)",
+    description: "",
   },
 ];
 
-const items: ITableRow[] = [
+const itemsResume: ITableRow[] = [
   {
     values: [
       {
-        value: "9 de Maio de 2022 às 08:13",
-        description: "Bom",
+        value: "",
+        description: "",
       },
       {
-        value: "1 ano de seguro",
-        description: "Muita Energia",
+        value: "",
+        description: "",
       },
       {
-        value: "R$ 1979,94",
-        description: "Muita Energia",
+        value: "",
+        description: "",
       },
       {
-        value: "12 x R$ 165,00",
-        description: "Muita Energia",
+        value: "",
+        description: "",
       },
     ],
   },
 ];
 
-const table = {
-  titles: titles,
-  rows: items,
+const tableResume = {
+  titles: titlesResume,
+  rows: itemsResume,
 };
 
 @Component({
@@ -111,15 +114,45 @@ const table = {
   },
 })
 export default class ProposalValues extends Vue {
-  table = table;
+  table = tableResume;
+  proposal = {} as IProposal;
+
+  formatPrice = formatPrice;
+  formatDate = formatDate;
 
   async getProposal(id: number) {
     const response = await proposalService.getProposal(id);
-    console.log(response);
+    this.proposal = response;
+
+    const numberInstallments =
+      this.proposal.proposal_bids[0].number_of_installments;
+
+    const resume = [
+      {
+        value: this.formatDate(this.proposal.created_at),
+        description: "",
+      },
+      {
+        value: "1 ano de seguro",
+        description: "",
+      },
+      {
+        value: `R$ ${this.proposal.gross_insurance_premium}`,
+        description: "",
+      },
+      {
+        value: `${numberInstallments} x de R$ ${formatPrice(
+          this.proposal.gross_insurance_premium / numberInstallments
+        )}`,
+        description: "",
+      },
+    ];
+
+    tableResume.rows[0].values = resume;
   }
 
   created() {
-    this.getProposal(46577);
+    this.getProposal(46589);
   }
 }
 </script>
