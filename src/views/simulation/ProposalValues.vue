@@ -31,7 +31,7 @@
       <v-divider></v-divider>
       <v-row class="back-foward" justify="space-between">
         <v-col class="col-2">
-          <v-btn color="white" elevation="0">Voltar</v-btn>
+          <v-btn color="white" disabled elevation="0">Voltar</v-btn>
         </v-col>
         <v-col class="col-2">
           <v-btn color="white" elevation="0" class="success-santuu"
@@ -90,10 +90,6 @@ const tableResume = {
 const titlesBike: IDetailedInfo[] = [
   {
     value: "Marca",
-    description: "",
-  },
-  {
-    value: "N° de Série",
     description: "",
   },
   {
@@ -190,10 +186,6 @@ export default class ProposalValues extends Vue {
     const bike = [
       {
         value: this.proposal.associate_bikes[0].brand,
-        description: "",
-      },
-      {
-        value: this.proposal.associate_bikes[0].serial_number,
         description: "",
       },
       {

@@ -14,7 +14,6 @@ export interface IAssociateBike {
   id: number;
   brand: string;
   category: string;
-  serial_number: number;
   model: string;
   price: string;
 }
