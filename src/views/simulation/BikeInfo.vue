@@ -1,10 +1,9 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card class="box-content">
       <v-card-title>
-        <h3>Meu form</h3>
+        <h3>Nova Proposta de Seguro</h3>
       </v-card-title>
-      {{ form }}
       <v-card-text>
         <v-form class="px-3">
           <v-container fluid class="content">
@@ -144,17 +143,15 @@
           </v-container>
         </v-form>
       </v-card-text>
-    </v-card>
-
-    <v-card class="pa-3">
       <vue-recaptcha
+        id="captcha"
         sitekey="6LcAzuUfAAAAAMtsHHnn9o1XvRewVsv6DNAGdjX6"
         @verify="onCaptchaVerified"
         @expired="onCaptchaExpired"
         language="pt-br"
       ></vue-recaptcha>
-      <v-spacer class="my-6" />
-      <v-card-actions>
+      <v-divider></v-divider>
+      <v-card-actions class="back-foward">
         <v-row justify="space-between" class="mx-4">
           <v-btn text>Voltar</v-btn>
           <v-btn text color="primary" @click="alert('Ola')">Avançar</v-btn>
@@ -213,7 +210,7 @@ const formItems: IFormItems = {
     VueRecaptcha,
   },
   beforeCreate() {
-    console.log("ao criar");
+    console.log("Ao criar");
   },
 })
 export default class HomeView extends Vue {
@@ -248,7 +245,7 @@ export default class HomeView extends Vue {
   }
 
   async onCaptchaExpired() {
-    console.log("nao funciona");
+    console.log("Não funciona");
     this.recaptchaToken = "";
   }
 
@@ -299,7 +296,7 @@ export default class HomeView extends Vue {
   }
 
   created() {
-    console.log("criando");
+    console.log("Criando");
     this.getBrands();
   }
   log(event: Event) {
@@ -309,16 +306,29 @@ export default class HomeView extends Vue {
 </script>
 
 <style scoped>
+h3 {
+  margin-left: 23px;
+}
+#captcha {
+  margin-left: 40px;
+  margin-bottom: 30px;
+}
+.box-content {
+  margin: 30px;
+  padding: 50px;
+}
 .content {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
 }
-
 .item {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+.back-foward {
+  margin-top: 80px;
 }
 </style>

@@ -27,12 +27,13 @@ export default class PriceBox extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/scss/main.scss";
 .bad {
   color: #fb8c00;
 }
 .good {
-  color: #4caf50;
+  color: $success-color;
 }
 .bold {
   font-weight: bold;

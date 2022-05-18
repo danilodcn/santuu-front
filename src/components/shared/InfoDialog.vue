@@ -35,6 +35,8 @@ export default class InfoDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import "@/scss/main.scss";
+
 .title {
   max-width: 90%;
 }

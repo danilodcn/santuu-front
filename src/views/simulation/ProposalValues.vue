@@ -1,12 +1,6 @@
 <template>
   <div class="proposal-values">
     <v-card class="box-content">
-      <v-row>
-        <v-col offset="7">
-          <v-btn class="success-santuu" elevation="0">Enviar por email</v-btn>
-          <v-btn class="success-santuu" elevation="0">Baixar proposta</v-btn>
-        </v-col>
-      </v-row>
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
       <DetailBox :table="tableCoverage">Coberturas</DetailBox>
@@ -37,10 +31,12 @@
       <v-divider></v-divider>
       <v-row class="back-foward" justify="space-between">
         <v-col class="col-2">
-          <v-btn>Voltar</v-btn>
+          <v-btn color="white" elevation="0">Voltar</v-btn>
         </v-col>
         <v-col class="col-2">
-          <v-btn class="success-santuu">Avançar</v-btn>
+          <v-btn color="white" elevation="0" class="success-santuu"
+            >Avançar</v-btn
+          >
         </v-col>
       </v-row>
     </v-card>
@@ -52,7 +48,7 @@ import { Component, Vue } from "vue-property-decorator";
 import DetailBox, {
   IDetailedInfo,
   ITableRow,
-} from "@/components/DetailBox.vue"; // @ is an alias to /src
+} from "@/components/shared/DetailBox.vue"; // @ is an alias to /src
 import PriceBox from "@/components/PriceBox.vue";
 import { IProposal } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
@@ -159,7 +155,10 @@ export default class ProposalValues extends Vue {
   async getProposal(id: number) {
     const response = await proposalService.getProposal(id);
     this.proposal = response;
+    this.setValues();
+  }
 
+  setValues() {
     // Criando tabela de resumo da proposta
     const numberInstallments =
       this.proposal.proposal_bids[0].number_of_installments;
@@ -235,20 +234,20 @@ export default class ProposalValues extends Vue {
     });
   }
 
-  created() {
+  mounted() {
     this.getProposal(46589);
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/scss/main.scss";
 .box-content {
   margin: 30px;
   padding: 50px;
 }
 .success-santuu {
-  color: #4caf50;
-  background-color: #fafafa !important;
+  color: $success-color;
   margin-left: 20px;
 }
 .prices {

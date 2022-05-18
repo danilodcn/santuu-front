@@ -22,7 +22,7 @@ export class APIBase {
         return res.data;
       })
       .catch((error) => {
-        console.log("erro na requisição", error);
+        console.log("Erro na requisição", error);
       });
   }
 }
