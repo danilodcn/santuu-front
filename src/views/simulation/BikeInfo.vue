@@ -164,7 +164,8 @@
               v-for="(n, i) in 10"
               :key="i"
               :class="`item-${n}`"
-              class="col-md-3 col-sm-12"
+              cols="12"
+              md="3"
             >
               <div class="div-item"></div>
             </v-col>
