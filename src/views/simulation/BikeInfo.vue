@@ -159,11 +159,16 @@
       <v-card-title>Sistema de Grid de testes</v-card-title>
       <v-card-text>
         <div class="itens-content">
-          <div
-            v-for="(n, i) in 10"
-            :key="i"
-            :class="`div-item item-${n}`"
-          ></div>
+          <v-row justify="center">
+            <v-col
+              v-for="(n, i) in 10"
+              :key="i"
+              :class="`item-${n}`"
+              class="col-md-3 col-sm-12"
+            >
+              <div class="div-item"></div>
+            </v-col>
+          </v-row>
         </div>
 
         <v-card-title>Sistema de Grid de testes</v-card-title>
