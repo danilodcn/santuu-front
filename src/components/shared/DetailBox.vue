@@ -8,7 +8,7 @@
             <th v-for="item in table.titles" :key="item.value">
               {{ item.value }}
               <InfoDialog v-if="item.description" :text="item.description">
-                <v-icon small color="gray">mdi-information</v-icon>
+                <v-icon small>mdi-information</v-icon>
               </InfoDialog>
             </th>
           </tr>

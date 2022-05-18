@@ -19,8 +19,9 @@
               </v-autocomplete>
               <info-dialog
                 :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
+                class="info-button"
               >
-                <v-icon class="info-button">mdi-information</v-icon>
+                <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
             <div class="item">
@@ -40,8 +41,9 @@
               <info-dialog
                 :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
                 todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
+                class="info-button"
               >
-                <v-icon class="info-button">mdi-information</v-icon>
+                <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -59,8 +61,9 @@
               <info-dialog
                 :text="`Categoria de acordo com o modelo da sua bicicleta.
                 Pode ser urbana, Mountain Bike (MTB), Estrada, etc.`"
+                class="info-button"
               >
-                <v-icon class="info-button">mdi-information</v-icon>
+                <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -78,15 +81,15 @@
               </v-combobox>
               <info-dialog
                 :text="`Caso não encontre aqui seu modelo, favor digita-lo e pressionar Enter.`"
+                class="info-button"
               >
-                <v-icon class="info-button">mdi-information</v-icon>
+                <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
             <div class="item">
               <v-text-field
                 v-model="form.price"
                 label="Valor"
-                class="pa-0 ma-0"
                 prefix="R$ "
                 type="number"
                 clearable
@@ -97,8 +100,9 @@
                 :text="`Preço Sugerido ao Consumidor (PSC), 
             definido pelo fabricante em seu website, para o modelo da sua bicicleta no ano vigente... 
             ou seja, o preço da sua bicicleta NOVA.`"
+                class="info-button"
               >
-                <v-icon class="info-button">mdi-information</v-icon>
+                <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -116,23 +120,20 @@
               <info-dialog
                 :text="`Loja de origem na qual foi comprada a bike!
                 Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
+                class="info-button"
               >
-                <v-icon class="info-button">mdi-information</v-icon>
+                <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
 
             <div class="item">
-              <v-text-field
-                v-model="form.voucher"
-                label="Voucher"
-                class="pa-0 ma-0"
-                clearable
-              >
+              <v-text-field v-model="form.voucher" label="Voucher" clearable>
               </v-text-field>
               <info-dialog
-                text="Caso voce tenha um voucher promocional insira-o aqui."
+                text="Caso você tenha um voucher promocional insira-o aqui."
+                class="info-button"
               >
-                <v-icon class="info-button">mdi-information</v-icon>
+                <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
           </v-container>
