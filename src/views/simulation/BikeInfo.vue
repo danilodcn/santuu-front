@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-card class="box-content">
+      <pre>{{ form }}</pre>
       <v-card-title>
         <h4>Nova Proposta de Seguro</h4>
       </v-card-title>
@@ -147,7 +148,7 @@
         language="pt-br"
       ></vue-recaptcha>
       <v-divider></v-divider>
-      <v-card-actions class="back-foward">
+      <v-card-actions class="back-forward">
         <v-row justify="space-between" class="mx-4">
           <v-btn text>Voltar</v-btn>
           <v-btn text class="button" @click="submitForm()">Avançar</v-btn>
@@ -170,8 +171,8 @@ const bikeService = new BikeService();
 const simulationHelper = new SimulationHelper();
 
 const form: IForm = {
-  brand: "",
-  situation: undefined,
+  brand: "51",
+  situation: 0,
   category: "",
   model: undefined,
   modelDesc: "",
@@ -337,7 +338,7 @@ h4 {
   justify-content: center;
   align-items: center;
 }
-.back-foward {
+.back-forward {
   margin-top: 80px;
 }
 .info-button {
