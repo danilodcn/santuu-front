@@ -234,7 +234,7 @@ export default class ProposalValues extends Vue {
     });
   }
 
-  mounted() {
+  created() {
     this.getProposal(46589);
   }
 }

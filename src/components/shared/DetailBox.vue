@@ -18,7 +18,7 @@
             <td
               :style="{
                 width: widthCell,
-                padding: `${table.padding}px 20px ${table.padding}px 20px !important`,
+                padding: `${table.padding}px 30px ${table.padding}px 30px !important`,
               }"
               v-for="sub_item in item.values"
               :key="sub_item.value"
@@ -59,11 +59,11 @@ interface ITable {
 export default class DetailedBox extends Vue {
   @Prop() table!: ITable;
   widthCell!: string;
-  collumnsNumber!: number;
 
-  beforeCreate() {
-    if (this.collumnsNumber) {
-      this.widthCell = `${(1 / this.collumnsNumber) * 100}%`;
+  created() {
+    console.log(this.table.collumnsNumber);
+    if (this.table.collumnsNumber) {
+      this.widthCell = `${(1 / this.table.collumnsNumber) * 100}%`;
     } else {
       this.widthCell = "auto";
     }
@@ -81,6 +81,9 @@ h3 {
 }
 .table {
   background-color: #fcfcfc !important;
-  padding-left: 20px !important;
+}
+th,
+td {
+  padding-left: 30px !important;
 }
 </style>

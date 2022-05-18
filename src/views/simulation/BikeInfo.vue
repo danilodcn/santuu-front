@@ -21,7 +21,7 @@
               <info-dialog
                 :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
             <div class="item">
@@ -43,7 +43,7 @@
                 :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
                 todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -63,7 +63,7 @@
                 :text="`Categoria de acordo com o modelo da sua bicicleta.
                 Pode ser urbana, Mountain Bike (MTB), Estrada, etc.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -84,7 +84,7 @@
               <info-dialog
                 :text="`Caso não encontre aqui seu modelo, favor digita-lo e pressionar Enter.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
             <div class="item">
@@ -102,7 +102,7 @@
             definido pelo fabricante em seu website, para o modelo da sua bicicleta no ano vigente... 
             ou seja, o preço da sua bicicleta NOVA.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -122,7 +122,7 @@
                 :text="`Loja de origem na qual foi comprada a bike!
                 Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -137,7 +137,7 @@
               <info-dialog
                 text="Caso voce tenha um voucher promocional insira-o aqui."
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
           </v-container>
@@ -311,7 +311,7 @@ h3 {
 }
 #captcha {
   margin-left: 40px;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 .box-content {
   margin: 30px;
@@ -330,5 +330,8 @@ h3 {
 }
 .back-foward {
   margin-top: 80px;
+}
+.info-button {
+  top: -5px;
 }
 </style>
