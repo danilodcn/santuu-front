@@ -373,7 +373,7 @@ h4 {
 }
 .button {
   color: $main-dark-color !important;
-
+}
 .div-item {
   width: 100%;
   height: 3rem;
