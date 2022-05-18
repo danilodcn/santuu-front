@@ -1,10 +1,6 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title>
-        <h3>Meu form</h3>
-      </v-card-title>
-      {{ form }}
       <v-card-text>
         <v-form class="px-3">
           <v-container fluid class="content">
@@ -16,7 +12,6 @@
                 :items="formItems.brand"
                 item-text="name"
                 item-value="id"
-                dense
               >
               </v-autocomplete>
               <info-dialog
@@ -37,7 +32,6 @@
                 item-text="name"
                 item-value="id"
                 persistent-hint
-                dense
               >
               </v-select>
               <info-dialog
@@ -57,7 +51,6 @@
                 item-text="name"
                 item-value="id"
                 persistent-hint
-                dense
               >
               </v-autocomplete>
               <info-dialog
@@ -75,9 +68,7 @@
                 label="Modelo"
                 :items="formItems.model"
                 item-text="description_1"
-                item-value="description_1"
                 persistent-hint
-                dense
                 clearable
                 open-on-clear
               >
@@ -96,6 +87,7 @@
                 prefix="R$ "
                 type="number"
                 clearable
+                hide-spin-buttons
               >
               </v-text-field>
               <info-dialog
@@ -113,10 +105,9 @@
                 attach
                 label="Loja de origem"
                 :items="formItems.originStore"
-                item-text="name"
+                item-text="trading_name"
                 item-value="id"
                 persistent-hint
-                dense
               >
               </v-autocomplete>
               <info-dialog
@@ -157,7 +148,7 @@
       <v-card-actions>
         <v-row justify="space-between" class="mx-4">
           <v-btn text>Voltar</v-btn>
-          <v-btn text color="primary" @click="alert('Ola')">Avançar</v-btn>
+          <v-btn text color="primary" @click="submitForm()">Avançar</v-btn>
         </v-row>
       </v-card-actions>
     </v-card>
@@ -167,36 +158,24 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { VueRecaptcha } from "vue-recaptcha";
-import { IBrand, ICategory, IModel, IStore } from "../../types/bike";
-import { BikeService } from "../../api/bike";
-import InfoDialog from "../../components/shared/InfoDialog.vue";
-
-interface IForm {
-  brand: string;
-  situation: null | number;
-  category: string;
-  model: string | IModel;
-  price: number;
-  originStore: IStore;
-  voucher: string;
-}
-
-interface IFormItems {
-  brand: IBrand[];
-  category: ICategory[];
-  model: IModel[];
-  originStore: IStore[];
-}
+import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
+import { IForm, IFormItems } from "@/types/simulation";
+import { SimulationHelper } from "@/helper/simulation";
+import { BikeService } from "@/api/bike";
+import InfoDialog from "@/components/shared/InfoDialog.vue";
 
 const bikeService = new BikeService();
+const simulationHelper = new SimulationHelper();
 
 const form: IForm = {
   brand: "",
-  situation: null,
+  situation: undefined,
   category: "",
-  model: "",
-  price: 0,
-  originStore: {} as IStore,
+  model: undefined,
+  modelDesc: "",
+  modelId: "",
+  price: undefined,
+  originStore: "",
   voucher: "",
 };
 
@@ -243,8 +222,19 @@ export default class HomeView extends Vue {
     this.formItems.model = response;
   }
 
+  async getStores(brand_id: string, bike_situation: number, program: string) {
+    const response = await bikeService.getStores(
+      brand_id,
+      bike_situation,
+      program
+    );
+    console.log(response);
+    this.formItems.originStore = response;
+  }
+
   async onCaptchaVerified(token: string) {
     this.recaptchaToken = token;
+    simulationHelper.handle(this.form);
   }
 
   async onCaptchaExpired() {
@@ -252,9 +242,12 @@ export default class HomeView extends Vue {
     this.recaptchaToken = "";
   }
 
-  alert(value: string) {
+  async submitForm() {
     if (this.recaptchaToken != "") {
-      alert(value);
+      const data = simulationHelper.handle(this.form);
+      const response = await bikeService.getNextStep(data);
+
+      bikeService.generateBid(response.id);
     } else {
       alert("Validação necessária");
     }
@@ -282,15 +275,23 @@ export default class HomeView extends Vue {
   }
 
   @Watch("form.model")
-  onModelChange(val: number, oldVal: number) {
+  onModelChange(val: string, oldVal: IModel) {
     console.log(val, oldVal, "mudou", this.form.model);
-    // if (val != oldVal) {
-    //   const description = this.form.model?.description_1 || this.form.model;
-    //   const model = this.formItems.model.filter(
-    //     (a) => a.description_1 == description
-    //   );
-    //   this.form.price = (model[0] || model).price;
-    // }
+    const description = this.form.model?.description_1;
+
+    if (description) {
+      const model = this.formItems.model.filter(
+        (a) => a.description_1 == description
+      );
+
+      this.form.modelDesc = model[0].description_1;
+      this.form.price = (model[0] || model).price;
+    } else {
+      this.form.modelDesc = val;
+      this.form.price = undefined;
+    }
+
+    this.getStores(this.form.brand, this.form.situation || 0, "");
   }
 
   @Watch("form.price")

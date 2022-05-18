@@ -1,4 +1,5 @@
 import { APIBase } from "./index";
+import { INextStepDTO } from "@/types/simulation";
 
 export class BikeService extends APIBase {
   async getBrands(program = "") {
@@ -14,5 +15,20 @@ export class BikeService extends APIBase {
   async getModels(brand_id: string, category_id: string) {
     const url = `/dashboard/proposal/get_models/?brand_id=${brand_id}&category_id=${category_id}`;
     return await this.request({ url, method: "GET" });
+  }
+
+  async getStores(brand_id: string, bike_situation: number, program: string) {
+    const url = `/dashboard/proposal/get_stores/?brand_id=${brand_id}&bike_situation=${bike_situation}&program=${program}`;
+    return await this.request({ url, method: "GET" });
+  }
+
+  async getNextStep(data: INextStepDTO) {
+    const url = "/api/insurance/proposal/get-next-step/";
+    return await this.request({ url, method: "POST", data });
+  }
+
+  async generateBid(id: number) {
+    const url = `/web/associate/bids_proposal?proposal=${id}`;
+    return await this.request({ url, method: "POST", data: { id } });
   }
 }
