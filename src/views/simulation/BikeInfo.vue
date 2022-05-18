@@ -153,6 +153,34 @@
         </v-row>
       </v-card-actions>
     </v-card>
+    <v-divider></v-divider>
+    <v-card>
+      <v-card-title>Sistema de Grid de testes</v-card-title>
+      <v-card-text>
+        <div class="itens-content">
+          <div
+            v-for="(n, i) in 10"
+            :key="i"
+            :class="`div-item item-${n}`"
+          ></div>
+        </div>
+
+        <v-card-title>Sistema de Grid de testes</v-card-title>
+
+        <div data-v-a1b74ca6="" class="itens-content">
+          <div data-v-a1b74ca6="" class="div-item item-1"></div>
+          <div data-v-a1b74ca6="" class="div-item item-2"></div>
+          <div data-v-a1b74ca6="" class="div-item item-3"></div>
+          <div data-v-a1b74ca6="" class="div-item item-4"></div>
+          <div data-v-a1b74ca6="" class="div-item item-5"></div>
+          <div data-v-a1b74ca6="" class="div-item item-6"></div>
+          <div data-v-a1b74ca6="" class="div-item item-7"></div>
+          <div data-v-a1b74ca6="" class="div-item item-8"></div>
+          <div data-v-a1b74ca6="" class="div-item item-9"></div>
+          <div data-v-a1b74ca6="" class="div-item item-10"></div>
+        </div>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
@@ -327,8 +355,8 @@ h4 {
 }
 .content {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
 }
 .item {
   display: flex;
@@ -341,5 +369,33 @@ h4 {
 }
 .info-button {
   top: -5px;
+}
+
+.div-item {
+  width: 100%;
+  height: 3rem;
+  background-color: rgba(209, 65, 65, 0.733);
+}
+
+.itens-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .content {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .content {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+  }
 }
 </style>
