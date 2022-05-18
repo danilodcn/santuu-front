@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card class="box-content">
       <v-card-text>
         <v-form class="px-3">
           <v-container fluid class="content">
@@ -17,7 +17,7 @@
               <info-dialog
                 :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
             <div class="item">
@@ -38,7 +38,7 @@
                 :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
                 todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -57,7 +57,7 @@
                 :text="`Categoria de acordo com o modelo da sua bicicleta.
                 Pode ser urbana, Mountain Bike (MTB), Estrada, etc.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -76,7 +76,7 @@
               <info-dialog
                 :text="`Caso não encontre aqui seu modelo, favor digita-lo e pressionar Enter.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
             <div class="item">
@@ -95,7 +95,7 @@
             definido pelo fabricante em seu website, para o modelo da sua bicicleta no ano vigente... 
             ou seja, o preço da sua bicicleta NOVA.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -114,7 +114,7 @@
                 :text="`Loja de origem na qual foi comprada a bike!
                 Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -129,23 +129,21 @@
               <info-dialog
                 text="Caso voce tenha um voucher promocional insira-o aqui."
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon class="info-button">mdi-information</v-icon>
               </info-dialog>
             </div>
           </v-container>
         </v-form>
       </v-card-text>
-    </v-card>
-
-    <v-card class="pa-3">
       <vue-recaptcha
+        id="captcha"
         sitekey="6LcAzuUfAAAAAMtsHHnn9o1XvRewVsv6DNAGdjX6"
         @verify="onCaptchaVerified"
         @expired="onCaptchaExpired"
         language="pt-br"
       ></vue-recaptcha>
-      <v-spacer class="my-6" />
-      <v-card-actions>
+      <v-divider></v-divider>
+      <v-card-actions class="back-foward">
         <v-row justify="space-between" class="mx-4">
           <v-btn text>Voltar</v-btn>
           <v-btn text color="primary" @click="submitForm()">Avançar</v-btn>
@@ -192,7 +190,7 @@ const formItems: IFormItems = {
     VueRecaptcha,
   },
   beforeCreate() {
-    console.log("ao criar");
+    console.log("Ao criar");
   },
 })
 export default class HomeView extends Vue {
@@ -238,7 +236,7 @@ export default class HomeView extends Vue {
   }
 
   async onCaptchaExpired() {
-    console.log("nao funciona");
+    console.log("Não funciona");
     this.recaptchaToken = "";
   }
 
@@ -300,7 +298,7 @@ export default class HomeView extends Vue {
   }
 
   created() {
-    console.log("criando");
+    console.log("Criando");
     this.getBrands();
   }
   log(event: Event) {
@@ -310,16 +308,32 @@ export default class HomeView extends Vue {
 </script>
 
 <style scoped>
+h3 {
+  margin-left: 23px;
+}
+#captcha {
+  margin-left: 40px;
+  margin-bottom: 50px;
+}
+.box-content {
+  margin: 30px;
+  padding: 50px;
+}
 .content {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
 }
-
 .item {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+.back-foward {
+  margin-top: 80px;
+}
+.info-button {
+  top: -5px;
 }
 </style>

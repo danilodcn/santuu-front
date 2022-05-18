@@ -1,5 +1,5 @@
 <template>
-  <v-content class="price-box">
+  <v-main class="price-box">
     <v-row :class="{ bad: bad, good: good }">
       <slot></slot>
     </v-row>
@@ -9,7 +9,7 @@
         R$ {{ formatPrice(price / (numberInstallments || 1)) }}
       </p>
     </v-row>
-  </v-content>
+  </v-main>
 </template>
 
 <script lang="ts">
@@ -27,12 +27,13 @@ export default class PriceBox extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/scss/main.scss";
 .bad {
   color: #fb8c00;
 }
 .good {
-  color: #4caf50;
+  color: $success-color;
 }
 .bold {
   font-weight: bold;

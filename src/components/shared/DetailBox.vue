@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-main>
     <h3><slot></slot></h3>
     <v-simple-table class="table">
       <template v-slot:default>
@@ -15,14 +15,20 @@
         </thead>
         <tbody>
           <tr v-for="(item, i) in table.rows" :key="i">
-            <td v-for="sub_item in item.values" :key="sub_item.value">
-              {{ sub_item.value }}
-            </td>
+            <td
+              :style="{
+                width: widthCell,
+                padding: `${table.padding}px 30px ${table.padding}px 30px !important`,
+              }"
+              v-for="sub_item in item.values"
+              :key="sub_item.value"
+              v-html="sub_item.value"
+            ></td>
           </tr>
         </tbody>
       </template>
     </v-simple-table>
-  </v-content>
+  </v-main>
 </template>
 
 <script lang="ts">
@@ -41,6 +47,8 @@ export interface ITableRow {
 interface ITable {
   titles: ITableRow;
   rows: ITableRow[];
+  padding: number;
+  collumnsNumber: number;
 }
 
 @Component({
@@ -50,16 +58,32 @@ interface ITable {
 })
 export default class DetailedBox extends Vue {
   @Prop() table!: ITable;
+  widthCell!: string;
+
+  created() {
+    console.log(this.table.collumnsNumber);
+    if (this.table.collumnsNumber) {
+      this.widthCell = `${(1 / this.table.collumnsNumber) * 100}%`;
+    } else {
+      this.widthCell = "auto";
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/scss/main.scss";
+
 h3 {
   text-align: left;
   padding: 30px 30px 10px 30px;
-  color: #4caf50;
+  color: $success-color;
 }
 .table {
   background-color: #fcfcfc !important;
+}
+th,
+td {
+  padding-left: 30px !important;
 }
 </style>
