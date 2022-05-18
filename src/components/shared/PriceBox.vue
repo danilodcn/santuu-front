@@ -33,7 +33,7 @@ export default class PriceBox extends Vue {
   color: #fb8c00;
 }
 .good {
-  color: $success-color;
+  color: $main-dark-color;
 }
 .bold {
   font-weight: bold;

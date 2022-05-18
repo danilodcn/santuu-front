@@ -4,7 +4,7 @@
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
       <DetailBox :table="tableCoverage">Coberturas</DetailBox>
-      <v-row class="prices">
+      <v-row class="prices" justify="center">
         <v-col class="col-3">
           <PriceBox :bad="true" :bold="false" :price="proposal.iof"
             >Valor do IOF</PriceBox
@@ -49,7 +49,7 @@ import DetailBox, {
   IDetailedInfo,
   ITableRow,
 } from "@/components/shared/DetailBox.vue"; // @ is an alias to /src
-import PriceBox from "@/components/PriceBox.vue";
+import PriceBox from "@/components/shared/PriceBox.vue";
 import { IProposal } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
@@ -239,11 +239,11 @@ export default class ProposalValues extends Vue {
   padding: 50px;
 }
 .success-santuu {
-  color: $success-color;
+  color: $main-dark-color;
   margin-left: 20px;
 }
 .prices {
-  margin-top: 60px;
+  margin-top: 40px;
 }
 .back-foward {
   margin-top: 80px;

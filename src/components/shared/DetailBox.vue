@@ -75,8 +75,8 @@ export default class DetailedBox extends Vue {
 
 h3 {
   text-align: left;
-  padding: 30px 30px 10px 30px;
-  color: $success-color;
+  padding: 20px 30px 10px 30px;
+  color: #555;
 }
 .table {
   background-color: #fcfcfc !important;

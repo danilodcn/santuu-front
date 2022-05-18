@@ -150,7 +150,7 @@
       <v-card-actions class="back-foward">
         <v-row justify="space-between" class="mx-4">
           <v-btn text>Voltar</v-btn>
-          <v-btn text color="primary" @click="submitForm()">Avançar</v-btn>
+          <v-btn text class="button" @click="submitForm()">Avançar</v-btn>
         </v-row>
       </v-card-actions>
     </v-card>
@@ -342,5 +342,8 @@ h4 {
 }
 .info-button {
   top: -5px;
+}
+.button {
+  color: $main-dark-color !important;
 }
 </style>
