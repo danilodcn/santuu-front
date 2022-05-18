@@ -235,7 +235,7 @@ export default class ProposalValues extends Vue {
   }
 
   created() {
-    this.getProposal(46589);
+    this.getProposal(parseInt(this.$route.params.proposal_id));
   }
 }
 </script>

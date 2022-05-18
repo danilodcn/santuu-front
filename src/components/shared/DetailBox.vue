@@ -61,7 +61,6 @@ export default class DetailedBox extends Vue {
   widthCell!: string;
 
   created() {
-    console.log(this.table.collumnsNumber);
     if (this.table.collumnsNumber) {
       this.widthCell = `${(1 / this.table.collumnsNumber) * 100}%`;
     } else {

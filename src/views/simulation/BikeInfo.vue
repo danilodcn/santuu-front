@@ -2,7 +2,7 @@
   <v-container>
     <v-card class="box-content">
       <v-card-title>
-        <h3>Nova Proposta de Seguro</h3>
+        <h4>Nova Proposta de Seguro</h4>
       </v-card-title>
       <v-card-text>
         <v-form class="px-3">
@@ -305,9 +305,12 @@ export default class HomeView extends Vue {
 }
 </script>
 
-<style scoped>
-h3 {
+<style lang="scss" scoped>
+@import "@/scss/main.scss";
+h4 {
+  color: #555;
   margin-left: 23px;
+  margin-bottom: 30px;
 }
 #captcha {
   margin-left: 40px;
