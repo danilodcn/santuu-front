@@ -1,5 +1,5 @@
 <template>
-  <div class="proposal-values">
+  <v-container class="container">
     <v-card class="box-content">
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
@@ -34,13 +34,18 @@
           <v-btn color="white" disabled elevation="0">Voltar</v-btn>
         </v-col>
         <v-col class="col-2">
-          <v-btn color="white" elevation="0" class="success-santuu"
-            >Avançar</v-btn
+          <v-btn
+            color="white"
+            elevation="0"
+            class="success-santuu"
+            @click="next()"
           >
+            Avançar
+          </v-btn>
         </v-col>
       </v-row>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -144,9 +149,14 @@ export default class ProposalValues extends Vue {
   tableBike = tableBike;
   tableCoverage = tableCoverage;
   proposal = {} as IProposal;
+  proposal_id = this.$route.params.proposal_id;
 
   formatPrice = formatPrice;
   formatDate = formatDate;
+
+  next() {
+    window.location.href = `${window.location.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
+  }
 
   async getProposal(id: number) {
     const response = await proposalService.getProposal(id);
@@ -227,7 +237,7 @@ export default class ProposalValues extends Vue {
   }
 
   created() {
-    this.getProposal(parseInt(this.$route.params.proposal_id));
+    this.getProposal(parseInt(this.proposal_id));
   }
 }
 </script>
@@ -247,5 +257,18 @@ export default class ProposalValues extends Vue {
 }
 .back-foward {
   margin-top: 80px;
+}
+@media (min-width: 768px) {
+  .content {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .content {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+  }
 }
 </style>
