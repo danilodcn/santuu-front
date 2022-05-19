@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <v-card class="box-content">
-      <pre>{{ form }}</pre>
       <v-card-title>
         <h4>Nova Proposta de Seguro</h4>
       </v-card-title>

@@ -30,19 +30,15 @@
       </v-row>
       <v-divider></v-divider>
       <v-row class="back-foward" justify="space-between">
-        <v-col class="col-2">
-          <v-btn color="white" disabled elevation="0">Voltar</v-btn>
-        </v-col>
-        <v-col class="col-2">
-          <v-btn
-            color="white"
-            elevation="0"
-            class="success-santuu"
-            @click="next()"
-          >
-            Avançar
-          </v-btn>
-        </v-col>
+        <v-btn color="white" disabled elevation="0">Voltar</v-btn>
+        <v-btn
+          color="white"
+          elevation="0"
+          class="success-santuu"
+          @click="next()"
+        >
+          Avançar
+        </v-btn>
       </v-row>
     </v-card>
   </v-container>
@@ -155,7 +151,7 @@ export default class ProposalValues extends Vue {
   formatDate = formatDate;
 
   next() {
-    window.location.href = `${window.location.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
+    window.parent.location.href = `${window.parent.location.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
   }
 
   async getProposal(id: number) {
@@ -250,13 +246,18 @@ export default class ProposalValues extends Vue {
 }
 .success-santuu {
   color: $main-dark-color;
-  margin-left: 20px;
 }
 .prices {
   margin-top: 40px;
+  margin-bottom: 20px;
 }
 .back-foward {
   margin-top: 80px;
+}
+@media (max-width: 768px) {
+  .prices {
+    font-size: 14px;
+  }
 }
 @media (min-width: 768px) {
   .content {
@@ -264,7 +265,6 @@ export default class ProposalValues extends Vue {
     gap: 1rem;
   }
 }
-
 @media (min-width: 960px) {
   .content {
     grid-template-columns: 1fr 1fr 1fr;

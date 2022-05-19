@@ -78,6 +78,12 @@ h3 {
   padding: 20px 30px 10px 30px;
   color: #555;
 }
+@media (max-width: 768px) {
+  td,
+  h3 {
+    font-size: 12px !important;
+  }
+}
 .table {
   background-color: #fcfcfc !important;
 }
