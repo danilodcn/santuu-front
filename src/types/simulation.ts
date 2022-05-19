@@ -34,13 +34,21 @@ interface IAssociateBikeDTO {
 }
 
 interface IProposalDTO {
-  origin_store_id: number | string;
+  id?: number | string;
+  status?: number | string;
+  origin_store_id?: number | string;
+  associate_step?: number | string;
+  partner_step?: number | string;
   associate_bikes: Array<IAssociateBikeDTO>;
+  chosen_bid_id?: number | string;
+  proposal_coverages?: [];
+  proposal_images?: [];
 }
 
 export interface INextStepDTO {
   action: number;
   associate?: typeof Object;
   proposal: IProposalDTO;
+  insurance_premium?: number | string;
   recaptchaToken?: string;
 }

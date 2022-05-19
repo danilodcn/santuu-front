@@ -162,7 +162,7 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
-import { IForm, IFormItems } from "@/types/simulation";
+import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
 import { BikeService } from "@/api/bike";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
@@ -180,6 +180,7 @@ const form: IForm = {
   price: undefined,
   originStore: "",
   voucher: "",
+  recaptchaToken: "",
 };
 
 const formItems: IFormItems = {
@@ -237,20 +238,51 @@ export default class HomeView extends Vue {
 
   async onCaptchaVerified(token: string) {
     this.recaptchaToken = token;
+    this.form.recaptchaToken = token;
     simulationHelper.handle(this.form);
   }
 
   async onCaptchaExpired() {
     console.log("Não funciona");
     this.recaptchaToken = "";
+    this.form.recaptchaToken = undefined;
   }
 
   async submitForm() {
     if (this.recaptchaToken != "") {
-      const data = simulationHelper.handle(this.form);
+      var data = simulationHelper.handle(this.form);
       const response = await bikeService.getNextStep(data);
 
-      bikeService.generateBid(response.id);
+      const bid = await bikeService.generateBid(
+        response.id,
+        this.form.voucher,
+        false
+      );
+      console.log(bid);
+      const _data: INextStepDTO = {
+        action: 0,
+        // proposal: {
+        //   associate_bikes: response.associate_bikes,
+        // },
+        recaptchaToken: this.form.recaptchaToken,
+        insurance_premium: bid.proposal.insurance_premium,
+        proposal: {
+          // ...data.proposal,
+          associate_bikes: response.associate_bikes,
+          partner_step: bid.proposal.partner_step,
+          status: bid.proposal.status,
+          id: bid.proposal.id,
+          associate_step: 1,
+          chosen_bid_id: bid.chosen_bid_id,
+          proposal_images: [],
+          proposal_coverages: [],
+        },
+      };
+
+      const _response = await bikeService.getNextStep(_data);
+      console.log(_response, "resposta do ultimo step");
+
+      this.$router.push(`/simulation/proposal-values/${bid.proposal.id}`);
     } else {
       alert("Validação necessária");
     }
