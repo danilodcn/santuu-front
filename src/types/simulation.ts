@@ -11,6 +11,7 @@ export interface IForm {
   originStore: string;
   voucher: string;
   recaptchaToken?: string;
+  loading?: boolean;
 }
 
 export interface IFormItems {

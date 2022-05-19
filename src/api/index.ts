@@ -18,11 +18,10 @@ export class APIBase {
     return this.client
       .request(config)
       .then((res) => {
-        console.log("Resposta da requisição", res);
         return res.data;
       })
       .catch((error) => {
-        console.log("Erro na requisição", error);
+        console.info("Erro na requisição", error);
       });
   }
 }

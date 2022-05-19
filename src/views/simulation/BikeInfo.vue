@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <v-card class="box-content">
-      <pre>{{ form }}</pre>
       <v-card-title>
         <h4>Nova Proposta de Seguro</h4>
       </v-card-title>
@@ -151,7 +150,13 @@
       <v-card-actions class="back-forward">
         <v-row justify="space-between" class="mx-4">
           <v-btn text>Voltar</v-btn>
-          <v-btn text class="button" @click="submitForm()">Avançar</v-btn>
+          <v-btn
+            text
+            class="button"
+            @click="submitForm()"
+            :loading="form.loading"
+            >Avançar</v-btn
+          >
         </v-row>
       </v-card-actions>
     </v-card>
@@ -181,6 +186,7 @@ const form: IForm = {
   originStore: "",
   voucher: "",
   recaptchaToken: "",
+  loading: false,
 };
 
 const formItems: IFormItems = {
@@ -204,7 +210,6 @@ export default class HomeView extends Vue {
   formItems = formItems;
   brands: IBrand[] = [];
   search = null;
-  recaptchaToken = "";
 
   isEditing = false;
   model = null;
@@ -222,7 +227,6 @@ export default class HomeView extends Vue {
 
   async getModels(brand_id: string, category_id: string) {
     const response = await bikeService.getModels(brand_id, category_id);
-    console.log(response);
     this.formItems.model = response;
   }
 
@@ -232,24 +236,21 @@ export default class HomeView extends Vue {
       bike_situation,
       program
     );
-    console.log(response);
     this.formItems.originStore = response;
   }
 
   async onCaptchaVerified(token: string) {
-    this.recaptchaToken = token;
     this.form.recaptchaToken = token;
     simulationHelper.handle(this.form);
   }
 
   async onCaptchaExpired() {
     console.log("Não funciona");
-    this.recaptchaToken = "";
     this.form.recaptchaToken = undefined;
   }
 
   async submitForm() {
-    if (this.recaptchaToken != "") {
+    if (this.form.recaptchaToken != "") {
       var data = simulationHelper.handle(this.form);
       const response = await bikeService.getNextStep(data);
 
@@ -258,16 +259,12 @@ export default class HomeView extends Vue {
         this.form.voucher,
         false
       );
-      console.log(bid);
+
       const _data: INextStepDTO = {
         action: 0,
-        // proposal: {
-        //   associate_bikes: response.associate_bikes,
-        // },
         recaptchaToken: this.form.recaptchaToken,
         insurance_premium: bid.proposal.insurance_premium,
         proposal: {
-          // ...data.proposal,
           associate_bikes: response.associate_bikes,
           partner_step: bid.proposal.partner_step,
           status: bid.proposal.status,
@@ -279,18 +276,12 @@ export default class HomeView extends Vue {
         },
       };
 
-      const _response = await bikeService.getNextStep(_data);
-      console.log(_response, "resposta do ultimo step");
+      await bikeService.getNextStep(_data);
 
       this.$router.push(`/simulation/proposal-values/${bid.proposal.id}`);
     } else {
       alert("Validação necessária");
     }
-  }
-
-  @Watch("select")
-  onSelectChange(val: string, oldVal: string) {
-    console.log(val, oldVal);
   }
 
   @Watch("form.situation")
@@ -335,7 +326,6 @@ export default class HomeView extends Vue {
   }
 
   created() {
-    console.log("Criando");
     this.getBrands();
   }
   log(event: Event) {
