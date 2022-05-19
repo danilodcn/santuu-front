@@ -22,13 +22,13 @@ export class BikeService extends APIBase {
     return await this.request({ url, method: "GET" });
   }
 
-  async getNextStep(data: INextStepDTO) {
+  async getNextStep(data: INextStepDTO | typeof Object) {
     const url = "/api/insurance/proposal/get-next-step/";
     return await this.request({ url, method: "POST", data });
   }
 
-  async generateBid(id: number) {
-    const url = `/web/associate/bids_proposal?proposal=${id}`;
-    return await this.request({ url, method: "POST", data: { id } });
+  async generateBid(proposalId: number, voucher = "", pqp = false) {
+    const url = `/dashboard/proposal/generate_bids/?proposalId=${proposalId}&voucher=${voucher}&pqp=${pqp}&bid_proposal=true`;
+    return await this.request({ url, method: "GET" });
   }
 }

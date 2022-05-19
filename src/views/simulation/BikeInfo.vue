@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-card class="box-content">
+      <pre>{{ form }}</pre>
       <v-card-title>
         <h4>Nova Proposta de Seguro</h4>
       </v-card-title>
@@ -147,7 +148,7 @@
         language="pt-br"
       ></vue-recaptcha>
       <v-divider></v-divider>
-      <v-card-actions class="back-foward">
+      <v-card-actions class="back-forward">
         <v-row justify="space-between" class="mx-4">
           <v-btn text>Voltar</v-btn>
           <v-btn text class="button" @click="submitForm()">Avançar</v-btn>
@@ -162,7 +163,7 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
-import { IForm, IFormItems } from "@/types/simulation";
+import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
 import { BikeService } from "@/api/bike";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
@@ -171,8 +172,8 @@ const bikeService = new BikeService();
 const simulationHelper = new SimulationHelper();
 
 const form: IForm = {
-  brand: "",
-  situation: undefined,
+  brand: "51",
+  situation: 0,
   category: "",
   model: undefined,
   modelDesc: "",
@@ -180,6 +181,7 @@ const form: IForm = {
   price: undefined,
   originStore: "",
   voucher: "",
+  recaptchaToken: "",
 };
 
 const formItems: IFormItems = {
@@ -237,20 +239,51 @@ export default class HomeView extends Vue {
 
   async onCaptchaVerified(token: string) {
     this.recaptchaToken = token;
+    this.form.recaptchaToken = token;
     simulationHelper.handle(this.form);
   }
 
   async onCaptchaExpired() {
     console.log("Não funciona");
     this.recaptchaToken = "";
+    this.form.recaptchaToken = undefined;
   }
 
   async submitForm() {
     if (this.recaptchaToken != "") {
-      const data = simulationHelper.handle(this.form);
+      var data = simulationHelper.handle(this.form);
       const response = await bikeService.getNextStep(data);
 
-      bikeService.generateBid(response.id);
+      const bid = await bikeService.generateBid(
+        response.id,
+        this.form.voucher,
+        false
+      );
+      console.log(bid);
+      const _data: INextStepDTO = {
+        action: 0,
+        // proposal: {
+        //   associate_bikes: response.associate_bikes,
+        // },
+        recaptchaToken: this.form.recaptchaToken,
+        insurance_premium: bid.proposal.insurance_premium,
+        proposal: {
+          // ...data.proposal,
+          associate_bikes: response.associate_bikes,
+          partner_step: bid.proposal.partner_step,
+          status: bid.proposal.status,
+          id: bid.proposal.id,
+          associate_step: 1,
+          chosen_bid_id: bid.chosen_bid_id,
+          proposal_images: [],
+          proposal_coverages: [],
+        },
+      };
+
+      const _response = await bikeService.getNextStep(_data);
+      console.log(_response, "resposta do ultimo step");
+
+      this.$router.push(`/simulation/proposal-values/${bid.proposal.id}`);
     } else {
       alert("Validação necessária");
     }
@@ -338,7 +371,7 @@ h4 {
   justify-content: center;
   align-items: center;
 }
-.back-foward {
+.back-forward {
   margin-top: 80px;
 }
 .info-button {
@@ -346,19 +379,6 @@ h4 {
 }
 .button {
   color: $main-dark-color !important;
-}
-.div-item {
-  width: 100%;
-  height: 3rem;
-  background-color: rgba(209, 65, 65, 0.733);
-}
-
-.itens-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: center;
-  gap: 1rem;
 }
 
 @media (min-width: 768px) {
