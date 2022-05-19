@@ -346,8 +346,8 @@ h4 {
   margin-bottom: 50px;
 }
 .box-content {
-  margin: 30px;
-  padding: 50px;
+  margin: 5px;
+  padding: 15px;
 }
 .content {
   display: grid;
@@ -366,14 +366,19 @@ h4 {
 .info-button {
   top: -5px;
 }
-.button {
-  color: $main-dark-color !important;
-}
+// .button {
+//   color: $main-dark-color !important;
+// }
 
 @media (min-width: 768px) {
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+  }
+
+  .box-content {
+    margin: 20px;
+    padding: 35px;
   }
 }
 
@@ -381,6 +386,11 @@ h4 {
   .content {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
+  }
+
+  .box-content {
+    margin: 30px;
+    padding: 50px;
   }
 }
 </style>

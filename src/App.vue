@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app">
+  <v-app id="app" light>
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/simulation/bike-info">BikeInfo</router-link> |
