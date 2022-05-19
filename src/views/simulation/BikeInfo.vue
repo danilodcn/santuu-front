@@ -160,6 +160,7 @@
         </v-row>
       </v-card-actions>
     </v-card>
+    <v-divider></v-divider>
   </v-container>
 </template>
 

@@ -1,9 +1,9 @@
 <template>
   <v-main class="price-box">
-    <v-row :class="{ bad: bad, good: good }">
+    <v-row :class="{ bad: bad, good: good }" class="row-price">
       <slot></slot>
     </v-row>
-    <v-row>
+    <v-row class="row-price">
       <p v-if="numberInstallments > 1">{{ numberInstallments }}x de&nbsp;</p>
       <p :class="{ bold: bold }">
         R$ {{ formatPrice(price / (numberInstallments || 1)) }}
@@ -39,7 +39,14 @@ export default class PriceBox extends Vue {
   font-weight: bold;
 }
 .price-box {
+  text-align: center;
   font-size: 20px;
   margin: 80px 30px 30px 30px;
+}
+.row-price {
+  justify-content: center;
+}
+.row-price p {
+  justify-content: center;
 }
 </style>
