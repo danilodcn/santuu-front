@@ -1,7 +1,15 @@
 <template>
   <v-dialog v-model="active" max-width="500">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn class="info-button" fab small text v-bind="attrs" v-on="on">
+      <v-btn
+        class="info-button"
+        color="primary"
+        fab
+        small
+        text
+        v-bind="attrs"
+        v-on="on"
+      >
         <slot />
       </v-btn>
     </template>
@@ -36,15 +44,11 @@ export default class InfoDialog extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
-.info-button {
-  color: $main-dark-color;
-}
+
 .title {
   max-width: 90%;
 }
-.text-subtitle-1 {
-  background-color: #fafafa;
-}
+
 .text-body-1 {
   text-indent: 10px;
   margin-top: 20px;

@@ -264,6 +264,9 @@ export default class ProposalValues extends Vue {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
+  .prices {
+    font-size: 14px;
+  }
 }
 @media (min-width: 960px) {
   .content {
