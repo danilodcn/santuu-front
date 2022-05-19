@@ -254,6 +254,7 @@ export default class ProposalValues extends Vue {
 }
 .prices {
   margin-top: 40px;
+  margin-bottom: 30px;
 }
 .back-foward {
   margin-top: 80px;
@@ -262,6 +263,9 @@ export default class ProposalValues extends Vue {
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+  }
+  .prices {
+    font-size: 14px;
   }
 }
 
