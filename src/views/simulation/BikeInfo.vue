@@ -364,7 +364,7 @@ h4 {
 }
 .box-content {
   margin: 10px;
-  padding: 25px;
+  padding: 50px 30px;
   max-width: 1080px;
 }
 .content {

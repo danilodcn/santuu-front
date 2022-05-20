@@ -166,12 +166,13 @@ export default class ProposalValues extends Vue {
   tableCoverage = tableCoverage;
   proposal = {} as IProposal;
   proposal_id = this.$route.params.proposal_id;
+  origin = this.$route.query.origin;
 
   formatPrice = formatPrice;
   formatDate = formatDate;
 
   next() {
-    window.parent.location.href = `${window.parent.location.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
+    window.parent.location.href = `http://${this.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
   }
 
   async getProposal(id: number) {
@@ -271,7 +272,7 @@ export default class ProposalValues extends Vue {
 }
 .prices {
   font-size: 14px;
-  margin-top: 40px;
+  margin-top: 70px;
   margin-bottom: 20px;
 }
 .back-foward {

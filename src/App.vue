@@ -20,8 +20,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-body {
-  background-color: #f9f9fc;
+#app {
+  background-color: #f9f9fc !important;
 }
 nav {
   padding: 30px;
