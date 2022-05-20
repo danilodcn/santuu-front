@@ -149,7 +149,7 @@ var itemsCoverage: ITableRow[] = [
 const tableCoverage = {
   titles: titlesCoverage,
   rows: itemsCoverage,
-  padding: 30,
+  padding: 20,
   collumnsNumber: 3,
 };
 

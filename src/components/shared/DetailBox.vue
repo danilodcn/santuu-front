@@ -18,18 +18,20 @@
             <td
               :style="{
                 width: widthCell,
-                padding: `${table.padding}px 30px ${table.padding}px 30px !important`,
+                padding: `${table.padding}px 10px ${table.padding}px 10px !important`,
               }"
               v-for="sub_item in item.values"
               :key="sub_item.value"
             >
+              <span>
+                <InfoDialog
+                  v-if="sub_item.description"
+                  :text="sub_item.description"
+                >
+                  <v-icon small>mdi-information</v-icon>
+                </InfoDialog>
+              </span>
               <span v-html="sub_item.value"></span>
-              <InfoDialog
-                v-if="sub_item.description"
-                :text="sub_item.description"
-              >
-                <v-icon small>mdi-information</v-icon>
-              </InfoDialog>
             </td>
           </tr>
         </tbody>
@@ -81,9 +83,10 @@ export default class DetailedBox extends Vue {
 @import "@/scss/main.scss";
 
 h3 {
+  font-weight: 500;
+  color: $main-dark-color;
   text-align: left;
   padding: 50px 30px 10px 30px;
-  color: #555;
 }
 @media (max-width: 768px) {
   td,
