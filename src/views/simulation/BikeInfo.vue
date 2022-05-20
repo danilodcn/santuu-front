@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-card class="box-content">
       <v-card-title>
         <h4>Nova Proposta de Seguro</h4>
@@ -11,6 +11,7 @@
               <v-autocomplete
                 v-model="form.brand"
                 attach
+                filled
                 label="Marca"
                 :items="formItems.brand"
                 item-text="name"
@@ -28,6 +29,7 @@
               <v-select
                 v-model="form.situation"
                 attach
+                filled
                 label="Sua Bike é:"
                 :items="[
                   { name: 'Nova', id: 0 },
@@ -51,6 +53,7 @@
               <v-autocomplete
                 v-model="form.category"
                 attach
+                filled
                 label="Categoria"
                 :items="formItems.category"
                 item-text="name"
@@ -71,6 +74,7 @@
               <v-combobox
                 v-model="form.model"
                 attach
+                filled
                 label="Modelo"
                 :items="formItems.model"
                 item-text="description_1"
@@ -88,10 +92,9 @@
             </div>
             <div class="item">
               <v-text-field
-                v-model="form.price"
+                filled
+                v-model="textPrice"
                 label="Valor"
-                prefix="R$ "
-                type="number"
                 clearable
                 hide-spin-buttons
               >
@@ -110,6 +113,7 @@
               <v-autocomplete
                 v-model="form.originStore"
                 attach
+                filled
                 label="Loja de origem"
                 :items="formItems.originStore"
                 item-text="trading_name"
@@ -127,7 +131,12 @@
             </div>
 
             <div class="item">
-              <v-text-field v-model="form.voucher" label="Voucher" clearable>
+              <v-text-field
+                filled
+                v-model="form.voucher"
+                label="Voucher"
+                clearable
+              >
               </v-text-field>
               <info-dialog
                 text="Caso você tenha um voucher promocional insira-o aqui."
@@ -160,7 +169,6 @@
         </v-row>
       </v-card-actions>
     </v-card>
-    <v-divider></v-divider>
   </v-container>
 </template>
 
@@ -177,8 +185,8 @@ const bikeService = new BikeService();
 const simulationHelper = new SimulationHelper();
 
 const form: IForm = {
-  brand: "51",
-  situation: 0,
+  brand: "",
+  situation: undefined,
   category: "",
   model: undefined,
   modelDesc: "",
@@ -206,11 +214,19 @@ const formItems: IFormItems = {
     console.log("Ao criar");
   },
 })
-export default class HomeView extends Vue {
+export default class BikeInfo extends Vue {
   form = form;
   formItems = formItems;
   brands: IBrand[] = [];
   search = null;
+
+  price = "";
+  get textPrice() {
+    return `R$ ${this.price}`;
+  }
+  set textPrice(value: string) {
+    this.price = value.replace("R$ ", "");
+  }
 
   isEditing = false;
   model = null;
@@ -347,8 +363,9 @@ h4 {
   margin-bottom: 50px;
 }
 .box-content {
-  margin: 5px;
-  padding: 15px;
+  margin: 10px;
+  padding: 25px;
+  max-width: 1080px;
 }
 .content {
   display: grid;
@@ -364,34 +381,30 @@ h4 {
 .back-forward {
   margin-top: 80px;
 }
-.info-button {
-  top: -5px;
+.button {
+  color: $main-dark-color !important;
 }
-// .button {
-//   color: $main-dark-color !important;
-// }
-
+.item::v-deep .info-button {
+  margin-top: -20px !important;
+}
 @media (min-width: 768px) {
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-
   .box-content {
-    margin: 20px;
-    padding: 35px;
+    margin: 50px;
   }
 }
-
-@media (min-width: 960px) {
+@media (min-width: 1080px) {
+  .box-content {
+    margin: 50px auto;
+  }
+}
+@media (min-width: 1200px) {
   .content {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
-  }
-
-  .box-content {
-    margin: 30px;
-    padding: 50px;
   }
 }
 </style>

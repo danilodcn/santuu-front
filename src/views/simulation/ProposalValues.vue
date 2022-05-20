@@ -3,20 +3,36 @@
     <v-card class="box-content">
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
-      <DetailBox :table="tableCoverage">Coberturas</DetailBox>
+      <DetailBox :table="tableCoverage">
+        Coberturas
+        <InfoDialog
+          text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
+        >
+          <v-icon small>mdi-information</v-icon>
+        </InfoDialog>
+      </DetailBox>
       <v-row class="prices" justify="center">
         <v-col class="col-3">
           <PriceBox :bad="true" :bold="false" :price="proposal.iof"
-            >Valor do IOF</PriceBox
-          >
+            >Valor do IOF
+            <InfoDialog
+              text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
+            >
+              <v-icon small>mdi-information</v-icon>
+            </InfoDialog>
+          </PriceBox>
         </v-col>
         <v-col class="col-3">
           <PriceBox
             :bold="true"
             :good="true"
             :price="proposal.gross_insurance_premium"
-            >Prêmio a pagar</PriceBox
           >
+            Prêmio a pagar
+            <InfoDialog text="Valor final a ser pago">
+              <v-icon small>mdi-information</v-icon>
+            </InfoDialog>
+          </PriceBox>
         </v-col>
         <v-col class="col-3">
           <PriceBox
@@ -24,25 +40,23 @@
             :good="true"
             numberInstallments="12"
             :price="proposal.gross_insurance_premium"
-            >Em até</PriceBox
+            >Em até<InfoDialog text="Máximo número de parcelas">
+              <v-icon small>mdi-information</v-icon>
+            </InfoDialog></PriceBox
           >
         </v-col>
       </v-row>
       <v-divider></v-divider>
       <v-row class="back-foward" justify="space-between">
-        <v-col class="col-2">
-          <v-btn color="white" disabled elevation="0">Voltar</v-btn>
-        </v-col>
-        <v-col class="col-2">
-          <v-btn
-            color="white"
-            elevation="0"
-            class="success-santuu"
-            @click="next()"
-          >
-            Avançar
-          </v-btn>
-        </v-col>
+        <v-btn color="white" disabled elevation="0">Voltar</v-btn>
+        <v-btn
+          color="white"
+          elevation="0"
+          class="success-santuu"
+          @click="next()"
+        >
+          Avançar
+        </v-btn>
       </v-row>
     </v-card>
   </v-container>
@@ -58,6 +72,7 @@ import PriceBox from "@/components/shared/PriceBox.vue";
 import { IProposal } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
+import InfoDialog from "@/components/shared/InfoDialog.vue";
 
 const proposalService = new ProposalService();
 
@@ -68,7 +83,7 @@ const titlesResume: IDetailedInfo[] = [
   },
   {
     value: "Vigência:",
-    description: "Prazo de vigência do seguro",
+    description: "",
   },
   {
     value: "Valor total do prêmio:",
@@ -120,7 +135,7 @@ var itemsBike: ITableRow[] = [
 const tableBike = {
   titles: titlesBike,
   rows: itemsBike,
-  collumnsNumber: 5,
+  collumnsNumber: 4,
 };
 
 const titlesCoverage: IDetailedInfo[] = [];
@@ -134,7 +149,7 @@ var itemsCoverage: ITableRow[] = [
 const tableCoverage = {
   titles: titlesCoverage,
   rows: itemsCoverage,
-  padding: 30,
+  padding: 20,
   collumnsNumber: 3,
 };
 
@@ -142,6 +157,7 @@ const tableCoverage = {
   components: {
     DetailBox,
     PriceBox,
+    InfoDialog,
   },
 })
 export default class ProposalValues extends Vue {
@@ -155,12 +171,13 @@ export default class ProposalValues extends Vue {
   formatDate = formatDate;
 
   next() {
-    window.location.href = `${window.location.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
+    window.parent.location.href = `${window.parent.location.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
   }
 
   async getProposal(id: number) {
     const response = await proposalService.getProposal(id);
     this.proposal = response;
+    console.log(response);
     this.setValues();
   }
 
@@ -218,15 +235,16 @@ export default class ProposalValues extends Vue {
     this.proposal.proposal_coverages.forEach(function (coverage) {
       const bike = [
         {
-          value: coverage.name,
-          description: "",
+          value: coverage.name.replace("( ", "(").replace(" )", ")"),
+          description: coverage.legal_text,
         },
         {
           value: `<b> Franquia/POS: </b> ${coverage.deductible_text}`,
-          description: "",
+          description:
+            "Participação obrigatória: é a parcela dos prejuízos suportada pelo Segurado. A participação obrigatória é deduzida dos prejuízos apurados ou indenizáveis, conforme previsto em cada uma das coberturas contratadas, havendo ou não perda total.",
         },
         {
-          value: `<b>Prêmio Líquido:</b> ${coverage.amount} </br> LMI: ${coverage.lmi}`,
+          value: `<p><b>Prêmio Líquido:</b> ${coverage.amount} </p> <p> <b>LMI:</b> ${coverage.lmi}</p>`,
           description: "",
         },
       ];
@@ -250,10 +268,11 @@ export default class ProposalValues extends Vue {
 }
 .success-santuu {
   color: $main-dark-color;
-  margin-left: 20px;
 }
 .prices {
+  font-size: 14px;
   margin-top: 40px;
+  margin-bottom: 20px;
 }
 .back-foward {
   margin-top: 80px;
@@ -263,8 +282,10 @@ export default class ProposalValues extends Vue {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
+  .prices {
+    font-size: 16px;
+  }
 }
-
 @media (min-width: 960px) {
   .content {
     grid-template-columns: 1fr 1fr 1fr;
