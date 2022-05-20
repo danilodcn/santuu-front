@@ -1,3 +1,5 @@
+import { IProgram } from "@/types/program";
+
 export interface ICoverage {
   id: number;
   name: string;
@@ -16,13 +18,6 @@ export interface IAssociateBike {
   category: string;
   model: string;
   price: string;
-}
-
-export interface IProgram {
-  id: number;
-  name: string;
-  flexible_coverage_enabled: boolean;
-  flexible_deductible_enabled: boolean;
 }
 
 export interface IProposalBid {

@@ -1,6 +1,6 @@
 <template>
   <v-app id="app" light>
-    <nav id="dev-nav">
+    <!-- <nav id="dev-nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/simulation/bike-info">BikeInfo</router-link> |
       <router-link to="/simulation/proposal-values">
@@ -8,7 +8,7 @@
       </router-link>
       |
       <router-link to="/about">About</router-link>
-    </nav>
+    </nav> -->
     <main-dialog />
     <router-view />
   </v-app>
