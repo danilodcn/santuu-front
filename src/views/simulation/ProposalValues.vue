@@ -116,7 +116,7 @@ var itemsBike: ITableRow[] = [
 const tableBike = {
   titles: titlesBike,
   rows: itemsBike,
-  collumnsNumber: 5,
+  collumnsNumber: 4,
 };
 
 const titlesCoverage: IDetailedInfo[] = [];
