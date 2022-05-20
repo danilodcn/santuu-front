@@ -95,7 +95,6 @@
                 filled
                 v-model="textPrice"
                 label="Valor"
-                max-length="8"
                 clearable
                 hide-spin-buttons
               >
@@ -385,7 +384,9 @@ h4 {
 .button {
   color: $main-dark-color !important;
 }
-
+.item::v-deep .info-button {
+  margin-top: -20px !important;
+}
 @media (min-width: 768px) {
   .content {
     grid-template-columns: 1fr 1fr;

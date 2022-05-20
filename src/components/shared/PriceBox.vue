@@ -40,14 +40,9 @@ export default class PriceBox extends Vue {
 }
 .price-box {
   text-align: center;
-  font-size: 18px;
-}
-@media (max-width: 768px) {
-  .price-box {
-    font-size: 14px;
-  }
 }
 .row-price {
+  align-items: center;
   justify-content: center;
 }
 </style>

@@ -48,12 +48,22 @@ export default class InfoDialog extends Vue {
 .title {
   max-width: 90%;
 }
-
+.text-subtitle-1 {
+  background-color: #f7f7f7;
+}
 .text-body-1 {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.text-body-1::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+.text-body-1 {
+  padding: 5px 50px 25px 50px !important;
+  text-align: justify;
   text-indent: 10px;
   margin-top: 20px;
-}
-.info-button {
-  top: -10px;
+  max-height: 300px;
+  overflow: scroll;
 }
 </style>

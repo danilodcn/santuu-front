@@ -22,8 +22,15 @@
               }"
               v-for="sub_item in item.values"
               :key="sub_item.value"
-              v-html="sub_item.value"
-            ></td>
+            >
+              <span v-html="sub_item.value"></span>
+              <InfoDialog
+                v-if="sub_item.description"
+                :text="sub_item.description"
+              >
+                <v-icon small>mdi-information</v-icon>
+              </InfoDialog>
+            </td>
           </tr>
         </tbody>
       </template>
@@ -75,7 +82,7 @@ export default class DetailedBox extends Vue {
 
 h3 {
   text-align: left;
-  padding: 20px 30px 10px 30px;
+  padding: 50px 30px 10px 30px;
   color: #555;
 }
 @media (max-width: 768px) {
@@ -85,6 +92,8 @@ h3 {
   }
 }
 .table {
+  border: 1px solid #eee;
+  border-radius: 3px;
   background-color: #fcfcfc !important;
 }
 th,
