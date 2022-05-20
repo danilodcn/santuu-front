@@ -35,8 +35,8 @@ export default class HelloWorld extends Vue {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-body {
-  background-color: #f9f9fc;
+#app {
+  background-color: #f9f9fc !important;
 }
 #dev-nav {
   padding: 30px;
