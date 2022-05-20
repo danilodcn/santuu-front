@@ -1,6 +1,6 @@
 <template>
   <v-app id="app" light>
-    <nav>
+    <nav id="dev-nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/simulation/bike-info">BikeInfo</router-link> |
       <router-link to="/simulation/proposal-values">
@@ -38,7 +38,7 @@ export default class HelloWorld extends Vue {
 body {
   background-color: #f9f9fc;
 }
-nav {
+#dev-nav {
   padding: 30px;
   text-align: center;
 
