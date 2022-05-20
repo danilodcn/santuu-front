@@ -53,4 +53,7 @@ export default class InfoDialog extends Vue {
   text-indent: 10px;
   margin-top: 20px;
 }
+.info-button {
+  top: -10px;
+}
 </style>

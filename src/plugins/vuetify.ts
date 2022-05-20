@@ -18,7 +18,7 @@ export default new Vuetify({
         success: colors.green.accent3,
       },
       light: {
-        primary: "#4caf50",
+        primary: "#c1c523",
         text_normal: "#6C757D",
         accent: colors.grey.darken3,
         secondary: "#c1c523",

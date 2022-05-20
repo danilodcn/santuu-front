@@ -1,6 +1,6 @@
 <template>
   <v-app id="app" light>
-    <nav>
+    <!-- <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/simulation/bike-info">BikeInfo</router-link> |
       <router-link to="/simulation/proposal-values">
@@ -8,7 +8,7 @@
       </router-link>
       |
       <router-link to="/about">About</router-link>
-    </nav>
+    </nav> -->
     <router-view />
   </v-app>
 </template>
@@ -20,7 +20,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+body {
+  background-color: #f9f9fc;
+}
 nav {
   padding: 30px;
   text-align: center;
