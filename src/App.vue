@@ -9,9 +9,26 @@
       |
       <router-link to="/about">About</router-link>
     </nav>
-    <router-view />
+    <div>
+      <main-dialog />
+      <router-view />
+    </div>
   </v-app>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import MainDialog from "@/components/MainDialog.vue";
+
+@Component({
+  components: {
+    MainDialog,
+  },
+})
+export default class HelloWorld extends Vue {
+  dialog = false;
+}
+</script>
 
 <style lang="scss">
 @import "@/scss/main.scss";
