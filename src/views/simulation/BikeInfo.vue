@@ -94,9 +94,12 @@
               <v-text-field
                 filled
                 v-model="textPrice"
+                :prefix="prefixCurrency"
                 label="Valor"
                 clearable
                 hide-spin-buttons
+                @blur="onPriceBlur"
+                @focus="onPriceFocus"
               >
               </v-text-field>
               <info-dialog
@@ -178,11 +181,13 @@ import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
 import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
+import { CurrencyFormatter } from "@/helper/currency";
 import { BikeService } from "@/api/bike";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 
 const bikeService = new BikeService();
 const simulationHelper = new SimulationHelper();
+const currencyFormatter = new CurrencyFormatter();
 
 const form: IForm = {
   brand: "",
@@ -220,17 +225,30 @@ export default class BikeInfo extends Vue {
   brands: IBrand[] = [];
   search = null;
 
-  price = "";
+  price: string | null = null;
+  prefixCurrency = "";
+
   get textPrice() {
-    return `R$ ${this.price}`;
+    return this.price;
   }
-  set textPrice(value: string) {
-    this.price = value.replace("R$ ", "");
+  set textPrice(value: string | null) {
+    if (value == null || value == "") {
+      this.prefixCurrency = "";
+      this.price = null;
+    } else {
+      this.prefixCurrency = "R$";
+      this.price = value;
+    }
   }
 
-  isEditing = false;
-  model = null;
-  dialog = { active: false, title: "", text: "" };
+  onPriceBlur() {
+    this.price = currencyFormatter.toString(Number(this.price), 2);
+    this.form.price = currencyFormatter.toNumber(this.price);
+  }
+  onPriceFocus() {
+    this.price = currencyFormatter.resetString(this.price);
+    this.form.price = currencyFormatter.toNumber(this.price);
+  }
 
   async getBrands() {
     const response = await bikeService.getBrands();
@@ -262,7 +280,6 @@ export default class BikeInfo extends Vue {
   }
 
   async onCaptchaExpired() {
-    console.log("Não funciona");
     this.form.recaptchaToken = undefined;
   }
 
@@ -303,7 +320,6 @@ export default class BikeInfo extends Vue {
 
   @Watch("form.situation")
   onSituationChange(val: number, oldVal: number) {
-    console.log(val, oldVal);
     if (val != oldVal) {
       this.getCategories(this.form.brand || "");
     }
@@ -311,15 +327,13 @@ export default class BikeInfo extends Vue {
 
   @Watch("form.category")
   onCategoryChange(val: number, oldVal: number) {
-    console.log(val, oldVal);
     if (val != oldVal) {
       this.getModels(this.form.brand || "", this.form.category || "");
     }
   }
 
   @Watch("form.model")
-  onModelChange(val: string, oldVal: IModel) {
-    console.log(val, oldVal, "mudou", this.form.model);
+  onModelChange(val: string) {
     const description = this.form.model?.description_1;
 
     if (description) {
@@ -337,9 +351,9 @@ export default class BikeInfo extends Vue {
     this.getStores(this.form.brand, this.form.situation || 0, "");
   }
 
-  @Watch("form.price")
-  onPriceChange(val: string, oldVal: string) {
-    console.log(val, oldVal);
+  @Watch("price")
+  onPriceChange(val: string) {
+    console.log(val, "fazer requisição da loja");
   }
 
   created() {
