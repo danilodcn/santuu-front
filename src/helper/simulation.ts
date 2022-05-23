@@ -2,8 +2,6 @@ import { IForm, INextStepDTO } from "@/types/simulation";
 
 export class SimulationHelper {
   handle(form: IForm): INextStepDTO {
-    console.log(form);
-
     const data: INextStepDTO = {
       action: 0,
       recaptchaToken: form.recaptchaToken,

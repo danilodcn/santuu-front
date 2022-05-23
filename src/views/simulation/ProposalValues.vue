@@ -178,7 +178,6 @@ export default class ProposalValues extends Vue {
   async getProposal(id: number) {
     const response = await proposalService.getProposal(id);
     this.proposal = response;
-    console.log(response);
     this.setValues();
   }
 
