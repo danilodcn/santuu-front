@@ -3,8 +3,8 @@
     <v-card class="box-content">
       <v-card-title>
         <v-row justify="space-between">
-          <v-col class="col-4"><h4>Nova Proposta de Seguro</h4></v-col>
-          <v-col class="col-4"
+          <v-col class="col-9 title"><h4>Nova Proposta de Seguro</h4></v-col>
+          <v-col class="col-3"
             ><img class="image_program" :src="program.image_program"
           /></v-col>
         </v-row>
@@ -267,8 +267,6 @@ export default class BikeInfo extends Vue {
 
   async getCategories(brand_id: string) {
     const response = await bikeService.getCategories(brand_id);
-    console.log(321);
-    console.log(response);
     this.formItems.category = response;
   }
 
@@ -359,8 +357,8 @@ export default class BikeInfo extends Vue {
       );
 
       this.form.modelDesc = model[0].description_1;
-      console.log((model[0] || model).price);
       this.form.price = (model[0] || model).price;
+      this.textPrice = this.form.price.toString().replace(".", ",");
     } else {
       this.form.modelDesc = val;
       this.form.price = undefined;
@@ -377,7 +375,6 @@ export default class BikeInfo extends Vue {
   created() {
     this.getBrands();
     this.getProgram();
-    console.log(this.program);
   }
   log(event: Event) {
     console.log(event);
@@ -391,6 +388,9 @@ h4 {
   color: #555;
   margin-left: 23px;
   margin-bottom: 30px;
+}
+.title {
+  margin-top: auto;
 }
 #captcha {
   margin-left: 40px;
@@ -423,7 +423,7 @@ h4 {
 }
 .image_program {
   max-width: 150px;
-  max-height: 80px;
+  max-height: 60px;
 }
 @media (min-width: 768px) {
   .content {

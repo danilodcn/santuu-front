@@ -8,8 +8,8 @@
       </router-link>
       |
       <router-link to="/about">About</router-link>
-    </nav> -->
-    <main-dialog />
+    </nav>
+    <main-dialog /> -->
     <router-view />
   </v-app>
 </template>

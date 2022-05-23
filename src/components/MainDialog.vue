@@ -44,13 +44,11 @@ export default class MainDialog extends Vue {
 
   @Watch("$store.state.dialog.active")
   onActiveChange(val: boolean, oldVal: boolean) {
-    console.log(val, oldVal);
     this.dialog = (this.$store.state as RootState).dialog;
   }
 
   @Watch("dialog.active")
   onDialogActiveChange(val: boolean, oldVal: boolean) {
-    console.log(val, oldVal);
     this.$store.commit(MutationTypes.TOGGLE_DIALOG, this.dialog);
   }
 }

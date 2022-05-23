@@ -8,22 +8,22 @@ export class CurrencyFormatter {
       dec = 0;
     }
     if (value == null) {
-      return this.toString(0);
+      return "";
     }
     const convertedNumber = this.toNumber(value.toString());
     const number = convertedNumber
       .toFixed(dec)
       .replace(".", ",")
       .replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
-    console.log({ convertedNumber, number });
 
     return `${suffix ? suffix + " " : ""}` + number;
   }
 
   resetString(value: string | null) {
     if (value == null) {
-      return "0";
+      return "";
     }
+
     return value
       .replace(".", "")
       .replace(",", ".")
@@ -34,8 +34,8 @@ export class CurrencyFormatter {
     if (value == null) {
       return 0;
     }
-    const number = value.replace(".", "").replace(",", ".");
-    console.log("meu", number);
+
+    const number = value;
     return Number(number);
   }
 }

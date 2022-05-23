@@ -172,13 +172,12 @@ export default class ProposalValues extends Vue {
   formatDate = formatDate;
 
   next() {
-    window.parent.location.href = `http://${this.origin}/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
+    window.location.href = `/dashboard/?next=/web/associate/proposal_user_warn%3Fproposal%3D${this.proposal_id}`;
   }
 
   async getProposal(id: number) {
     const response = await proposalService.getProposal(id);
     this.proposal = response;
-    console.log(response);
     this.setValues();
   }
 
