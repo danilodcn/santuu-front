@@ -397,7 +397,7 @@ h4 {
   margin-bottom: 30px;
 }
 .title {
-  margin-top: auto;
+  margin: auto 0px;
 }
 #captcha {
   margin-left: 40px;
