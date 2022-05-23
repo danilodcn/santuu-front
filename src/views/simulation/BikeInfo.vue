@@ -2,7 +2,12 @@
   <v-container fluid>
     <v-card class="box-content">
       <v-card-title>
-        <h4>Nova Proposta de Seguro</h4>
+        <v-row justify="space-between">
+          <v-col class="col-4"><h4>Nova Proposta de Seguro</h4></v-col>
+          <v-col class="col-4"
+            ><img class="image_program" :src="program.image_program"
+          /></v-col>
+        </v-row>
       </v-card-title>
       <v-card-text>
         <v-form class="px-3">
@@ -183,9 +188,12 @@ import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
 import { CurrencyFormatter } from "@/helper/currency";
 import { BikeService } from "@/api/bike";
+import { ProgramService } from "@/api/program";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
+import { IProgram } from "@/types/program";
 
 const bikeService = new BikeService();
+const programService = new ProgramService();
 const simulationHelper = new SimulationHelper();
 const currencyFormatter = new CurrencyFormatter();
 
@@ -224,6 +232,8 @@ export default class BikeInfo extends Vue {
   formItems = formItems;
   brands: IBrand[] = [];
   search = null;
+  program_name = this.$route.query.program_name;
+  program = {} as IProgram;
 
   price: string | null = null;
   prefixCurrency = "";
@@ -263,6 +273,12 @@ export default class BikeInfo extends Vue {
   async getModels(brand_id: string, category_id: string) {
     const response = await bikeService.getModels(brand_id, category_id);
     this.formItems.model = response;
+  }
+
+  async getProgram() {
+    const response = await programService.getProgram(this.program_name);
+    this.program = response;
+    console.log(response);
   }
 
   async getStores(brand_id: string, bike_situation: number, program: string) {
@@ -358,6 +374,8 @@ export default class BikeInfo extends Vue {
 
   created() {
     this.getBrands();
+    this.getProgram();
+    console.log(this.program);
   }
   log(event: Event) {
     console.log(event);
@@ -400,6 +418,9 @@ h4 {
 }
 .item::v-deep .info-button {
   margin-top: -20px !important;
+}
+.image_program {
+  max-width: 150px;
 }
 @media (min-width: 768px) {
   .content {
