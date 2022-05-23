@@ -32,15 +32,7 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { RootState, MutationTypes } from "@/store";
 
-@Component({
-  computed: {
-    dialog: {
-      get() {
-        return (this.$store.state as RootState).dialog.active;
-      },
-    },
-  },
-})
+@Component({})
 export default class MainDialog extends Vue {
   dialog = {
     msg: "",
@@ -60,10 +52,6 @@ export default class MainDialog extends Vue {
   onDialogActiveChange(val: boolean, oldVal: boolean) {
     console.log(val, oldVal);
     this.$store.commit(MutationTypes.TOGGLE_DIALOG, this.dialog);
-  }
-
-  get dialogE() {
-    return 0;
   }
 }
 </script>
