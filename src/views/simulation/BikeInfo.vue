@@ -232,7 +232,7 @@ export default class BikeInfo extends Vue {
   formItems = formItems;
   brands: IBrand[] = [];
   search = null;
-  program_name = this.$route.query.program_name;
+  program_name = this.$route.query.program;
   program = {} as IProgram;
 
   price: string | null = null;
