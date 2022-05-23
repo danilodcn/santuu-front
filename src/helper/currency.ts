@@ -15,7 +15,6 @@ export class CurrencyFormatter {
       .toFixed(dec)
       .replace(".", ",")
       .replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
-    console.log({ convertedNumber, number });
 
     return `${suffix ? suffix + " " : ""}` + number;
   }
@@ -37,7 +36,6 @@ export class CurrencyFormatter {
     }
 
     const number = value;
-    console.log("meu", number);
     return Number(number);
   }
 }
