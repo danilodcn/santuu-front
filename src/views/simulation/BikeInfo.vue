@@ -250,6 +250,8 @@ export default class BikeInfo extends Vue {
 
   async getCategories(brand_id: string) {
     const response = await bikeService.getCategories(brand_id);
+    console.log(321);
+    console.log(response);
     this.formItems.category = response;
   }
 
@@ -261,7 +263,6 @@ export default class BikeInfo extends Vue {
   async getProgram() {
     const response = await programService.getProgram(this.program_name);
     this.program = response;
-    console.log(response);
   }
 
   async getStores(brand_id: string, bike_situation: number, program: string) {
@@ -345,6 +346,7 @@ export default class BikeInfo extends Vue {
       );
 
       this.form.modelDesc = model[0].description_1;
+      console.log((model[0] || model).price);
       this.form.price = (model[0] || model).price;
     } else {
       this.form.modelDesc = val;
@@ -408,6 +410,7 @@ h4 {
 }
 .image_program {
   max-width: 150px;
+  max-height: 80px;
 }
 @media (min-width: 768px) {
   .content {

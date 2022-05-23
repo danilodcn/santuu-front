@@ -8,7 +8,7 @@ export class BikeService extends APIBase {
   }
 
   async getCategories(brand_id = "") {
-    const url = `/dashboard/proposal/get_categorys/?brand=${brand_id}`;
+    const url = `/dashboard/proposal/get_categories/?brand=${brand_id}`;
     return await this.request({ url, method: "GET" });
   }
 
