@@ -3,8 +3,8 @@
     <v-card class="box-content">
       <v-card-title>
         <v-row justify="space-between">
-          <v-col class="col-4 title"><h4>Nova Proposta de Seguro</h4></v-col>
-          <v-col class="col-4"
+          <v-col class="col-9 title"><h4>Nova Proposta de Seguro</h4></v-col>
+          <v-col class="col-3"
             ><img class="image_program" :src="program.image_program"
           /></v-col>
         </v-row>
@@ -358,7 +358,7 @@ export default class BikeInfo extends Vue {
 
       this.form.modelDesc = model[0].description_1;
       this.form.price = (model[0] || model).price;
-      this.textPrice = this.form.price.toString();
+      this.textPrice = this.form.price.toString().replace(".", ",");
     } else {
       this.form.modelDesc = val;
       this.form.price = undefined;
