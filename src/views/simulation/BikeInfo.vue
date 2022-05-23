@@ -14,6 +14,7 @@
           <v-container fluid class="content">
             <div class="item">
               <v-autocomplete
+                color="grey"
                 v-model="form.brand"
                 attach
                 filled
@@ -32,6 +33,7 @@
             </div>
             <div class="item">
               <v-select
+                color="grey"
                 v-model="form.situation"
                 attach
                 filled
@@ -56,6 +58,7 @@
 
             <div class="item">
               <v-autocomplete
+                color="grey"
                 v-model="form.category"
                 attach
                 filled
@@ -77,6 +80,7 @@
 
             <div class="item">
               <v-combobox
+                color="grey"
                 v-model="form.model"
                 attach
                 filled
@@ -97,6 +101,7 @@
             </div>
             <div class="item">
               <v-text-field
+                color="grey"
                 filled
                 v-model="textPrice"
                 :prefix="prefixCurrency"
@@ -119,6 +124,7 @@
 
             <div class="item">
               <v-autocomplete
+                color="grey"
                 v-model="form.originStore"
                 attach
                 filled
@@ -140,6 +146,7 @@
 
             <div class="item">
               <v-text-field
+                color="grey"
                 filled
                 v-model="form.voucher"
                 label="Voucher"
