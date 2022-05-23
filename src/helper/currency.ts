@@ -8,7 +8,7 @@ export class CurrencyFormatter {
       dec = 0;
     }
     if (value == null) {
-      return this.toString(0);
+      return "";
     }
     const convertedNumber = this.toNumber(value.toString());
     const number = convertedNumber
@@ -22,8 +22,9 @@ export class CurrencyFormatter {
 
   resetString(value: string | null) {
     if (value == null) {
-      return "0";
+      return "";
     }
+
     return value
       .replace(".", "")
       .replace(",", ".")
@@ -34,7 +35,8 @@ export class CurrencyFormatter {
     if (value == null) {
       return 0;
     }
-    const number = value.replace(".", "").replace(",", ".");
+
+    const number = value;
     console.log("meu", number);
     return Number(number);
   }
