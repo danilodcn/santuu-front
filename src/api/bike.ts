@@ -28,7 +28,8 @@ export class BikeService extends APIBase {
   }
 
   async generateBid(proposalId: number, voucher = "", pqp = false) {
-    const url = `/dashboard/proposal/generate_bids/?proposalId=${proposalId}&voucher=${voucher}&pqp=${pqp}&bid_proposal=true`;
+    const __voucher = voucher ? `&voucher=${voucher}` : "";
+    const url = `/dashboard/proposal/generate_bids/?proposalId=${proposalId}${__voucher}&pqp=${pqp}&bid_proposal=true`;
     return await this.request({ url, method: "GET" });
   }
 }
