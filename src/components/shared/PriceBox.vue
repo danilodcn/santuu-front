@@ -32,6 +32,9 @@ export default class PriceBox extends Vue {
 .bad {
   color: #fb8c00;
 }
+.block {
+  width: 100%;
+}
 .good {
   color: $main-dark-color;
 }
@@ -39,10 +42,17 @@ export default class PriceBox extends Vue {
   font-weight: bold;
 }
 .price-box {
+  padding-top: 7px !important;
+  border: 1px solid #f2f2f2;
+  border-radius: 5px;
+  background-color: #fdfdfd;
   text-align: center;
+}
+.price-box:hover {
+  background-color: #f2f2f2;
 }
 .row-price {
   align-items: center;
-  // justify-content: center;
+  justify-content: center;
 }
 </style>

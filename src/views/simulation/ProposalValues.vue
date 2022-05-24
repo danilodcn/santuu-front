@@ -11,7 +11,7 @@
           <v-icon small>mdi-information</v-icon>
         </InfoDialog>
       </DetailBox>
-      <v-row class="prices" justify="center">
+      <v-row class="prices" justify="space-between">
         <v-col class="col-3">
           <PriceBox :bad="true" :bold="false" :price="proposal.iof"
             >Valor do IOF
@@ -296,5 +296,10 @@ export default class ProposalValues extends Vue {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
   }
+}
+</style>
+<style>
+.row-price .info-button {
+  margin-right: -20px;
 }
 </style>
