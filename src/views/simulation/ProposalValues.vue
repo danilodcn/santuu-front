@@ -186,6 +186,13 @@ export default class ProposalValues extends Vue {
     const numberInstallments =
       this.proposal.proposal_bids[0].number_of_installments;
 
+    const installments =
+      numberInstallments == null
+        ? "Indefinido"
+        : `${numberInstallments} x de R$ ${formatPrice(
+            this.proposal.gross_insurance_premium / numberInstallments
+          )}`;
+
     const resume = [
       {
         value: this.formatDate(this.proposal.created_at),
@@ -200,9 +207,7 @@ export default class ProposalValues extends Vue {
         description: "",
       },
       {
-        value: `${numberInstallments} x de R$ ${formatPrice(
-          this.proposal.gross_insurance_premium / numberInstallments
-        )}`,
+        value: installments,
         description: "",
       },
     ];

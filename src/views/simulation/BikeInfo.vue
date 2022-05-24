@@ -5,7 +5,7 @@
         <v-row justify="space-between">
           <v-col class="col-9 title"><h4>Nova Proposta de Seguro</h4></v-col>
           <v-col class="col-3"
-            ><img class="image_program" :src="program.image_program"
+            ><img class="image-from-qr-code" :src="qrCode.image"
           /></v-col>
         </v-row>
       </v-card-title>
@@ -195,12 +195,12 @@ import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
 import { CurrencyFormatter } from "@/helper/currency";
 import { BikeService } from "@/api/bike";
-import { ProgramService } from "@/api/program";
+import { QRCodeService } from "@/api/qr_code";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
-import { IProgram } from "@/types/program";
+import { IQRCode } from "@/types/qr_code";
 
 const bikeService = new BikeService();
-const programService = new ProgramService();
+const qrCodeService = new QRCodeService();
 const simulationHelper = new SimulationHelper();
 const currencyFormatter = new CurrencyFormatter();
 
@@ -239,8 +239,8 @@ export default class BikeInfo extends Vue {
   formItems = formItems;
   brands: IBrand[] = [];
   search = null;
-  program_name = this.$route.query.program;
-  program = {} as IProgram;
+  qrCodeKey = this.$route.query.key;
+  qrCode = {} as IQRCode;
 
   price: string | null = null;
   prefixCurrency = "";
@@ -282,9 +282,10 @@ export default class BikeInfo extends Vue {
     this.formItems.model = response;
   }
 
-  async getProgram() {
-    const response = await programService.getProgram(this.program_name);
-    this.program = response;
+  async getQRCode() {
+    console.log(this.qrCodeKey);
+    const response = await qrCodeService.getQRCode(this.qrCodeKey);
+    this.qrCode = response;
   }
 
   async getStores(brand_id: string, bike_situation: number, program: string) {
@@ -381,7 +382,7 @@ export default class BikeInfo extends Vue {
 
   created() {
     this.getBrands();
-    this.getProgram();
+    this.getQRCode();
   }
   log(event: Event) {
     console.log(event);
@@ -392,7 +393,7 @@ export default class BikeInfo extends Vue {
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
 h4 {
-  color: #555;
+  color: #444;
   margin-left: 23px;
   margin-bottom: 30px;
 }
@@ -428,7 +429,7 @@ h4 {
 .item::v-deep .info-button {
   margin-top: -20px !important;
 }
-.image_program {
+.image-from-qr-code {
   max-width: 150px;
   max-height: 60px;
 }
