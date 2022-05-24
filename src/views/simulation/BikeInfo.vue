@@ -87,6 +87,7 @@
                 label="Modelo"
                 :items="formItems.model"
                 item-text="description_1"
+                item-value="id"
                 persistent-hint
                 clearable
                 open-on-clear
@@ -268,7 +269,8 @@ export default class BikeInfo extends Vue {
   }
 
   async getBrands() {
-    const response = await bikeService.getBrands();
+    const program: string = this.$route.query.program?.toString() || "";
+    const response = await bikeService.getBrands(program);
     this.formItems.brand = response;
   }
 
@@ -366,6 +368,7 @@ export default class BikeInfo extends Vue {
 
       this.form.modelDesc = model[0].description_1;
       this.form.price = (model[0] || model).price;
+      this.form.modelId = model[0].id;
       this.textPrice = this.form.price.toString().replace(".", ",");
     } else {
       this.form.modelDesc = val;
