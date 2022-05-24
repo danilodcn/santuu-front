@@ -383,6 +383,7 @@ export default class BikeInfo extends Vue {
   created() {
     this.getBrands();
     this.getQRCode();
+    this.form.voucher = this.$route.query?.voucher?.toString() || "";
   }
   log(event: Event) {
     console.log(event);
