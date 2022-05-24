@@ -43,6 +43,6 @@ export default class PriceBox extends Vue {
 }
 .row-price {
   align-items: center;
-  justify-content: center;
+  // justify-content: center;
 }
 </style>
