@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
 
 const baseConfig: AxiosRequestConfig = {
-  baseURL: "http://localhost:8000/",
+  baseURL: "https://app.clubesantuu.com.br/",
 };
 
 export class APIBase {
