@@ -240,7 +240,7 @@ export default class BikeInfo extends Vue {
   formItems = formItems;
   brands: IBrand[] = [];
   search = null;
-  qrCodeKey = this.$route.query.key;
+  qrCodeKey = this.$route.query?.key?.toString() || "";
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
 
@@ -286,7 +286,6 @@ export default class BikeInfo extends Vue {
   }
 
   async getQRCode() {
-    console.log(this.qrCodeKey);
     const response = await qrCodeService.getQRCode(this.qrCodeKey);
     this.qrCode = response;
   }
