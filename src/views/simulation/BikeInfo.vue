@@ -242,6 +242,7 @@ export default class BikeInfo extends Vue {
   search = null;
   qrCodeKey = this.$route.query.key;
   qrCode = {} as IQRCode;
+  program_name = this.$route.query?.program?.toString() || ""
 
   price: string | null = null;
   prefixCurrency = "";
@@ -316,7 +317,7 @@ export default class BikeInfo extends Vue {
       const bid = await bikeService.generateBid(
         response.id,
         this.form.voucher,
-        false
+        (this.program_name.toLowerCase() == "pqp")
       );
 
       const _data: INextStepDTO = {
