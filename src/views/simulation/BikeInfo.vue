@@ -3,7 +3,7 @@
     <v-card class="box-content">
       <v-card-title>
         <v-row justify="space-between">
-          <v-col class="col-9 title"><h4>Nova Proposta de Seguro</h4></v-col>
+          <v-col class="col-9 title"><h5>Nova Proposta de Seguro</h5></v-col>
           <v-col class="col-3"
             ><img class="image-from-qr-code" :src="qrCode.image"
           /></v-col>
@@ -12,25 +12,6 @@
       <v-card-text>
         <v-form class="px-3">
           <v-container fluid class="content">
-            <div class="item">
-              <v-autocomplete
-                color="grey"
-                v-model="form.brand"
-                attach
-                filled
-                label="Marca"
-                :items="formItems.brand"
-                item-text="name"
-                item-value="id"
-              >
-              </v-autocomplete>
-              <info-dialog
-                :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
-                class="info-button"
-              >
-                <v-icon>mdi-information</v-icon>
-              </info-dialog>
-            </div>
             <div class="item">
               <v-select
                 color="grey"
@@ -50,6 +31,26 @@
               <info-dialog
                 :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
                 todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
+                class="info-button"
+              >
+                <v-icon>mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item">
+              <v-autocomplete
+                color="grey"
+                v-model="form.brand"
+                attach
+                filled
+                label="Marca"
+                :items="formItems.brand"
+                item-text="name"
+                item-value="id"
+              >
+              </v-autocomplete>
+              <info-dialog
+                :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
                 class="info-button"
               >
                 <v-icon>mdi-information</v-icon>
@@ -109,8 +110,9 @@
                 label="Valor"
                 clearable
                 hide-spin-buttons
-                @blur="onPriceBlur"
-                @focus="onPriceFocus"
+                @focus="selectEnd($event)"
+                @click="selectEnd($event)"
+                @click:clear="clearCurrency"
               >
               </v-text-field>
               <info-dialog
@@ -161,16 +163,19 @@
                 <v-icon>mdi-information</v-icon>
               </info-dialog>
             </div>
+
+            <div class="item">
+              <vue-recaptcha
+                id="captcha"
+                sitekey="6LcAzuUfAAAAAMtsHHnn9o1XvRewVsv6DNAGdjX6"
+                @verify="onCaptchaVerified"
+                @expired="onCaptchaExpired"
+                language="pt-br"
+              ></vue-recaptcha>
+            </div>
           </v-container>
         </v-form>
       </v-card-text>
-      <vue-recaptcha
-        id="captcha"
-        sitekey="6LcAzuUfAAAAAMtsHHnn9o1XvRewVsv6DNAGdjX6"
-        @verify="onCaptchaVerified"
-        @expired="onCaptchaExpired"
-        language="pt-br"
-      ></vue-recaptcha>
       <v-divider></v-divider>
       <v-card-actions class="back-forward">
         <v-row justify="space-between" class="mx-4">
@@ -194,7 +199,7 @@ import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
 import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
-import { CurrencyFormatter } from "@/helper/currency";
+import { CurrencyFormatter } from "@/utils/currency";
 import { BikeService } from "@/api/bike";
 import { QRCodeService } from "@/api/qr_code";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
@@ -244,30 +249,26 @@ export default class BikeInfo extends Vue {
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
 
-  price: string | null = null;
+  //Currency input
+  price = "0,00";
   prefixCurrency = "";
+
+  selectEnd(event: any) {
+    event.target.selectionStart = event.target.selectionEnd =
+      event.target.value.length;
+  }
+
+  clearCurrency() {
+    this.textPrice = "0,00";
+  }
 
   get textPrice() {
     return this.price;
   }
-  set textPrice(value: string | null) {
-    if (value == null || value == "") {
-      this.prefixCurrency = "";
-      this.price = null;
-    } else {
-      this.prefixCurrency = "R$";
-      this.price = value;
-    }
+  set textPrice(newValue: string) {
+    this.price = currencyFormatter.formatCurrency(newValue);
   }
-
-  onPriceBlur() {
-    this.price = currencyFormatter.toString(Number(this.price), 2);
-    this.form.price = currencyFormatter.toNumber(this.price);
-  }
-  onPriceFocus() {
-    this.price = currencyFormatter.resetString(this.price);
-    this.form.price = currencyFormatter.toNumber(this.price);
-  }
+  //Currency input end
 
   async getBrands() {
     const program: string = this.$route.query.program?.toString() || "";
@@ -343,8 +344,8 @@ export default class BikeInfo extends Vue {
     }
   }
 
-  @Watch("form.situation")
-  onSituationChange(val: number, oldVal: number) {
+  @Watch("form.brand")
+  onBrandChange(val: number, oldVal: number) {
     if (val != oldVal) {
       this.getCategories(this.form.brand || "");
     }
@@ -396,7 +397,7 @@ export default class BikeInfo extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
-h4 {
+h5 {
   color: #444;
   margin-left: 23px;
   margin-bottom: 30px;
@@ -404,13 +405,16 @@ h4 {
 .title {
   margin: auto 0px;
 }
+#row-captcha {
+  justify-content: center;
+}
 #captcha {
-  margin-left: 40px;
-  margin-bottom: 50px;
+  width: 100%;
+  transform: translateY(0px) translateX(-30px) scale(0.8);
 }
 .box-content {
   margin: 10px;
-  padding: 50px 30px;
+  padding: 50px 0px;
   max-width: 1080px;
 }
 .content {
@@ -419,6 +423,7 @@ h4 {
   gap: 0.5rem;
 }
 .item {
+  width: 95%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -444,17 +449,31 @@ h4 {
   }
   .box-content {
     margin: 50px;
+    padding: 50px 30px;
+  }
+  #row-captcha {
+    margin-left: 40px;
+    justify-content: inherit;
+  }
+  #captcha {
+    transform: translateY(-15px) translateX(-35px) scale(0.8);
   }
 }
 @media (min-width: 1080px) {
   .box-content {
     margin: 50px auto;
   }
+  #captcha {
+    transform: translateY(-15px) translateX(-20px) scale(0.9);
+  }
 }
 @media (min-width: 1200px) {
   .content {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
+  }
+  #captcha {
+    transform: translateY(-15px) translateX(-15px) scale(0.9);
   }
 }
 </style>

@@ -8,21 +8,21 @@
         <InfoDialog
           text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
         >
-          <v-icon small>mdi-information</v-icon>
+          <v-icon size="10">mdi-information</v-icon>
         </InfoDialog>
       </DetailBox>
       <v-row class="prices" justify="space-between">
-        <v-col class="col-3">
+        <v-col class="col-4 pa-1">
           <PriceBox :bad="true" :bold="false" :price="proposal.iof"
             >Valor do IOF
             <InfoDialog
               text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
             >
-              <v-icon small>mdi-information</v-icon>
+              <v-icon size="8">mdi-information</v-icon>
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col class="col-3">
+        <v-col class="col-4 pa-1">
           <PriceBox
             :bold="true"
             :good="true"
@@ -30,18 +30,18 @@
           >
             Prêmio a pagar
             <InfoDialog text="Valor final a ser pago">
-              <v-icon small>mdi-information</v-icon>
+              <v-icon size="8">mdi-information</v-icon>
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col class="col-3">
+        <v-col class="col-4 pa-1">
           <PriceBox
             :bold="true"
             :good="true"
             numberInstallments="12"
             :price="proposal.gross_insurance_premium"
             >Em até<InfoDialog text="Máximo número de parcelas">
-              <v-icon small>mdi-information</v-icon>
+              <v-icon size="8">mdi-information</v-icon>
             </InfoDialog></PriceBox
           >
         </v-col>
@@ -104,7 +104,7 @@ var itemsResume: ITableRow[] = [
 const tableResume = {
   titles: titlesResume,
   rows: itemsResume,
-  collumnsNumber: 4,
+  columnsNumber: 4,
 };
 
 const titlesBike: IDetailedInfo[] = [
@@ -135,7 +135,7 @@ var itemsBike: ITableRow[] = [
 const tableBike = {
   titles: titlesBike,
   rows: itemsBike,
-  collumnsNumber: 4,
+  columnsNumber: 4,
 };
 
 const titlesCoverage: IDetailedInfo[] = [];
@@ -150,7 +150,7 @@ const tableCoverage = {
   titles: titlesCoverage,
   rows: itemsCoverage,
   padding: 20,
-  collumnsNumber: 3,
+  columnsNumber: 3,
 };
 
 @Component({
@@ -269,20 +269,33 @@ export default class ProposalValues extends Vue {
 @import "@/scss/main.scss";
 .box-content {
   margin: 30px;
-  padding: 50px;
+  padding: 20px;
 }
 .success-santuu {
   color: $main-dark-color;
 }
 .prices {
-  font-size: 14px;
+  font-size: 8px !important;
   margin-top: 70px;
   margin-bottom: 20px;
 }
 .back-foward {
   margin-top: 80px;
 }
+.back-foward button {
+  font-size: 12px !important;
+}
 @media (min-width: 768px) {
+  .box-content {
+    margin: 30px;
+    padding: 50px;
+  }
+  .back-foward button {
+    font-size: 16px !important;
+  }
+  .prices {
+    font-size: 14px !important;
+  }
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -299,7 +312,8 @@ export default class ProposalValues extends Vue {
 }
 </style>
 <style>
-.row-price .info-button {
-  margin-right: -20px;
+.info-button {
+  width: 20px !important;
+  height: 20px !important;
 }
 </style>

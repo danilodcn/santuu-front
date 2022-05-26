@@ -42,7 +42,7 @@ export default class PriceBox extends Vue {
   font-weight: bold;
 }
 .price-box {
-  padding-top: 7px !important;
+  padding-top: 15px !important;
   border: 1px solid #f2f2f2;
   border-radius: 5px;
   background-color: #fdfdfd;

@@ -8,7 +8,7 @@
             <th v-for="item in table.titles" :key="item.value">
               {{ item.value }}
               <InfoDialog v-if="item.description" :text="item.description">
-                <v-icon small>mdi-information</v-icon>
+                <v-icon size="10">mdi-information</v-icon>
               </InfoDialog>
             </th>
           </tr>
@@ -25,10 +25,11 @@
             >
               <span>
                 <InfoDialog
+                  class="info-dialog"
                   v-if="sub_item.description"
                   :text="sub_item.description"
                 >
-                  <v-icon small>mdi-information</v-icon>
+                  <v-icon size="10" class="info-icon">mdi-information</v-icon>
                 </InfoDialog>
               </span>
               <span v-html="sub_item.value"></span>
@@ -57,7 +58,7 @@ interface ITable {
   titles: ITableRow;
   rows: ITableRow[];
   padding: number;
-  collumnsNumber: number;
+  columnsNumber: number;
 }
 
 @Component({
@@ -70,8 +71,8 @@ export default class DetailedBox extends Vue {
   widthCell!: string;
 
   created() {
-    if (this.table.collumnsNumber) {
-      this.widthCell = `${(1 / this.table.collumnsNumber) * 100}%`;
+    if (this.table.columnsNumber) {
+      this.widthCell = `${(1 / this.table.columnsNumber) * 100}%`;
     } else {
       this.widthCell = "auto";
     }
@@ -81,7 +82,6 @@ export default class DetailedBox extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
-
 h3 {
   font-weight: 500;
   color: $main-dark-color;
@@ -91,13 +91,26 @@ h3 {
 @media (max-width: 768px) {
   td,
   h3 {
-    font-size: 12px !important;
+    font-size: 12px;
+  }
+  th,
+  td {
+    font-size: 0.475rem !important;
   }
 }
 .table {
   border: 1px solid #eee;
   border-radius: 3px;
   background-color: #fcfcfc !important;
+}
+@media (min-width: 768px) {
+  th,
+  td {
+    font-size: 0.875rem !important;
+  }
+  .row-price {
+    font-size: 0.875rem !important;
+  }
 }
 th,
 td {
