@@ -1,5 +1,14 @@
 <template>
   <v-main>
+    <v-alert
+      v-if="table.type == 'coverages'"
+      type="info"
+      class="alert"
+      :value="alertEnabled"
+      v-text="alertMessage"
+      transition="scale-transition"
+    >
+    </v-alert>
     <h3><slot></slot></h3>
     <v-simple-table class="table">
       <template v-slot:default>
@@ -20,8 +29,8 @@
                 width: widthCell,
                 padding: `${table.padding}px 10px ${table.padding}px 10px !important`,
               }"
-              v-for="sub_item in item.values"
-              :key="sub_item.value"
+              v-for="(sub_item, index) in item.values"
+              :key="index"
             >
               <span>
                 <InfoDialog
@@ -32,7 +41,19 @@
                   <v-icon size="10" class="info-icon">mdi-information</v-icon>
                 </InfoDialog>
               </span>
-              <span v-html="sub_item.value"></span>
+              <div
+                :disabled="$store.state.proposal_coverages[i].is_fixed"
+                v-if="sub_item.value == 'switch:coverage'"
+                @click="handleSwitch($event.target)"
+              >
+                <v-switch
+                  class="coverage"
+                  :disabled="$store.state.proposal_coverages[i].is_fixed"
+                  :input-value="$store.state.proposal_coverages[i].enabled"
+                  @change="onSwitchChange(i)"
+                ></v-switch>
+              </div>
+              <span v-else v-html="sub_item.value"></span>
             </td>
           </tr>
         </tbody>
@@ -42,12 +63,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
+import { RootState, MutationTypes } from "@/store";
 
 export interface IDetailedInfo {
   value: string | number;
   description: string;
+  data?: any;
 }
 
 export interface ITableRow {
@@ -59,6 +82,27 @@ interface ITable {
   rows: ITableRow[];
   padding: number;
   columnsNumber: number;
+  type: string;
+}
+
+interface ISwitch {
+  enabled: boolean;
+  isFixed: boolean;
+}
+
+class UpdateSwitch {
+  _value = false;
+
+  constructor(initialValue: boolean) {
+    this._value = initialValue;
+  }
+
+  get value() {
+    return this._value;
+  }
+  set value(newValue: boolean) {
+    this._value = newValue;
+  }
 }
 
 @Component({
@@ -69,6 +113,31 @@ interface ITable {
 export default class DetailedBox extends Vue {
   @Prop() table!: ITable;
   widthCell!: string;
+  messageAlert!: string;
+
+  switches!: UpdateSwitch[];
+  switchCoverages(coverages: ISwitch[]): UpdateSwitch[] {
+    const switches: UpdateSwitch[] = [];
+    coverages.forEach((item) => {
+      switches.push(new UpdateSwitch(item.enabled));
+    });
+    this.switches = switches;
+    return switches;
+  }
+
+  alertEnabled = false;
+  alertMessage = "Msg!";
+
+  proposal_coverages = this.$store.state.proposal_coverages;
+
+  get nome() {
+    return true;
+  }
+
+  onSwitchChange(index: number) {
+    const enabled = !this.$store.state.proposal_coverages[index].enabled;
+    this.$store.commit(MutationTypes.CHANGE_ENABLED, { index, enabled });
+  }
 
   created() {
     if (this.table.columnsNumber) {
@@ -76,12 +145,33 @@ export default class DetailedBox extends Vue {
     } else {
       this.widthCell = "auto";
     }
+
+    console.log(this.table.type);
+  }
+
+  handleSwitch(target: HTMLInputElement) {
+    if (target.getAttribute("disabled")) {
+      this.alertEnabled = true;
+      this.alertMessage = "Esta cobertura é básica e não pode ser desativada.";
+      setTimeout(() => {
+        this.alertEnabled = false;
+      }, 2000);
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.alert {
+  z-index: 999;
+  text-align: center;
+  border-radius: 0px !important;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  position: fixed;
+}
 h3 {
   font-weight: 500;
   color: $main-dark-color;

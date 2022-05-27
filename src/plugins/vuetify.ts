@@ -22,7 +22,6 @@ export default new Vuetify({
         text_normal: "#6C757D",
         accent: colors.grey.darken3,
         secondary: "#c1c523",
-        info: colors.teal.lighten1,
         warning: colors.amber.base,
         error: colors.deepOrange.accent4,
         success: "#4caf50",

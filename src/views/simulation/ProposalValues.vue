@@ -73,6 +73,7 @@ import { IProposal } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
+import { RootState, MutationTypes } from "@/store";
 
 const proposalService = new ProposalService();
 
@@ -140,17 +141,13 @@ const tableBike = {
 
 const titlesCoverage: IDetailedInfo[] = [];
 
-var itemsCoverage: ITableRow[] = [
-  {
-    values: [],
-  },
-];
+var itemsCoverage: ITableRow[] = [];
 
 const tableCoverage = {
   titles: titlesCoverage,
   rows: itemsCoverage,
-  padding: 20,
-  columnsNumber: 3,
+  padding: 10,
+  type: "coverages",
 };
 
 @Component({
@@ -179,6 +176,11 @@ export default class ProposalValues extends Vue {
     const response = await proposalService.getProposal(id);
     this.proposal = response;
     this.setValues();
+    this.$store.commit(
+      MutationTypes.CHANGE_COVERAGES,
+      this.proposal.proposal_coverages
+    );
+    console.log(this.proposal);
   }
 
   setValues() {
@@ -240,6 +242,13 @@ export default class ProposalValues extends Vue {
     this.proposal.proposal_coverages.forEach(function (coverage) {
       const bike = [
         {
+          value: "switch:coverage",
+          description: "",
+          // "Desabilitar cobertura: " +
+          // coverage.name.replace("( ", "(").replace(" )", ")"),
+          data: coverage,
+        },
+        {
           value: coverage.name.replace("( ", "(").replace(" )", ")"),
           description: coverage.legal_text,
         },
@@ -249,7 +258,7 @@ export default class ProposalValues extends Vue {
             "Participação obrigatória: é a parcela dos prejuízos suportada pelo Segurado. A participação obrigatória é deduzida dos prejuízos apurados ou indenizáveis, conforme previsto em cada uma das coberturas contratadas, havendo ou não perda total.",
         },
         {
-          value: `<p><b>Prêmio Líquido:</b> ${coverage.amount} </p> <p> <b>LMI:</b> ${coverage.lmi}</p>`,
+          value: `<b>Prêmio Líquido:</b> ${coverage.amount} <br/> <b>LMI:</b> ${coverage.lmi}`,
           description: "",
         },
       ];
