@@ -3,12 +3,12 @@
     <v-card class="box-content">
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
-      <DetailBox :table="tableCoverage">
+      <DetailBox :table="tableCoverage" :sumCoverages="sumCoverages">
         Coberturas
         <InfoDialog
           text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
         >
-          <v-icon size="10">mdi-information</v-icon>
+          <v-icon size="16">mdi-information</v-icon>
         </InfoDialog>
       </DetailBox>
       <v-row class="prices" justify="space-between">
@@ -18,19 +18,15 @@
             <InfoDialog
               text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
             >
-              <v-icon size="8">mdi-information</v-icon>
+              <v-icon size="16">mdi-information</v-icon>
             </InfoDialog>
           </PriceBox>
         </v-col>
         <v-col class="col-4 pa-1">
-          <PriceBox
-            :bold="true"
-            :good="true"
-            :price="proposal.gross_insurance_premium"
-          >
+          <PriceBox :bold="true" :good="true" :price="price">
             Prêmio a pagar
             <InfoDialog text="Valor final a ser pago">
-              <v-icon size="8">mdi-information</v-icon>
+              <v-icon size="16">mdi-information</v-icon>
             </InfoDialog>
           </PriceBox>
         </v-col>
@@ -38,10 +34,12 @@
           <PriceBox
             :bold="true"
             :good="true"
-            numberInstallments="12"
-            :price="proposal.gross_insurance_premium"
+            :numberInstallments="
+              proposal.proposal_bids[0].number_of_installments
+            "
+            :price="price"
             >Em até<InfoDialog text="Máximo número de parcelas">
-              <v-icon size="8">mdi-information</v-icon>
+              <v-icon size="16">mdi-information</v-icon>
             </InfoDialog></PriceBox
           >
         </v-col>
@@ -69,7 +67,7 @@ import DetailBox, {
   ITableRow,
 } from "@/components/shared/DetailBox.vue"; // @ is an alias to /src
 import PriceBox from "@/components/shared/PriceBox.vue";
-import { IProposal } from "@/types/proposal";
+import { IProposal, ICoverage } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
@@ -165,6 +163,20 @@ export default class ProposalValues extends Vue {
   proposal_id = this.$route.params.proposal_id;
   origin = this.$route.query.origin;
 
+  sumCoverages() {
+    let value = 0;
+    this.$store.state.proposal_coverages.forEach((element: ICoverage) => {
+      if (element.enabled) {
+        value += Number(element.amount) * 1.0738;
+      }
+    });
+    return value;
+  }
+
+  get price() {
+    return this.sumCoverages();
+  }
+
   formatPrice = formatPrice;
   formatDate = formatDate;
 
@@ -238,6 +250,10 @@ export default class ProposalValues extends Vue {
 
     tableBike.rows[0].values = bike;
 
+    // Ordenar
+    tableCoverage.rows.sort((a: ITableRow, b: ITableRow) => {
+      return a.values[0].data.order - b.values[0].data.order;
+    });
     // Criando tabela de coberturas
     this.proposal.proposal_coverages.forEach(function (coverage) {
       const bike = [

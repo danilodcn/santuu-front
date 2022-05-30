@@ -17,7 +17,7 @@
             <th v-for="item in table.titles" :key="item.value">
               {{ item.value }}
               <InfoDialog v-if="item.description" :text="item.description">
-                <v-icon size="10">mdi-information</v-icon>
+                <v-icon size="16">mdi-information</v-icon>
               </InfoDialog>
             </th>
           </tr>
@@ -38,19 +38,21 @@
                   v-if="sub_item.description"
                   :text="sub_item.description"
                 >
-                  <v-icon size="10" class="info-icon">mdi-information</v-icon>
+                  <v-icon size="16" class="info-icon">mdi-information</v-icon>
                 </InfoDialog>
               </span>
               <div
                 :disabled="$store.state.proposal_coverages[i].is_fixed"
                 v-if="sub_item.value == 'switch:coverage'"
-                @click="handleSwitch($event.target)"
+                @click="handleSwitch($event.target, i)"
               >
                 <v-switch
                   class="coverage"
                   :disabled="$store.state.proposal_coverages[i].is_fixed"
                   :input-value="$store.state.proposal_coverages[i].enabled"
-                  @change="onSwitchChange(i)"
+                  @change="
+                    onSwitchChange(i, $store.state.proposal_coverages[i].id)
+                  "
                 ></v-switch>
               </div>
               <span v-else v-html="sub_item.value"></span>
@@ -66,6 +68,9 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { RootState, MutationTypes } from "@/store";
+import { CoverageService } from "@/api/coverage";
+
+const coverageService = new CoverageService();
 
 export interface IDetailedInfo {
   value: string | number;
@@ -112,6 +117,7 @@ class UpdateSwitch {
 })
 export default class DetailedBox extends Vue {
   @Prop() table!: ITable;
+  @Prop() sumCoverages!: () => number;
   widthCell!: string;
   messageAlert!: string;
 
@@ -134,9 +140,20 @@ export default class DetailedBox extends Vue {
     return true;
   }
 
-  onSwitchChange(index: number) {
+  async updateCoverage(coverage_id: number, enabled: boolean) {
+    const updates = [
+      {
+        coverage_id: coverage_id,
+        enabled: enabled,
+      },
+    ];
+    const response = await coverageService.updateCoverage(updates);
+  }
+
+  onSwitchChange(index: number, indexDB: number) {
     const enabled = !this.$store.state.proposal_coverages[index].enabled;
     this.$store.commit(MutationTypes.CHANGE_ENABLED, { index, enabled });
+    this.updateCoverage(Number(indexDB), enabled);
   }
 
   created() {
@@ -149,13 +166,29 @@ export default class DetailedBox extends Vue {
     console.log(this.table.type);
   }
 
-  handleSwitch(target: HTMLInputElement) {
+  toAlert(message: string, time: number) {
+    this.alertEnabled = true;
+    this.alertMessage = message;
+    setTimeout(() => {
+      this.alertEnabled = false;
+    }, time);
+  }
+
+  handleSwitch(target: HTMLInputElement, index: number) {
     if (target.getAttribute("disabled")) {
-      this.alertEnabled = true;
-      this.alertMessage = "Esta cobertura é básica e não pode ser desativada.";
-      setTimeout(() => {
-        this.alertEnabled = false;
-      }, 2000);
+      this.toAlert("Esta cobertura é básica e não pode ser desativada.", 2000);
+    } else if (
+      this.sumCoverages() - this.$store.state.proposal_coverages[index].amount <
+      2000
+    ) {
+      this.$store.commit(MutationTypes.CHANGE_ENABLED, {
+        index,
+        enabled: true,
+      });
+      this.toAlert(
+        "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
+        8000
+      );
     }
   }
 }
@@ -171,6 +204,7 @@ export default class DetailedBox extends Vue {
   left: 0px;
   width: 100%;
   position: fixed;
+  padding: 20px 130px !important;
 }
 h3 {
   font-weight: 500;
