@@ -1,12 +1,12 @@
 import { APIBase } from "./index";
 
-interface IUpdates {
+interface IUpdate {
   coverage_id: number;
   enabled: boolean;
 }
 
 export class CoverageService extends APIBase {
-  async updateCoverage(updates: IUpdates[]) {
+  async updateCoverage(updates: IUpdate[]) {
     const url = `dashboard/proposal/update_coverages/`;
     const data = {
       updates: updates,

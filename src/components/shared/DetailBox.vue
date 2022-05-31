@@ -23,6 +23,24 @@
           </tr>
         </thead>
         <tbody>
+          <tr
+            v-if="
+              table.type == 'coverages' &&
+              proposal.program.flexible_deductible_enabled
+            "
+          >
+            <td>
+              <v-switch
+                id="switchDeductible"
+                v-model="deductibleEnabled"
+                @change="onDeductibleEnabledChange()"
+              ></v-switch>
+            </td>
+            <td colspan="3">
+              Utilize esse botão para desabilitar ou habilitar todas as
+              frânquias das coberturas
+            </td>
+          </tr>
           <tr v-for="(item, i) in table.rows" :key="i">
             <td
               :style="{
@@ -50,8 +68,13 @@
                   class="coverage"
                   :disabled="$store.state.proposal_coverages[i].is_fixed"
                   :input-value="$store.state.proposal_coverages[i].enabled"
+                  @click.native.capture="changeStatus($event, i)"
                   @change="
-                    onSwitchChange(i, $store.state.proposal_coverages[i].id)
+                    onSwitchChange(
+                      i,
+                      $store.state.proposal_coverages[i].id,
+                      $event
+                    )
                   "
                 ></v-switch>
               </div>
@@ -69,8 +92,11 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { RootState, MutationTypes } from "@/store";
 import { CoverageService } from "@/api/coverage";
+import { ProposalService } from "@/api/proposal";
+import { IProposal } from "@/types/proposal";
 
 const coverageService = new CoverageService();
+const proposalService = new ProposalService();
 
 export interface IDetailedInfo {
   value: string | number;
@@ -118,8 +144,10 @@ class UpdateSwitch {
 export default class DetailedBox extends Vue {
   @Prop() table!: ITable;
   @Prop() sumCoverages!: () => number;
+  @Prop() proposal!: IProposal;
   widthCell!: string;
   messageAlert!: string;
+  deductibleEnabled!: boolean;
 
   switches!: UpdateSwitch[];
   switchCoverages(coverages: ISwitch[]): UpdateSwitch[] {
@@ -132,7 +160,7 @@ export default class DetailedBox extends Vue {
   }
 
   alertEnabled = false;
-  alertMessage = "Msg!";
+  alertMessage = "Alerta!";
 
   proposal_coverages = this.$store.state.proposal_coverages;
 
@@ -150,10 +178,41 @@ export default class DetailedBox extends Vue {
     const response = await coverageService.updateCoverage(updates);
   }
 
-  onSwitchChange(index: number, indexDB: number) {
-    const enabled = !this.$store.state.proposal_coverages[index].enabled;
-    this.$store.commit(MutationTypes.CHANGE_ENABLED, { index, enabled });
-    this.updateCoverage(Number(indexDB), enabled);
+  async updateDeductibleEnabled(proposal_id: number, enabled: boolean) {
+    const update = {
+      proposal_id: proposal_id,
+      enabled: enabled,
+    };
+    const response = await proposalService.updateDeductibleEnabled(update);
+  }
+
+  onDeductibleEnabledChange() {
+    this.updateDeductibleEnabled(this.proposal.id, this.deductibleEnabled);
+  }
+
+  changeStatus(event: Event, index: number) {
+    const coverage = this.$store.state.proposal_coverages[index];
+    const value = coverage.amount;
+    if (
+      this.sumCoverages() - value < this.proposal.program.minimal_premium &&
+      coverage.enabled
+    ) {
+      event.stopPropagation();
+      this.toAlert(
+        "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
+        8000
+      );
+    }
+  }
+
+  onSwitchChange(index: number, indexDB: number, event: Event) {
+    const coverage = this.$store.state.proposal_coverages[index];
+    const toEnabled = !coverage.enabled;
+    this.$store.commit(MutationTypes.CHANGE_ENABLED, {
+      index: index,
+      enabled: toEnabled,
+    });
+    this.updateCoverage(indexDB, toEnabled);
   }
 
   created() {
@@ -162,8 +221,6 @@ export default class DetailedBox extends Vue {
     } else {
       this.widthCell = "auto";
     }
-
-    console.log(this.table.type);
   }
 
   toAlert(message: string, time: number) {
@@ -177,18 +234,6 @@ export default class DetailedBox extends Vue {
   handleSwitch(target: HTMLInputElement, index: number) {
     if (target.getAttribute("disabled")) {
       this.toAlert("Esta cobertura é básica e não pode ser desativada.", 2000);
-    } else if (
-      this.sumCoverages() - this.$store.state.proposal_coverages[index].amount <
-      2000
-    ) {
-      this.$store.commit(MutationTypes.CHANGE_ENABLED, {
-        index,
-        enabled: true,
-      });
-      this.toAlert(
-        "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
-        8000
-      );
     }
   }
 }

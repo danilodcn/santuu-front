@@ -3,7 +3,11 @@
     <v-card class="box-content">
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
-      <DetailBox :table="tableCoverage" :sumCoverages="sumCoverages">
+      <DetailBox
+        :table="tableCoverage"
+        :sumCoverages="sumCoverages"
+        :proposal="proposal"
+      >
         Coberturas
         <InfoDialog
           text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
@@ -167,7 +171,7 @@ export default class ProposalValues extends Vue {
     let value = 0;
     this.$store.state.proposal_coverages.forEach((element: ICoverage) => {
       if (element.enabled) {
-        value += Number(element.amount) * 1.0738;
+        value += Number(element.amount) * this.proposal.program.iof_tax_rate;
       }
     });
     return value;
@@ -192,7 +196,6 @@ export default class ProposalValues extends Vue {
       MutationTypes.CHANGE_COVERAGES,
       this.proposal.proposal_coverages
     );
-    console.log(this.proposal);
   }
 
   setValues() {

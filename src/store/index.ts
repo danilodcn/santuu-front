@@ -37,11 +37,9 @@ const mutations: MutationTree<RootState> = {
   },
   [MutationTypes.CHANGE_COVERAGES](state, payload) {
     state.proposal_coverages = payload;
-    console.log(state.proposal_coverages, payload);
   },
   [MutationTypes.CHANGE_ENABLED](state, payload: ISwitchToEnable) {
     state.proposal_coverages[payload.index].enabled = payload.enabled;
-    console.log(state.proposal_coverages);
   },
 };
 
