@@ -32,7 +32,7 @@
             <td>
               <v-switch
                 id="switchDeductible"
-                v-model="deductibleEnabled"
+                v-model="proposal.deductible_enabled"
                 @change="onDeductibleEnabledChange()"
               ></v-switch>
             </td>
@@ -147,7 +147,6 @@ export default class DetailedBox extends Vue {
   @Prop() proposal!: IProposal;
   widthCell!: string;
   messageAlert!: string;
-  deductibleEnabled!: boolean;
 
   switches!: UpdateSwitch[];
   switchCoverages(coverages: ISwitch[]): UpdateSwitch[] {
@@ -187,7 +186,10 @@ export default class DetailedBox extends Vue {
   }
 
   onDeductibleEnabledChange() {
-    this.updateDeductibleEnabled(this.proposal.id, this.deductibleEnabled);
+    this.updateDeductibleEnabled(
+      this.proposal.id,
+      this.proposal.deductible_enabled
+    );
   }
 
   changeStatus(event: Event, index: number) {

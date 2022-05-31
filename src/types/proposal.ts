@@ -37,4 +37,5 @@ export interface IProposal {
   insurance_premium_discount: number;
   insurance_premium: number;
   calculated_insurance_premium: number;
+  deductible_enabled: boolean;
 }
