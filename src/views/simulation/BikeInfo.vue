@@ -9,7 +9,7 @@
           /></v-col>
         </v-row>
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="pl-0">
         <v-form class="px-3">
           <v-container fluid class="content">
             <div class="item">
@@ -33,7 +33,7 @@
                 todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
                 class="info-button"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -53,7 +53,7 @@
                 :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
                 class="info-button"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -75,7 +75,7 @@
                 Pode ser urbana, Mountain Bike (MTB), Estrada, etc.`"
                 class="info-button"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -98,7 +98,7 @@
                 :text="`Caso não encontre aqui seu modelo, favor digita-lo e pressionar Enter.`"
                 class="info-button"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
             <div class="item">
@@ -121,7 +121,7 @@
             ou seja, o preço da sua bicicleta NOVA.`"
                 class="info-button"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -143,7 +143,7 @@
                 Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
                 class="info-button"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -160,7 +160,7 @@
                 text="Caso você tenha um voucher promocional insira-o aqui."
                 class="info-button"
               >
-                <v-icon>mdi-information</v-icon>
+                <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
 
@@ -442,7 +442,7 @@ h5 {
   max-width: 150px;
   max-height: 60px;
 }
-@media (min-width: 768px) {
+@media (min-width: 878px) {
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;

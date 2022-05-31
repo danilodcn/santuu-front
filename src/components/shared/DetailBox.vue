@@ -251,7 +251,7 @@ export default class DetailedBox extends Vue {
   left: 0px;
   width: 100%;
   position: fixed;
-  padding: 20px 130px !important;
+  padding: 20px 30px !important;
 }
 h3 {
   font-weight: 500;
@@ -274,17 +274,21 @@ h3 {
   border-radius: 3px;
   background-color: #fcfcfc !important;
 }
+th,
+td {
+  padding-left: 10px !important;
+}
 @media (min-width: 768px) {
+  .alert {
+    padding: 20px 130px !important;
+  }
   th,
   td {
+    padding-left: 30px !important;
     font-size: 0.875rem !important;
   }
   .row-price {
     font-size: 0.875rem !important;
   }
-}
-th,
-td {
-  padding-left: 30px !important;
 }
 </style>

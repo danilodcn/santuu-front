@@ -300,7 +300,7 @@ export default class ProposalValues extends Vue {
   padding: 20px;
 }
 .success-santuu {
-  color: $main-dark-color;
+  color: $main-dark-color !important;
 }
 .prices {
   font-size: 8px !important;
