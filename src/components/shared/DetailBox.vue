@@ -276,7 +276,7 @@ h3 {
 }
 th,
 td {
-  padding-left: 10px !important;
+  padding-left: 30px !important;
 }
 @media (min-width: 768px) {
   .alert {
@@ -284,7 +284,6 @@ td {
   }
   th,
   td {
-    padding-left: 30px !important;
     font-size: 0.875rem !important;
   }
   .row-price {
