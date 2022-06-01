@@ -144,7 +144,7 @@
                 <span v-else v-html="item.values[index - 1].value"></span>
               </td>
             </tr>
-            <tr :key="`b-${i}`">
+            <tr :key="`b-${i}`" class="premium-lmi">
               <td colspan="2" v-html="item.values[3].data.premium"></td>
               <td colspan="2" v-html="item.values[3].data.lmi"></td>
             </tr>
@@ -334,7 +334,6 @@ export default class ProposalValues extends Vue {
   async getProposal(id: number) {
     const response = await proposalService.getProposal(id);
     this.proposal = response;
-    console.log(response);
     this.setValues();
     this.$store.commit(
       MutationTypes.CHANGE_COVERAGES,
@@ -396,16 +395,14 @@ export default class ProposalValues extends Vue {
     ];
 
     tableBike.rows[0].values = bike;
-    tableCoverage.rows.forEach((element) => {
-      console.log(element);
-    });
+
     // Ordenar
     tableCoverage.rows.sort((a: ITableRow, b: ITableRow) => {
       return a.values[0].data.order - b.values[0].data.order;
     });
     // Criando tabela de coberturas
     this.proposal.proposal_coverages.forEach(function (coverage) {
-      const bike = [
+      const coverageObj = [
         {
           value: "switch:coverage",
           description: "",
@@ -432,7 +429,7 @@ export default class ProposalValues extends Vue {
         },
       ];
       tableCoverage.rows.push({
-        values: bike,
+        values: coverageObj,
       });
     });
   }
@@ -508,6 +505,9 @@ export default class ProposalValues extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.premium-lmi {
+  background-color: #15ff002c;
+}
 .table {
   border: 1px solid #eee;
   border-radius: 3px;
@@ -515,6 +515,7 @@ export default class ProposalValues extends Vue {
 }
 th,
 td {
+  font-size: 12px !important;
   padding-left: 30px !important;
 }
 h3 {
@@ -541,6 +542,10 @@ h3 {
   font-size: 12px !important;
 }
 @media (min-width: 768px) {
+  th,
+  td {
+    font-size: 14px !important;
+  }
   .box-content {
     margin: 30px;
     padding: 50px;

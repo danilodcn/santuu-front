@@ -1,18 +1,23 @@
 <template>
   <v-app id="app" light>
-    <!-- <nav id="dev-nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/simulation/bike-info">BikeInfo</router-link> |
-      <router-link to="/simulation/proposal-values">
-        Proposal Values
-      </router-link>
-      |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <main-dialog /> -->
-    <LoadingMain></LoadingMain>
-    <main-dialog />
-    <router-view />
+    <v-row>
+      <div id="fake-menu"></div>
+      <!-- <nav id="dev-nav">
+        <router-link to="/">Home</router-link> |
+        <router-link to="/simulation/bike-info">BikeInfo</router-link> |
+        <router-link to="/simulation/proposal-values">
+          Proposal Values
+        </router-link>
+        |
+        <router-link to="/about">About</router-link>
+      </nav>
+      <main-dialog /> -->
+      <div id="content-main" class="col">
+        <LoadingMain></LoadingMain>
+        <main-dialog />
+        <router-view />
+      </div>
+    </v-row>
   </v-app>
 </template>
 
@@ -34,6 +39,12 @@ export default class HelloWorld extends Vue {
 
 <style lang="scss">
 @import "@/scss/main.scss";
+#fake-menu {
+  display: none;
+  background-color: red;
+  width: 320px !important;
+  height: 1000px;
+}
 * {
   font-family: $main-font;
   -webkit-font-smoothing: antialiased;
