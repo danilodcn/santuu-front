@@ -233,7 +233,7 @@ const formItems: IFormItems = {
   originStore: [] as IStore[],
 };
 
-type CallFunctionLoaging = (loading: boolean) => void;
+type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
 
 @Component({
@@ -254,7 +254,7 @@ export default class BikeInfo extends Vue {
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
 
-  @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoaging;
+  @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLoading!: CallFunctionDialog;
 
   //Currency input
