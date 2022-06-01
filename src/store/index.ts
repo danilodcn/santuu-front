@@ -5,9 +5,18 @@ import { ICoverage } from "@/types/proposal";
 Vue.use(Vuex);
 
 export enum MutationTypes {
-  TOGGLE_DIALOG = "TOGGLE_DIALOG",
   CHANGE_COVERAGES = "CHANGE_COVERAGES",
   CHANGE_ENABLED = "CHANGE_ENABLED",
+  TOGGLE_DIALOG = "TOGGLE_DIALOG",
+  TOGGLE_LOADING = "TOGGLE_LOADING",
+}
+
+export interface IDialog {
+  msg: string;
+  active: boolean;
+  title: string;
+  bntClose: boolean;
+  persistent: boolean;
 }
 
 const state = {
@@ -17,8 +26,9 @@ const state = {
     title: "",
     bntClose: false,
     persistent: false,
-  },
+  } as IDialog,
   proposal_coverages: [] as ICoverage[],
+  loading: false,
 };
 
 export type RootState = typeof state;
@@ -29,7 +39,7 @@ interface ISwitchToEnable {
 }
 
 const mutations: MutationTree<RootState> = {
-  [MutationTypes.TOGGLE_DIALOG](state, payload) {
+  [MutationTypes.TOGGLE_DIALOG](state, payload: IDialog) {
     state.dialog = {
       ...state.dialog,
       ...payload,
@@ -40,6 +50,11 @@ const mutations: MutationTree<RootState> = {
   },
   [MutationTypes.CHANGE_ENABLED](state, payload: ISwitchToEnable) {
     state.proposal_coverages[payload.index].enabled = payload.enabled;
+  },
+
+  [MutationTypes.TOGGLE_LOADING](state, payload: boolean) {
+    console.log(payload);
+    state.loading = !state.loading;
   },
 };
 

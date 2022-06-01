@@ -195,6 +195,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { Mutation } from "vuex-class";
 import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
 import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
@@ -204,6 +205,7 @@ import { BikeService } from "@/api/bike";
 import { QRCodeService } from "@/api/qr_code";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { IQRCode } from "@/types/qr_code";
+import { IDialog, MutationTypes } from "@/store";
 
 const bikeService = new BikeService();
 const qrCodeService = new QRCodeService();
@@ -231,6 +233,9 @@ const formItems: IFormItems = {
   originStore: [] as IStore[],
 };
 
+type CallFunctionLoaging = (loading: boolean) => void;
+type CallFunctionDialog = (payload: IDialog) => void;
+
 @Component({
   components: {
     InfoDialog,
@@ -248,6 +253,9 @@ export default class BikeInfo extends Vue {
   qrCodeKey = this.$route.query?.key?.toString() || "";
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
+
+  @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoaging;
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLoading!: CallFunctionDialog;
 
   //Currency input
   price = "0,00";
@@ -271,33 +279,50 @@ export default class BikeInfo extends Vue {
   //Currency input end
 
   async getBrands() {
+    this.changeLoading(true);
     const program: string = this.$route.query.program?.toString() || "";
     const response = await bikeService.getBrands(program);
     this.formItems.brand = response;
+    this.changeLoading(false);
   }
 
   async getCategories(brand_id: string) {
+    this.changeLoading(true);
+
     const response = await bikeService.getCategories(brand_id);
     this.formItems.category = response;
+
+    this.changeLoading(false);
   }
 
   async getModels(brand_id: string, category_id: string) {
+    this.changeLoading(true);
+
     const response = await bikeService.getModels(brand_id, category_id);
     this.formItems.model = response;
+
+    this.changeLoading(false);
   }
 
   async getQRCode() {
+    this.changeLoading(true);
+
     const response = await qrCodeService.getQRCode(this.qrCodeKey);
     this.qrCode = response;
+
+    this.changeLoading(false);
   }
 
   async getStores(brand_id: string, bike_situation: number, program: string) {
+    this.changeLoading(true);
+
     const response = await bikeService.getStores(
       brand_id,
       bike_situation,
       program
     );
     this.formItems.originStore = response;
+    this.changeLoading(false);
   }
 
   async onCaptchaVerified(token: string) {
@@ -311,6 +336,7 @@ export default class BikeInfo extends Vue {
 
   async submitForm() {
     if (this.form.recaptchaToken != "") {
+      this.changeLoading(true);
       var data = simulationHelper.handle(this.form);
       const response = await bikeService.getNextStep(data);
 
@@ -319,6 +345,20 @@ export default class BikeInfo extends Vue {
         this.form.voucher,
         this.program_name.toLowerCase() == "pqp"
       );
+
+      if (bid.error) {
+        console.log(bid, "aqui");
+        this.changeMainLoading({
+          msg: "Voucher nao encontrado",
+          title: "Erro!",
+          persistent: false,
+          active: true,
+          bntClose: true,
+        });
+
+        this.changeLoading(false);
+        return;
+      }
 
       const _data: INextStepDTO = {
         action: 0,
@@ -339,8 +379,16 @@ export default class BikeInfo extends Vue {
       await bikeService.getNextStep(_data);
 
       this.$router.push(`/simulation/proposal-values/${bid.proposal.id}`);
+
+      this.changeLoading(false);
     } else {
-      alert("Validação necessária");
+      this.changeMainLoading({
+        msg: "Validação necessária",
+        title: "Erro!",
+        persistent: false,
+        active: true,
+        bntClose: true,
+      });
     }
   }
 
@@ -385,9 +433,13 @@ export default class BikeInfo extends Vue {
   }
 
   created() {
+    this.changeLoading(true);
+
     this.getBrands();
     this.getQRCode();
     this.form.voucher = this.$route.query?.voucher?.toString() || "";
+
+    this.changeLoading(false);
   }
   log(event: Event) {
     console.log(event);

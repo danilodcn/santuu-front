@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
+import axios, { AxiosRequestConfig, AxiosInstance, AxiosError } from "axios";
 
 const baseConfig: AxiosRequestConfig = {
-  baseURL: "https://app.clubesantuu.com.br/",
+  baseURL: "http://127.0.0.1:8000/",
 };
 
 export class APIBase {
@@ -20,8 +20,9 @@ export class APIBase {
       .then((res) => {
         return res.data;
       })
-      .catch((error) => {
+      .catch((error: AxiosError) => {
         console.info("Erro na requisição", error);
+        return error.response?.data;
       });
   }
 }
