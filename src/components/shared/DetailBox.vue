@@ -1,16 +1,7 @@
 <template>
   <v-main>
-    <v-alert
-      v-if="table.type == 'coverages'"
-      type="info"
-      class="alert"
-      :value="alertEnabled"
-      v-text="alertMessage"
-      transition="scale-transition"
-    >
-    </v-alert>
     <h3><slot></slot></h3>
-    <v-simple-table class="table">
+    <v-simple-table class="table d-none d-md-block">
       <template v-slot:default>
         <thead>
           <tr>
@@ -23,24 +14,6 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-if="
-              table.type == 'coverages' &&
-              proposal.program.flexible_deductible_enabled
-            "
-          >
-            <td>
-              <v-switch
-                id="switchDeductible"
-                v-model="proposal.deductible_enabled"
-                @change="onDeductibleEnabledChange()"
-              ></v-switch>
-            </td>
-            <td colspan="3">
-              Utilize esse botão para desabilitar ou habilitar todas as
-              frânquias das coberturas
-            </td>
-          </tr>
           <tr v-for="(item, i) in table.rows" :key="i">
             <td
               :style="{
@@ -59,26 +32,37 @@
                   <v-icon size="16" class="info-icon">mdi-information</v-icon>
                 </InfoDialog>
               </span>
-              <div
-                :disabled="$store.state.proposal_coverages[i].is_fixed"
-                v-if="sub_item.value == 'switch:coverage'"
-                @click="handleSwitch($event.target, i)"
+              <span v-html="sub_item.value"></span>
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+    <v-simple-table class="table d-block d-md-none">
+      <template v-slot:default>
+        <tbody v-for="(item, i) in table.rows" :key="i">
+          <tr v-for="(sub_item, index) in item.values" :key="index">
+            <td>
+              <b>
+                {{ table.titles[index].value }}
+              </b>
+              &nbsp;
+              <InfoDialog
+                v-if="table.titles[index].description"
+                :text="table.titles[index].description"
               >
-                <v-switch
-                  class="coverage"
-                  :disabled="$store.state.proposal_coverages[i].is_fixed"
-                  :input-value="$store.state.proposal_coverages[i].enabled"
-                  @click.native.capture="changeStatus($event, i)"
-                  @change="
-                    onSwitchChange(
-                      i,
-                      $store.state.proposal_coverages[i].id,
-                      $event
-                    )
-                  "
-                ></v-switch>
-              </div>
-              <span v-else v-html="sub_item.value"></span>
+                <v-icon size="16">mdi-information</v-icon>
+              </InfoDialog>
+              <span>
+                <InfoDialog
+                  class="info-dialog"
+                  v-if="sub_item.description"
+                  :text="sub_item.description"
+                >
+                  <v-icon size="16" class="info-icon">mdi-information</v-icon>
+                </InfoDialog>
+              </span>
+              <span v-html="sub_item.value"></span>
             </td>
           </tr>
         </tbody>
@@ -158,63 +142,10 @@ export default class DetailedBox extends Vue {
     return switches;
   }
 
-  alertEnabled = false;
-  alertMessage = "Alerta!";
-
   proposal_coverages = this.$store.state.proposal_coverages;
 
   get nome() {
     return true;
-  }
-
-  async updateCoverage(coverage_id: number, enabled: boolean) {
-    const updates = [
-      {
-        coverage_id: coverage_id,
-        enabled: enabled,
-      },
-    ];
-    const response = await coverageService.updateCoverage(updates);
-  }
-
-  async updateDeductibleEnabled(proposal_id: number, enabled: boolean) {
-    const update = {
-      proposal_id: proposal_id,
-      enabled: enabled,
-    };
-    const response = await proposalService.updateDeductibleEnabled(update);
-  }
-
-  onDeductibleEnabledChange() {
-    this.updateDeductibleEnabled(
-      this.proposal.id,
-      this.proposal.deductible_enabled
-    );
-  }
-
-  changeStatus(event: Event, index: number) {
-    const coverage = this.$store.state.proposal_coverages[index];
-    const value = coverage.amount;
-    if (
-      this.sumCoverages() - value < this.proposal.program.minimal_premium &&
-      coverage.enabled
-    ) {
-      event.stopPropagation();
-      this.toAlert(
-        "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
-        8000
-      );
-    }
-  }
-
-  onSwitchChange(index: number, indexDB: number, event: Event) {
-    const coverage = this.$store.state.proposal_coverages[index];
-    const toEnabled = !coverage.enabled;
-    this.$store.commit(MutationTypes.CHANGE_ENABLED, {
-      index: index,
-      enabled: toEnabled,
-    });
-    this.updateCoverage(indexDB, toEnabled);
   }
 
   created() {
@@ -222,20 +153,6 @@ export default class DetailedBox extends Vue {
       this.widthCell = `${(1 / this.table.columnsNumber) * 100}%`;
     } else {
       this.widthCell = "auto";
-    }
-  }
-
-  toAlert(message: string, time: number) {
-    this.alertEnabled = true;
-    this.alertMessage = message;
-    setTimeout(() => {
-      this.alertEnabled = false;
-    }, time);
-  }
-
-  handleSwitch(target: HTMLInputElement, index: number) {
-    if (target.getAttribute("disabled")) {
-      this.toAlert("Esta cobertura é básica e não pode ser desativada.", 2000);
     }
   }
 }
@@ -259,16 +176,6 @@ h3 {
   text-align: left;
   padding: 50px 30px 10px 30px;
 }
-@media (max-width: 768px) {
-  td,
-  h3 {
-    font-size: 12px;
-  }
-  th,
-  td {
-    font-size: 0.475rem !important;
-  }
-}
 .table {
   border: 1px solid #eee;
   border-radius: 3px;
@@ -281,10 +188,6 @@ td {
 @media (min-width: 768px) {
   .alert {
     padding: 20px 130px !important;
-  }
-  th,
-  td {
-    font-size: 0.875rem !important;
   }
   .row-price {
     font-size: 0.875rem !important;
