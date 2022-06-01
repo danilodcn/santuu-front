@@ -1,22 +1,159 @@
 <template>
   <v-container class="container">
+    <v-alert
+      v-if="tableCoverage.type == 'coverages'"
+      type="info"
+      class="alert"
+      :value="alertEnabled"
+      v-text="alertMessage"
+      transition="scale-transition"
+    >
+    </v-alert>
     <v-card class="box-content">
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
-      <DetailBox
-        :table="tableCoverage"
-        :sumCoverages="sumCoverages"
-        :proposal="proposal"
-      >
+      <h3>
         Coberturas
         <InfoDialog
           text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
         >
           <v-icon size="16">mdi-information</v-icon>
         </InfoDialog>
-      </DetailBox>
-      <v-row class="prices" justify="space-between">
-        <v-col class="col-4 pa-1">
+      </h3>
+
+      <v-simple-table class="table d-none d-md-block">
+        <tbody>
+          <tr
+            v-if="
+              tableCoverage.type == 'coverages' &&
+              proposal.program.flexible_deductible_enabled
+            "
+          >
+            <td>
+              <v-switch
+                id="switchDeductible"
+                v-model="proposal.deductible_enabled"
+                @change="onDeductibleEnabledChange()"
+              ></v-switch>
+            </td>
+            <td colspan="3">
+              Utilize esse botão para desabilitar ou habilitar todas as
+              frânquias das coberturas
+            </td>
+          </tr>
+          <tr v-for="(item, i) in tableCoverage.rows" :key="i">
+            <td
+              :style="{
+                width: 25,
+                padding: `${tableCoverage.padding}px 10px ${tableCoverage.padding}px 10px !important`,
+              }"
+              v-for="(sub_item, index) in item.values"
+              :key="index"
+            >
+              <span>
+                <InfoDialog
+                  class="info-dialog"
+                  v-if="sub_item.description"
+                  :text="sub_item.description"
+                >
+                  <v-icon size="16" class="info-icon">mdi-information</v-icon>
+                </InfoDialog>
+              </span>
+              <div
+                v-if="sub_item.value == 'switch:coverage'"
+                :disabled="$store.state.proposal_coverages[i].is_fixed"
+                @click="handleSwitch($event.target, i)"
+              >
+                <v-switch
+                  class="coverage"
+                  :disabled="$store.state.proposal_coverages[i].is_fixed"
+                  :input-value="$store.state.proposal_coverages[i].enabled"
+                  @click.native.capture="changeStatus($event, i)"
+                  @change="
+                    onSwitchChange(
+                      i,
+                      $store.state.proposal_coverages[i].id,
+                      $event
+                    )
+                  "
+                ></v-switch>
+              </div>
+              <span v-else v-html="sub_item.value"></span>
+            </td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+      <v-simple-table class="table d-block d-md-none">
+        <tbody>
+          <tr
+            v-if="
+              tableCoverage.type == 'coverages' &&
+              proposal.program.flexible_deductible_enabled
+            "
+          >
+            <td>
+              <v-switch
+                id="switchDeductible"
+                v-model="proposal.deductible_enabled"
+                @change="onDeductibleEnabledChange()"
+              ></v-switch>
+            </td>
+            <td colspan="3">
+              Utilize esse botão para desabilitar ou habilitar todas as
+              frânquias das coberturas
+            </td>
+          </tr>
+          <template v-for="(item, i) in tableCoverage.rows">
+            <tr :key="`a-${i}`">
+              <td
+                :style="{
+                  width: 25,
+                  padding: `${tableCoverage.padding}px 10px ${tableCoverage.padding}px 10px !important`,
+                }"
+                v-for="index in 3"
+                :key="index"
+              >
+                <span>
+                  <InfoDialog
+                    class="info-dialog"
+                    v-if="item.values[index - 1].description"
+                    :text="item.values[index - 1].description"
+                  >
+                    <v-icon size="16" class="info-icon">mdi-information</v-icon>
+                  </InfoDialog>
+                </span>
+                <div
+                  v-if="item.values[index - 1].value == 'switch:coverage'"
+                  :disabled="$store.state.proposal_coverages[i].is_fixed"
+                  @click="handleSwitch($event.target, i)"
+                >
+                  <v-switch
+                    class="coverage"
+                    :disabled="$store.state.proposal_coverages[i].is_fixed"
+                    :input-value="$store.state.proposal_coverages[i].enabled"
+                    @click.native.capture="changeStatus($event, i)"
+                    @change="
+                      onSwitchChange(
+                        i,
+                        $store.state.proposal_coverages[i].id,
+                        $event
+                      )
+                    "
+                  ></v-switch>
+                </div>
+                <span v-else v-html="item.values[index - 1].value"></span>
+              </td>
+            </tr>
+            <tr :key="`b-${i}`" class="premium-lmi">
+              <td colspan="2" v-html="item.values[3].data.premium"></td>
+              <td colspan="2" v-html="item.values[3].data.lmi"></td>
+            </tr>
+          </template>
+        </tbody>
+      </v-simple-table>
+
+      <v-row class="prices">
+        <v-col md="4" cols="12">
           <PriceBox :bad="true" :bold="false" :price="proposal.iof"
             >Valor do IOF
             <InfoDialog
@@ -26,7 +163,7 @@
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col class="col-4 pa-1">
+        <v-col md="4" cols="12">
           <PriceBox :bold="true" :good="true" :price="price">
             Prêmio a pagar
             <InfoDialog text="Valor final a ser pago">
@@ -34,10 +171,11 @@
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col class="col-4 pa-1">
+        <v-col md="4" cols="12">
           <PriceBox
             :bold="true"
             :good="true"
+            v-if="proposal.proposal_bids"
             :numberInstallments="
               proposal.proposal_bids[0].number_of_installments
             "
@@ -76,7 +214,9 @@ import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { RootState, MutationTypes } from "@/store";
+import { CoverageService } from "@/api/coverage";
 
+const coverageService = new CoverageService();
 const proposalService = new ProposalService();
 
 const titlesResume: IDetailedInfo[] = [
@@ -166,6 +306,9 @@ export default class ProposalValues extends Vue {
   proposal = {} as IProposal;
   proposal_id = this.$route.params.proposal_id;
   origin = this.$route.query.origin;
+
+  alertEnabled = false;
+  alertMessage = "Alerta!";
 
   sumCoverages() {
     let value = 0;
@@ -259,7 +402,7 @@ export default class ProposalValues extends Vue {
     });
     // Criando tabela de coberturas
     this.proposal.proposal_coverages.forEach(function (coverage) {
-      const bike = [
+      const coverageObj = [
         {
           value: "switch:coverage",
           description: "",
@@ -279,12 +422,79 @@ export default class ProposalValues extends Vue {
         {
           value: `<b>Prêmio Líquido:</b> ${coverage.amount} <br/> <b>LMI:</b> ${coverage.lmi}`,
           description: "",
+          data: {
+            premium: `<b>Prêmio Líquido:</b> ${coverage.amount}`,
+            lmi: `<b>LMI:</b> ${coverage.lmi}`,
+          },
         },
       ];
       tableCoverage.rows.push({
-        values: bike,
+        values: coverageObj,
       });
     });
+  }
+  async updateCoverage(coverage_id: number, enabled: boolean) {
+    const updates = [
+      {
+        coverage_id: coverage_id,
+        enabled: enabled,
+      },
+    ];
+    const response = await coverageService.updateCoverage(updates);
+  }
+
+  async updateDeductibleEnabled(proposal_id: number, enabled: boolean) {
+    const update = {
+      proposal_id: proposal_id,
+      enabled: enabled,
+    };
+    const response = await proposalService.updateDeductibleEnabled(update);
+  }
+
+  toAlert(message: string, time: number) {
+    this.alertEnabled = true;
+    this.alertMessage = message;
+    setTimeout(() => {
+      this.alertEnabled = false;
+    }, time);
+  }
+
+  handleSwitch(target: HTMLInputElement, index: number) {
+    if (target.getAttribute("disabled")) {
+      this.toAlert("Esta cobertura é básica e não pode ser desativada.", 2000);
+    }
+  }
+
+  onDeductibleEnabledChange() {
+    this.updateDeductibleEnabled(
+      this.proposal.id,
+      this.proposal.deductible_enabled
+    );
+  }
+
+  changeStatus(event: Event, index: number) {
+    const coverage = this.$store.state.proposal_coverages[index];
+    const value = coverage.amount;
+    if (
+      this.sumCoverages() - value < this.proposal.program.minimal_premium &&
+      coverage.enabled
+    ) {
+      event.stopPropagation();
+      this.toAlert(
+        "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
+        8000
+      );
+    }
+  }
+
+  onSwitchChange(index: number, indexDB: number, event: Event) {
+    const coverage = this.$store.state.proposal_coverages[index];
+    const toEnabled = !coverage.enabled;
+    this.$store.commit(MutationTypes.CHANGE_ENABLED, {
+      index: index,
+      enabled: toEnabled,
+    });
+    this.updateCoverage(indexDB, toEnabled);
   }
 
   created() {
@@ -295,15 +505,33 @@ export default class ProposalValues extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.premium-lmi {
+  background-color: #15ff002c;
+}
+.table {
+  border: 1px solid #eee;
+  border-radius: 3px;
+  background-color: #fcfcfc !important;
+}
+th,
+td {
+  font-size: 12px !important;
+  padding-left: 30px !important;
+}
+h3 {
+  font-weight: 500;
+  color: $main-dark-color;
+  text-align: left;
+  padding: 50px 30px 10px 30px;
+}
 .box-content {
-  margin: 30px;
+  margin: 10px;
   padding: 20px;
 }
 .success-santuu {
   color: $main-dark-color !important;
 }
 .prices {
-  font-size: 8px !important;
   margin-top: 70px;
   margin-bottom: 20px;
 }
@@ -314,6 +542,10 @@ export default class ProposalValues extends Vue {
   font-size: 12px !important;
 }
 @media (min-width: 768px) {
+  th,
+  td {
+    font-size: 14px !important;
+  }
   .box-content {
     margin: 30px;
     padding: 50px;
@@ -321,15 +553,9 @@ export default class ProposalValues extends Vue {
   .back-foward button {
     font-size: 16px !important;
   }
-  .prices {
-    font-size: 14px !important;
-  }
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-  }
-  .prices {
-    font-size: 16px;
   }
 }
 @media (min-width: 960px) {

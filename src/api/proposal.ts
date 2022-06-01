@@ -11,7 +11,6 @@ export class ProposalService extends APIBase {
     return await this.request({ url, method: "GET" });
   }
   async updateDeductibleEnabled(update: IUpdate) {
-    console.log(update);
     const url = `dashboard/proposal/update_deductible_enabled/`;
     const data = {
       update: update,

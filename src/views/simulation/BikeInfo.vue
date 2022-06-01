@@ -449,6 +449,10 @@ export default class BikeInfo extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.item {
+  margin: auto;
+  max-width: 300px;
+}
 h5 {
   color: #444;
   margin-left: 23px;
@@ -494,7 +498,7 @@ h5 {
   max-width: 150px;
   max-height: 60px;
 }
-@media (min-width: 878px) {
+@media (min-width: 1160px) {
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -511,15 +515,7 @@ h5 {
     transform: translateY(-15px) translateX(-35px) scale(0.8);
   }
 }
-@media (min-width: 1080px) {
-  .box-content {
-    margin: 50px auto;
-  }
-  #captcha {
-    transform: translateY(-15px) translateX(-20px) scale(0.9);
-  }
-}
-@media (min-width: 1200px) {
+@media (min-width: 1300px) {
   .content {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
