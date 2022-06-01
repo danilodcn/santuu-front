@@ -349,7 +349,7 @@ export default class BikeInfo extends Vue {
       if (bid.error) {
         console.log(bid, "aqui");
         this.changeMainLoading({
-          msg: "Voucher nao encontrado",
+          msg: "Voucher não encontrado",
           title: "Erro!",
           persistent: false,
           active: true,
