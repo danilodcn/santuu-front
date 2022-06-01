@@ -525,7 +525,7 @@ h3 {
   padding: 50px 30px 10px 30px;
 }
 .box-content {
-  margin: 30px;
+  margin: 10px;
   padding: 20px;
 }
 .success-santuu {
