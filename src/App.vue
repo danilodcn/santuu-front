@@ -10,6 +10,8 @@
       <router-link to="/about">About</router-link>
     </nav>
     <main-dialog /> -->
+    <LoadingMain></LoadingMain>
+    <main-dialog />
     <router-view />
   </v-app>
 </template>
@@ -17,10 +19,12 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import MainDialog from "@/components/MainDialog.vue";
+import LoadingMain from "./components/LoadingMain.vue";
 
 @Component({
   components: {
     MainDialog,
+    LoadingMain,
   },
 })
 export default class HelloWorld extends Vue {
