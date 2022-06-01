@@ -27,29 +27,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import { State } from "vuex-class";
-import { RootState, MutationTypes, IDialog } from "@/store";
+import { RootState, IDialog } from "@/store";
 
 @Component({})
 export default class MainDialog extends Vue {
-  // dialog = {
-  //   msg: "",
-  //   active: false,
-  //   title: "",
-  //   persistent: false,
-  //   bntClose: false,
-  // };
-  @State("dialog") dialog!: IDialog;
-
-  // @Watch("$store.state.dialog.active")
-  // onActiveChange(val: boolean, oldVal: boolean) {
-  //   this.dialog = (this.$store.state as RootState).dialog;
-  // }
-
-  // @Watch("dialog.active")
-  // onDialogActiveChange(val: boolean, oldVal: boolean) {
-  //   this.$store.commit(MutationTypes.TOGGLE_DIALOG, this.dialog);
-  // }
+  @State((state: RootState) => state.dialog) dialog!: IDialog;
 }
 </script>
