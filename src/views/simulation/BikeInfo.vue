@@ -351,11 +351,12 @@ export default class BikeInfo extends Vue {
         this.form.voucher,
         this.program_name.toLowerCase() == "pqp"
       );
-
+      console.log(bid);
       if (bid.error) {
-        console.log(bid, "aqui");
         this.changeMainLoading({
-          msg: "Voucher não encontrado",
+          msg:
+            bid.axiosError.response.data?.error ||
+            "Não foi possível continuar com a proposta, verifique o valor preenchido e os outros dados",
           title: "Erro!",
           persistent: false,
           active: true,

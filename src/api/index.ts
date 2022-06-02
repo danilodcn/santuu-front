@@ -22,7 +22,10 @@ export class APIBase {
       })
       .catch((error: AxiosError) => {
         console.info("Erro na requisição", error);
-        return error.response?.data;
+        return {
+          axiosError: error,
+          error: true,
+        };
       });
   }
 }

@@ -21,7 +21,7 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-actions>
-      <v-card-text>{{ dialog.msg }}</v-card-text>
+      <v-card-text id="dialog">{{ dialog.msg }}</v-card-text>
     </v-card>
   </v-dialog>
 </template>
@@ -36,3 +36,10 @@ export default class MainDialog extends Vue {
   @State((state: RootState) => state.dialog) dialog!: IDialog;
 }
 </script>
+
+<style lang="scss" scoped>
+#dialog {
+  text-align: justify;
+  text-indent: 10px;
+}
+</style>
