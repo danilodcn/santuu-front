@@ -512,7 +512,7 @@ h5 {
     justify-content: inherit;
   }
   #captcha {
-    transform: translateY(-15px) translateX(-35px) scale(0.8);
+    transform: translateY(-15px) translateX(-30px) scale(0.8);
   }
 }
 @media (min-width: 1300px) {
