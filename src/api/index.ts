@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosInstance, AxiosError } from "axios";
 
 const baseConfig: AxiosRequestConfig = {
-  baseURL: "http://app.clubesantuu.com.br/",
+  baseURL: "https://app.clubesantuu.com.br/",
 };
 
 export class APIBase {
