@@ -53,7 +53,6 @@ const mutations: MutationTree<RootState> = {
   },
 
   [MutationTypes.TOGGLE_LOADING](state, payload: boolean) {
-    console.log(payload);
     state.loading = !state.loading;
   },
 };
