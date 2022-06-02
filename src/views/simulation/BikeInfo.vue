@@ -257,7 +257,7 @@ export default class BikeInfo extends Vue {
   program_name = this.$route.query?.program?.toString() || "";
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
-  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLoading!: CallFunctionDialog;
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
   //Currency input
   price = "0,00";
@@ -350,7 +350,7 @@ export default class BikeInfo extends Vue {
       );
 
       if (bid.error) {
-        this.changeMainLoading({
+        this.changeMainDialog({
           msg:
             bid.axiosError.response.data?.error ||
             "Não foi possível continuar com a proposta, verifique o valor preenchido e os outros dados",
@@ -386,7 +386,7 @@ export default class BikeInfo extends Vue {
 
       this.changeLoading(false);
     } else {
-      this.changeMainLoading({
+      this.changeMainDialog({
         msg: "Validação necessária",
         title: "Erro!",
         persistent: false,
