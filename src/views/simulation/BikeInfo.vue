@@ -275,6 +275,7 @@ export default class BikeInfo extends Vue {
   }
   set textPrice(newValue: string) {
     this.price = currencyFormatter.formatCurrency(newValue);
+    this.form.price = Number(this.price.replaceAll(".", "").replace(",", "."));
   }
   //Currency input end
 
