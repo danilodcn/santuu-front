@@ -348,7 +348,7 @@ export default class BikeInfo extends Vue {
         this.form.voucher,
         this.program_name.toLowerCase() == "pqp"
       );
-      
+
       if (bid.error) {
         this.changeMainLoading({
           msg:
