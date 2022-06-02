@@ -7,7 +7,7 @@
           size="80"
           class="ma-3"
         ></v-progress-circular>
-        <span class="text-subtitle-1">carregando ...</span>
+        <!-- <span class="text-subtitle-1">carregando ...</span> -->
       </div>
     </v-overlay>
   </div>
