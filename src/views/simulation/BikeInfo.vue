@@ -246,9 +246,6 @@ type CallFunctionDialog = (payload: IDialog) => void;
     InfoDialog,
     VueRecaptcha,
   },
-  beforeCreate() {
-    console.log("Ao criar");
-  },
 })
 export default class BikeInfo extends Vue {
   form = form;
@@ -351,7 +348,7 @@ export default class BikeInfo extends Vue {
         this.form.voucher,
         this.program_name.toLowerCase() == "pqp"
       );
-      console.log(bid);
+      
       if (bid.error) {
         this.changeMainLoading({
           msg:
@@ -434,10 +431,10 @@ export default class BikeInfo extends Vue {
     this.getStores(this.form.brand, this.form.situation || 0, "");
   }
 
-  @Watch("price")
-  onPriceChange(val: string) {
-    console.log(val, "fazer requisição da loja");
-  }
+  // @Watch("price")
+  // onPriceChange(val: string) {
+  //   console.log(val, "fazer requisição da loja");
+  // }
 
   created() {
     this.changeLoading(true);
@@ -447,9 +444,6 @@ export default class BikeInfo extends Vue {
     this.form.voucher = this.$route.query?.voucher?.toString() || "";
 
     this.changeLoading(false);
-  }
-  log(event: Event) {
-    console.log(event);
   }
 }
 </script>
