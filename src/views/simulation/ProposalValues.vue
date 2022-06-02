@@ -505,6 +505,16 @@ export default class ProposalValues extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.alert {
+  z-index: 999;
+  text-align: center;
+  border-radius: 0px !important;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  position: fixed;
+  padding: 20px 30px !important;
+}
 .premium-lmi {
   background-color: #15ff002c;
 }

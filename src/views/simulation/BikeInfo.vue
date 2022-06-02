@@ -1,15 +1,20 @@
 <template>
   <v-container fluid>
     <v-card class="box-content">
-      <v-card-title>
-        <v-row justify="space-between">
-          <v-col class="col-9 title"><h5>Nova Proposta de Seguro</h5></v-col>
-          <v-col class="col-3"
-            ><img class="image-from-qr-code" :src="qrCode.image"
-          /></v-col>
-        </v-row>
-      </v-card-title>
-      <v-card-text class="pl-0">
+      <v-row justify="space-between">
+        <v-col cols="9" class="title d-md-none d-sm-none d-none d-lg-flex"
+          ><h5>Nova Proposta de Seguro</h5></v-col
+        >
+        <v-col cols="12" lg="3"
+          ><img class="image-from-qr-code" :src="qrCode.image" />
+        </v-col>
+      </v-row>
+      <v-row class="title d-md-flex d-lg-none">
+        <v-col cols="12" class="text-center"
+          ><h5>Nova Proposta de Seguro</h5></v-col
+        >
+      </v-row>
+      <v-card-text class="px-0">
         <v-form class="px-3">
           <v-container fluid class="content">
             <div class="item">
@@ -496,7 +501,9 @@ h5 {
   margin-top: -20px !important;
 }
 .image-from-qr-code {
-  max-width: 150px;
+  margin: auto;
+  display: block;
+  max-width: 60px;
   max-height: 60px;
 }
 @media (min-width: 1160px) {
