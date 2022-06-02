@@ -62,7 +62,7 @@
               <div
                 v-if="sub_item.value == 'switch:coverage'"
                 :disabled="$store.state.proposal_coverages[i].is_fixed"
-                @click="handleSwitch($event.target, i)"
+                @click="handleSwitch($event.target)"
               >
                 <v-switch
                   class="coverage"
@@ -125,7 +125,7 @@
                 <div
                   v-if="item.values[index - 1].value == 'switch:coverage'"
                   :disabled="$store.state.proposal_coverages[i].is_fixed"
-                  @click="handleSwitch($event.target, i)"
+                  @click="handleSwitch($event.target)"
                 >
                   <v-switch
                     class="coverage"
@@ -204,6 +204,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { Mutation } from "vuex-class";
 import DetailBox, {
   IDetailedInfo,
   ITableRow,
@@ -213,7 +214,7 @@ import { IProposal, ICoverage } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
-import { RootState, MutationTypes } from "@/store";
+import { MutationTypes, IDialog } from "@/store";
 import { CoverageService } from "@/api/coverage";
 
 const coverageService = new CoverageService();
@@ -292,6 +293,9 @@ const tableCoverage = {
   type: "coverages",
 };
 
+type CallFunctionLoading = (loading: boolean) => void;
+type CallFunctionDialog = (payload: IDialog) => void;
+
 @Component({
   components: {
     DetailBox,
@@ -309,6 +313,9 @@ export default class ProposalValues extends Vue {
 
   alertEnabled = false;
   alertMessage = "Alerta!";
+
+  @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLDialog!: CallFunctionDialog;
 
   sumCoverages() {
     let value = 0;
@@ -332,13 +339,16 @@ export default class ProposalValues extends Vue {
   }
 
   async getProposal(id: number) {
+    this.changeLoading(true);
     const response = await proposalService.getProposal(id);
+
     this.proposal = response;
     this.setValues();
     this.$store.commit(
       MutationTypes.CHANGE_COVERAGES,
       this.proposal.proposal_coverages
     );
+    this.changeLoading(false);
   }
 
   setValues() {
@@ -397,9 +407,7 @@ export default class ProposalValues extends Vue {
     tableBike.rows[0].values = bike;
 
     // Ordenar
-    tableCoverage.rows.sort((a: ITableRow, b: ITableRow) => {
-      return a.values[0].data.order - b.values[0].data.order;
-    });
+    this.proposal.proposal_coverages.sort((a, b) => a.order - b.order);
     // Criando tabela de coberturas
     this.proposal.proposal_coverages.forEach(function (coverage) {
       const coverageObj = [
@@ -459,9 +467,15 @@ export default class ProposalValues extends Vue {
     }, time);
   }
 
-  handleSwitch(target: HTMLInputElement, index: number) {
+  handleSwitch(target: HTMLInputElement) {
     if (target.getAttribute("disabled")) {
-      this.toAlert("Esta cobertura é básica e não pode ser desativada.", 2000);
+      this.changeMainLDialog({
+        active: true,
+        bntClose: true,
+        msg: "Esta cobertura é básica e não pode ser desativada.",
+        persistent: false,
+        title: "Erro!",
+      });
     }
   }
 
@@ -480,10 +494,14 @@ export default class ProposalValues extends Vue {
       coverage.enabled
     ) {
       event.stopPropagation();
-      this.toAlert(
-        "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
-        8000
-      );
+
+      this.changeMainLDialog({
+        active: true,
+        bntClose: true,
+        msg: "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
+        persistent: false,
+        title: "Erro!",
+      });
     }
   }
 
