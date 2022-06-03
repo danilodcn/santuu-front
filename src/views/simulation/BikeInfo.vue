@@ -19,6 +19,7 @@
           <v-container fluid class="content">
             <div class="item">
               <v-select
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.situation"
                 attach
@@ -44,6 +45,7 @@
 
             <div class="item">
               <v-autocomplete
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.brand"
                 attach
@@ -64,6 +66,7 @@
 
             <div class="item">
               <v-autocomplete
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.category"
                 attach
@@ -86,6 +89,7 @@
 
             <div class="item">
               <v-combobox
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.model"
                 attach
@@ -110,9 +114,10 @@
               <v-text-field
                 color="grey"
                 :rules="[
+                  [(v) => !!v || 'Campo obrigatório'],
                   (v) =>
                     priceToNumber(v) > 100 ||
-                    'O valor não pode ser menor que R$ 100,00',
+                    'Valor deve ser maior que R$ 100,00',
                 ]"
                 filled
                 v-model="textPrice"
@@ -137,6 +142,7 @@
 
             <div class="item">
               <v-autocomplete
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.originStore"
                 attach
@@ -159,6 +165,7 @@
 
             <div class="item">
               <v-text-field
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 filled
                 v-model="form.voucher"
@@ -347,7 +354,13 @@ export default class BikeInfo extends Vue {
   }
 
   async submitForm() {
-    (this.$refs.entireForm as Vue & { validate: () => boolean }).validate();
+    if (
+      !(this.$refs.entireForm as Vue & { validate: () => boolean }).validate()
+    ) {
+      this.changeLoading(true);
+      this.changeLoading(false);
+      return;
+    }
 
     if (this.form.recaptchaToken != "") {
       this.changeLoading(true);
