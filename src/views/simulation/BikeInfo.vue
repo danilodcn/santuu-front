@@ -283,7 +283,7 @@ export default class BikeInfo extends Vue {
 
   async getBrands() {
     this.changeLoading(true);
-    const program: string = this.$route.query.program?.toString() || "";
+    const program: string = this.program_name;
     const response = await bikeService.getBrands(program);
     this.formItems.brand = response;
     this.changeLoading(false);
@@ -428,7 +428,11 @@ export default class BikeInfo extends Vue {
       this.form.price = undefined;
     }
 
-    this.getStores(this.form.brand, this.form.situation || 0, "");
+    this.getStores(
+      this.form.brand,
+      this.form.situation || 0,
+      this.program_name
+    );
   }
 
   // @Watch("price")
@@ -436,11 +440,11 @@ export default class BikeInfo extends Vue {
   //   console.log(val, "fazer requisição da loja");
   // }
 
-  created() {
+  async created() {
     this.changeLoading(true);
 
-    this.getBrands();
-    this.getQRCode();
+    await this.getBrands();
+    await this.getQRCode();
     this.form.voucher = this.$route.query?.voucher?.toString() || "";
 
     this.changeLoading(false);
