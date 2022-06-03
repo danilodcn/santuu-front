@@ -19,7 +19,7 @@
           <v-container fluid class="content">
             <div class="item">
               <v-select
-                :rules="[(v) => !!v || 'Campo obrigatório']"
+                :rules="[(v) => !!v || v == 0 || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.situation"
                 attach
@@ -165,7 +165,6 @@
 
             <div class="item">
               <v-text-field
-                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 filled
                 v-model="form.voucher"
