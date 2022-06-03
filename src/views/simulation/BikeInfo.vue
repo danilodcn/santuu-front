@@ -15,10 +15,11 @@
         >
       </v-row>
       <v-card-text class="px-0">
-        <v-form class="px-3">
+        <v-form class="px-3" ref="entireForm">
           <v-container fluid class="content">
             <div class="item">
               <v-select
+                :rules="[(v) => !!v || v == 0 || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.situation"
                 attach
@@ -44,6 +45,7 @@
 
             <div class="item">
               <v-autocomplete
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.brand"
                 attach
@@ -64,6 +66,7 @@
 
             <div class="item">
               <v-autocomplete
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.category"
                 attach
@@ -86,6 +89,7 @@
 
             <div class="item">
               <v-combobox
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.model"
                 attach
@@ -109,6 +113,12 @@
             <div class="item">
               <v-text-field
                 color="grey"
+                :rules="[
+                  [(v) => !!v || 'Campo obrigatório'],
+                  (v) =>
+                    priceToNumber(v) > 100 ||
+                    'Valor deve ser maior que R$ 100,00',
+                ]"
                 filled
                 v-model="textPrice"
                 :prefix="prefixCurrency"
@@ -132,6 +142,7 @@
 
             <div class="item">
               <v-autocomplete
+                :rules="[(v) => !!v || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.originStore"
                 attach
@@ -272,12 +283,16 @@ export default class BikeInfo extends Vue {
     this.textPrice = "0,00";
   }
 
+  priceToNumber(price: string): number {
+    return Number(price.replaceAll(".", "").replace(",", "."));
+  }
+
   get textPrice() {
     return this.price;
   }
   set textPrice(newValue: string) {
     this.price = currencyFormatter.formatCurrency(newValue);
-    this.form.price = Number(this.price.replaceAll(".", "").replace(",", "."));
+    this.form.price = this.priceToNumber(this.price);
   }
   //Currency input end
 
@@ -338,6 +353,14 @@ export default class BikeInfo extends Vue {
   }
 
   async submitForm() {
+    if (
+      !(this.$refs.entireForm as Vue & { validate: () => boolean }).validate()
+    ) {
+      this.changeLoading(true);
+      this.changeLoading(false);
+      return;
+    }
+
     if (this.form.recaptchaToken != "") {
       this.changeLoading(true);
       var data = simulationHelper.handle(this.form);
@@ -460,8 +483,6 @@ export default class BikeInfo extends Vue {
 }
 h5 {
   color: #444;
-  margin-left: 23px;
-  margin-bottom: 30px;
 }
 .title {
   margin: auto 0px;
