@@ -143,11 +143,11 @@
                   [
                     (v) =>
                       priceToNumber(v) > 100 ||
-                      !form.hasNote ||
+                      form.hasNote == undefined ||
                       'Valor deve ser maior que R$ 100,00',
                     (v) =>
                       priceToNumber(v) < 200000 ||
-                      !form.hasNote ||
+                      form.hasNote == undefined ||
                       'Valor deve ser menor que R$ 200 mil',
                   ].concat(obrigatory)
                 "
@@ -200,13 +200,19 @@
                 v-model="menu"
                 :close-on-content-click="false"
                 transition="scale-transition"
-                attach
                 class="pa-0 ma-0"
                 min-width="auto"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    :rules="obrigatoryNoNote"
+                    :rules="
+                      [
+                        (v) =>
+                          datePast(v) ||
+                          form.hasNote != false ||
+                          'Deve estar no passado',
+                      ].concat(obrigatoryNoNote)
+                    "
                     v-model="form.acquisitionDate"
                     label="Data de Aquisição:"
                     prepend-inner-icon="mdi-calendar"
@@ -218,14 +224,13 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="date"
+                  v-model="form.acquisitionDate"
                   @input="menu = false"
                 ></v-date-picker>
               </v-menu>
 
               <info-dialog
-                :text="`Loja de origem na qual foi comprada a bike!
-                Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
+                text="Data em que a bike foi adquirida."
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
@@ -235,9 +240,12 @@
             <div class="item" v-show="form.hasNote == false">
               <v-text-field
                 :rules="[
-                  (v) => v.length == 4 || form.hasNote || 'Formato: YYYY',
                   (v) =>
-                    (v > 1900 && v < 2100) || form.hasNote || 'Data incorreta',
+                    v.length == 4 || form.hasNote != false || 'Formato: YYYY',
+                  (v) =>
+                    (v > 1900 && v < 2100) ||
+                    form.hasNote != false ||
+                    'Data incorreta',
                 ]"
                 color="grey"
                 filled
@@ -249,7 +257,7 @@
               >
               </v-text-field>
               <info-dialog
-                text="Caso você tenha um voucher promocional insira-o aqui."
+                text="Ano em que a bike foi fabricada."
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
@@ -408,7 +416,6 @@ type CallFunctionDialog = (payload: IDialog) => void;
 })
 export default class BikeInfo extends Vue {
   menu = false;
-  date = "";
   form = form;
   formItems = formItems;
   brands: IBrand[] = [];
@@ -416,16 +423,28 @@ export default class BikeInfo extends Vue {
   qrCodeKey = this.$route.query?.key?.toString() || "";
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
+  todayDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
 
   obrigatory = [
-    (v: string) => !!v || v == "0" || !this.form.hasNote || "Campo obrigatório",
+    (v: string) =>
+      !!v || v == "0" || this.form.hasNote == undefined || "Campo obrigatório",
   ];
   obrigatoryNoNote = [
-    (v = "") => !!v || this.form.hasNote || "Campo obrigatório",
+    (v = "") =>
+      !!v || v == "0" || this.form.hasNote != false || "Campo obrigatório", // != false => [undefined, true]
   ];
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
+
+  // Date input starts
+  datePast(value: string) {
+    const date = new Date(value);
+    date.setDate(date.getDate() + 1);
+
+    return date < this.todayDate;
+  }
+  // Date input ends
 
   //Currency input
   price = "0,00";
@@ -634,6 +653,7 @@ export default class BikeInfo extends Vue {
     this.form.voucher = this.$route.query?.voucher?.toString() || "";
 
     this.changeLoading(false);
+    console.log(this.todayDate);
   }
 }
 </script>
