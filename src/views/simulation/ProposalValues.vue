@@ -10,14 +10,18 @@
     >
     </v-alert>
     <v-card class="box-content">
-      <v-row class="mt-10 mr-10" justify="end">
-        <v-divider class="mx-10"></v-divider>
-        <img
-          id="logo"
-          col="1"
-          :src="proposal.program.image_program"
-          :alt="proposal.program.name"
-        />
+      <v-row class="mt-10 mr-10">
+        <v-col cols="9">
+          <v-divider class="ma-10"></v-divider>
+        </v-col>
+        <v-col cols="3">
+          <img
+            class="mr-4"
+            id="logo"
+            :src="proposal.program.image_program"
+            :alt="proposal.program.name"
+          />
+        </v-col>
       </v-row>
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
