@@ -10,6 +10,15 @@
     >
     </v-alert>
     <v-card class="box-content">
+      <v-row class="mt-10 mr-10" justify="end">
+        <v-divider class="mx-10"></v-divider>
+        <img
+          id="logo"
+          col="1"
+          :src="proposal.program.image_program"
+          :alt="proposal.program.name"
+        />
+      </v-row>
       <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
       <DetailBox :table="tableBike">Bike</DetailBox>
       <h3>
@@ -343,6 +352,7 @@ export default class ProposalValues extends Vue {
     const response = await proposalService.getProposal(id);
 
     this.proposal = response;
+    console.log(response);
     this.setValues();
     this.$store.commit(
       MutationTypes.CHANGE_COVERAGES,
@@ -523,6 +533,9 @@ export default class ProposalValues extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+#logo {
+  max-width: 100px;
+}
 .alert {
   z-index: 999;
   text-align: center;

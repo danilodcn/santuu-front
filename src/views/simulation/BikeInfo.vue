@@ -653,7 +653,6 @@ export default class BikeInfo extends Vue {
     this.form.voucher = this.$route.query?.voucher?.toString() || "";
 
     this.changeLoading(false);
-    console.log(this.todayDate);
   }
 }
 </script>
