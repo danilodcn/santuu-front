@@ -2,6 +2,11 @@ import { IBrand, ICategory, IModel, IStore } from "./bike";
 
 export interface IForm {
   brand: string;
+  hasNote?: boolean;
+  acquisitionDate?: string;
+  manufactureYear: string;
+  isOrigin?: boolean;
+  isElectrical?: boolean;
   situation?: number;
   category: string;
   model?: IModel;

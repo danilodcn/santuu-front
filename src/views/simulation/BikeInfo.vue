@@ -21,6 +21,32 @@
               <v-select
                 :rules="[(v) => !!v || v == 0 || 'Campo obrigatório']"
                 color="grey"
+                v-model="form.hasNote"
+                attach
+                filled
+                label="Possui nota fiscal?"
+                :items="[
+                  { has_note: 'Sim', value: true },
+                  { has_note: 'Não', value: false },
+                ]"
+                item-text="has_note"
+                item-value="value"
+                persistent-hint
+              >
+              </v-select>
+              <info-dialog
+                :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
+                todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item" v-show="form.hasNote">
+              <v-select
+                :rules="obrigatory"
+                color="grey"
                 v-model="form.situation"
                 attach
                 filled
@@ -43,9 +69,9 @@
               </info-dialog>
             </div>
 
-            <div class="item">
+            <div class="item" v-show="form.hasNote != undefined">
               <v-autocomplete
-                :rules="[(v) => !!v || 'Campo obrigatório']"
+                :rules="obrigatory"
                 color="grey"
                 v-model="form.brand"
                 attach
@@ -64,9 +90,9 @@
               </info-dialog>
             </div>
 
-            <div class="item">
+            <div class="item" v-show="form.hasNote != undefined">
               <v-autocomplete
-                :rules="[(v) => !!v || 'Campo obrigatório']"
+                :rules="obrigatory"
                 color="grey"
                 v-model="form.category"
                 attach
@@ -87,9 +113,9 @@
               </info-dialog>
             </div>
 
-            <div class="item">
+            <div class="item" v-show="form.hasNote != undefined">
               <v-combobox
-                :rules="[(v) => !!v || 'Campo obrigatório']"
+                :rules="obrigatory"
                 color="grey"
                 v-model="form.model"
                 attach
@@ -110,15 +136,21 @@
                 <v-icon size="18">mdi-information</v-icon>
               </info-dialog>
             </div>
-            <div class="item">
+            <div class="item" v-show="form.hasNote != undefined">
               <v-text-field
                 color="grey"
-                :rules="[
-                  [(v) => !!v || 'Campo obrigatório'],
-                  (v) =>
-                    priceToNumber(v) > 100 ||
-                    'Valor deve ser maior que R$ 100,00',
-                ]"
+                :rules="
+                  [
+                    (v) =>
+                      priceToNumber(v) > 100 ||
+                      !form.hasNote ||
+                      'Valor deve ser maior que R$ 100,00',
+                    (v) =>
+                      priceToNumber(v) < 200000 ||
+                      !form.hasNote ||
+                      'Valor deve ser menor que R$ 200 mil',
+                  ].concat(obrigatory)
+                "
                 filled
                 v-model="textPrice"
                 :prefix="prefixCurrency"
@@ -140,9 +172,9 @@
               </info-dialog>
             </div>
 
-            <div class="item">
+            <div class="item" v-show="form.hasNote != undefined">
               <v-autocomplete
-                :rules="[(v) => !!v || 'Campo obrigatório']"
+                :rules="obrigatory"
                 color="grey"
                 v-model="form.originStore"
                 attach
@@ -163,7 +195,118 @@
               </info-dialog>
             </div>
 
-            <div class="item">
+            <div class="item" v-show="form.hasNote == false">
+              <v-menu
+                v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                attach
+                class="pa-0 ma-0"
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :rules="obrigatoryNoNote"
+                    v-model="form.acquisitionDate"
+                    label="Data de Aquisição:"
+                    prepend-inner-icon="mdi-calendar"
+                    readonly
+                    color="grey"
+                    filled
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  @input="menu = false"
+                ></v-date-picker>
+              </v-menu>
+
+              <info-dialog
+                :text="`Loja de origem na qual foi comprada a bike!
+                Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item" v-show="form.hasNote == false">
+              <v-text-field
+                :rules="[
+                  (v) => v.length == 4 || form.hasNote || 'Formato: YYYY',
+                  (v) =>
+                    (v > 1900 && v < 2100) || form.hasNote || 'Data incorreta',
+                ]"
+                color="grey"
+                filled
+                type="number"
+                @keyup="maskedManufactureYear($event.target)"
+                v-model="form.manufactureYear"
+                label="Ano de Fabricação:"
+                clearable
+              >
+              </v-text-field>
+              <info-dialog
+                text="Caso você tenha um voucher promocional insira-o aqui."
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item" v-show="form.hasNote == false">
+              <v-select
+                :rules="obrigatoryNoNote"
+                color="grey"
+                v-model="form.isOrigin"
+                attach
+                filled
+                label="Original de fábrica?"
+                :items="[
+                  { is_origin: 'Sim', value: true },
+                  { is_origin: 'Não', value: false },
+                ]"
+                item-text="is_origin"
+                item-value="value"
+                persistent-hint
+              >
+              </v-select>
+              <info-dialog
+                text="A sua bicicleta é original de fábrica?"
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item" v-show="form.hasNote == false">
+              <v-select
+                :rules="obrigatoryNoNote"
+                color="grey"
+                v-model="form.isElectrical"
+                attach
+                filled
+                label="A bicicleta é elétrica?"
+                :items="[
+                  { is_electrical: 'Sim', value: true },
+                  { is_electrical: 'Não', value: false },
+                ]"
+                item-text="is_electrical"
+                item-value="value"
+                persistent-hint
+              >
+              </v-select>
+              <info-dialog
+                text="A sua bicicleta é eletrica?"
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item" v-show="form.hasNote != undefined">
               <v-text-field
                 color="grey"
                 filled
@@ -180,7 +323,7 @@
               </info-dialog>
             </div>
 
-            <div class="item">
+            <div class="item" v-show="form.hasNote != undefined">
               <vue-recaptcha
                 id="captcha"
                 sitekey="6LcAzuUfAAAAAMtsHHnn9o1XvRewVsv6DNAGdjX6"
@@ -232,6 +375,11 @@ const form: IForm = {
   brand: "",
   situation: undefined,
   category: "",
+  hasNote: undefined,
+  acquisitionDate: undefined,
+  manufactureYear: "",
+  isOrigin: undefined,
+  isElectrical: undefined,
   model: undefined,
   modelDesc: "",
   modelId: "",
@@ -259,6 +407,8 @@ type CallFunctionDialog = (payload: IDialog) => void;
   },
 })
 export default class BikeInfo extends Vue {
+  menu = false;
+  date = "";
   form = form;
   formItems = formItems;
   brands: IBrand[] = [];
@@ -266,6 +416,13 @@ export default class BikeInfo extends Vue {
   qrCodeKey = this.$route.query?.key?.toString() || "";
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
+
+  obrigatory = [
+    (v: string) => !!v || v == "0" || !this.form.hasNote || "Campo obrigatório",
+  ];
+  obrigatoryNoNote = [
+    (v = "") => !!v || this.form.hasNote || "Campo obrigatório",
+  ];
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
@@ -295,6 +452,12 @@ export default class BikeInfo extends Vue {
     this.form.price = this.priceToNumber(this.price);
   }
   //Currency input end
+
+  //Year input start
+  maskedManufactureYear(target: HTMLInputElement) {
+    this.form.manufactureYear = target.value.substring(0, 4);
+  }
+  //Year input end
 
   async getBrands() {
     this.changeLoading(true);
