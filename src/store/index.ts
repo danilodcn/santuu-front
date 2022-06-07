@@ -17,6 +17,12 @@ export interface IDialog {
   title: string;
   bntClose: boolean;
   persistent: boolean;
+  btnOkCancel?: boolean;
+  msgOk?: string;
+  msgCancel?: string;
+  isResponseOk?: boolean;
+  ident?: boolean;
+  termsAndConditions?: boolean;
 }
 
 const state = {
@@ -26,6 +32,12 @@ const state = {
     title: "",
     bntClose: false,
     persistent: false,
+    btnOkCancel: false,
+    msgOk: "",
+    msgCancel: "",
+    isResponseOk: undefined,
+    ident: true,
+    termsAndConditions: false,
   } as IDialog,
   proposal_coverages: [] as ICoverage[],
   loading: false,

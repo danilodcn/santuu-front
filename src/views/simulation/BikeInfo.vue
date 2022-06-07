@@ -615,6 +615,37 @@ export default class BikeInfo extends Vue {
     }
   }
 
+  @Watch("form.hasNote")
+  onHasNoteChange(val: boolean, oldVal: boolean) {
+    if (val == false) {
+      this.changeMainDialog({
+        msg: `<b>1 -</b> O Seguro Clube Santuu, Sem Nota, é um seguro feito pelo LMI (Limite Máximo de Indenização) determinado pelo cliente e de acordo com configurações e ano da bicicleta, considerando a depreciação pelo uso.
+              <br/><b>2 -</b> Em caso de sinistro total ou parcial, o reembolso será em dinheiro, de acordo com cobertura acionada e LMI (Limite Máximo de Indenização) aceito.
+              <br/><b>3 -</b> Nesta modalidade de seguro Sem Nota, NÃO haverá reposição do bem por item igual ou similar ao Novo como no produto convencional do Clube Santuu
+              <br/><b>4 -</b> O cliente, ao aceitar esse termo, garante que o produto, apesar de não ter nota fiscal, não é um produto proveniente de roubo/furto ou ato ilícito. A procedência do produto é 100% garantida pelo cliente que está solicitando o seguro.`,
+        title: "Termos e Condições",
+        persistent: true,
+        active: true,
+        bntClose: false,
+        btnOkCancel: true,
+        msgOk: "Continuar",
+        msgCancel: "Voltar",
+        ident: false,
+        termsAndConditions: true,
+      });
+    }
+  }
+
+  @Watch("$store.state.dialog.isResponseOk")
+  onResponseChange(val: boolean) {
+    if (!val) {
+      const dialog = this.$store.state.dialog;
+      dialog.isResponseOk = undefined;
+      this.$store.commit(MutationTypes.CHANGE_COVERAGES, dialog);
+      (this.$refs.entireForm as Vue & { reset: () => boolean }).reset();
+    }
+  }
+
   @Watch("form.model")
   onModelChange(val: string) {
     const description = this.form.model?.description_1;
