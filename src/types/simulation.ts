@@ -5,8 +5,9 @@ export interface IForm {
   hasNote?: boolean;
   acquisitionDate?: string;
   manufactureYear: string;
-  isOrigin?: boolean;
-  isElectrical?: boolean;
+  isOrigin?: number;
+  stemComposal?: number;
+  isElectrical?: number;
   situation?: number;
   category: string;
   model?: IModel;

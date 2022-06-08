@@ -337,7 +337,7 @@ export default class ProposalValues extends Vue {
         value += Number(element.amount) * this.proposal.program.iof_tax_rate;
       }
     });
-    return value;
+    return Number(value.toFixed(2));
   }
 
   get price() {
@@ -374,7 +374,7 @@ export default class ProposalValues extends Vue {
       numberInstallments == null
         ? "Indefinido"
         : `${numberInstallments} x de R$ ${formatPrice(
-            this.proposal.gross_insurance_premium / numberInstallments
+            this.proposal.insurance_premium / numberInstallments
           )}`;
 
     const resume = [
@@ -387,7 +387,7 @@ export default class ProposalValues extends Vue {
         description: "",
       },
       {
-        value: `R$ ${this.proposal.gross_insurance_premium}`,
+        value: `R$ ${this.proposal.insurance_premium}`,
         description: "",
       },
       {
@@ -527,6 +527,11 @@ export default class ProposalValues extends Vue {
       enabled: toEnabled,
     });
     this.updateCoverage(indexDB, toEnabled);
+
+    // this.tableResume.rows[0].values[2] = {
+    //   value: `R$ ${this.sumCoverages()}`,
+    //   description: "",
+    // };
   }
 
   created() {

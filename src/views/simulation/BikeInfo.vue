@@ -15,11 +15,11 @@
         >
       </v-row>
       <v-card-text class="px-0">
-        <v-form class="px-3" ref="entireForm" v-model="formInvalid">
+        <v-form class="px-3" ref="entireForm" v-model="formIsValid">
           <v-container fluid class="content">
             <div class="item">
               <v-select
-                :rules="[(v) => !!v || v == 0 || 'Campo obrigatório']"
+                :rules="[(v) => v != undefined || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.hasNote"
                 attach
@@ -45,15 +45,15 @@
 
             <div class="item" v-show="form.hasNote">
               <v-select
-                :rules="obrigatory"
+                :rules="obrigatoryNote"
                 color="grey"
                 v-model="form.situation"
                 attach
                 filled
                 label="Sua Bike é:"
                 :items="[
-                  { name: 'Nova', id: 0 },
-                  { name: 'Usada', id: 1 },
+                  { name: 'Nova', id: 1 },
+                  { name: 'Usada', id: 2 },
                 ]"
                 item-text="name"
                 item-value="id"
@@ -241,7 +241,9 @@
               <v-text-field
                 :rules="[
                   (v) =>
-                    v.length == 4 || form.hasNote != false || 'Formato: YYYY',
+                    (v && v.length == 4) ||
+                    form.hasNote != false ||
+                    'Formato: YYYY',
                   (v) =>
                     (v > 1900 && v < 2100) ||
                     form.hasNote != false ||
@@ -273,10 +275,10 @@
                 filled
                 label="Original de fábrica?"
                 :items="[
-                  { is_origin: 'Sim', value: true },
-                  { is_origin: 'Não', value: false },
+                  { isOrigin: 'Sim', value: 1 },
+                  { isOrigin: 'Não', value: 2 },
                 ]"
-                item-text="is_origin"
+                item-text="isOrigin"
                 item-value="value"
                 persistent-hint
               >
@@ -293,15 +295,41 @@
               <v-select
                 :rules="obrigatoryNoNote"
                 color="grey"
+                v-model="form.stemComposal"
+                attach
+                filled
+                label="Material do quadro:"
+                :items="[
+                  { stemComposal: 'Metal', value: 1 },
+                  { stemComposal: 'Alumínio', value: 2 },
+                  { stemComposal: 'Carbono', value: 3 },
+                ]"
+                item-text="stemComposal"
+                item-value="value"
+                persistent-hint
+              >
+              </v-select>
+              <info-dialog
+                text="Qual materia do quadro da sua bike?"
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item" v-show="form.hasNote == false">
+              <v-select
+                :rules="obrigatoryNoNote"
+                color="grey"
                 v-model="form.isElectrical"
                 attach
                 filled
                 label="A bicicleta é elétrica?"
                 :items="[
-                  { is_electrical: 'Sim', value: true },
-                  { is_electrical: 'Não', value: false },
+                  { isElectrical: 'Sim', value: 1 },
+                  { isElectrical: 'Não', value: 2 },
                 ]"
-                item-text="is_electrical"
+                item-text="isElectrical"
                 item-value="value"
                 persistent-hint
               >
@@ -392,6 +420,7 @@ const form: IForm = {
   acquisitionDate: undefined,
   manufactureYear: "",
   isOrigin: undefined,
+  stemComposal: undefined,
   isElectrical: undefined,
   model: undefined,
   modelDesc: "",
@@ -429,11 +458,14 @@ export default class BikeInfo extends Vue {
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
   todayDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
-  formInvalid = true;
+  formIsValid = false;
 
   obrigatory = [
     (v: string) =>
       !!v || v == "0" || this.form.hasNote == undefined || "Campo obrigatório",
+  ];
+  obrigatoryNote = [
+    (v = "") => !!v || this.form.hasNote != true || "Campo obrigatório",
   ];
   obrigatoryNoNote = [
     (v = "") =>
@@ -466,7 +498,7 @@ export default class BikeInfo extends Vue {
   }
 
   priceToNumber(price: string): number {
-    return Number(price.replaceAll(".", "").replace(",", "."));
+    return Number(price?.replaceAll(".", "").replace(",", "."));
   }
 
   get textPrice() {
@@ -541,8 +573,9 @@ export default class BikeInfo extends Vue {
   }
 
   async submitForm() {
-    (this.$refs.entireForm as Vue & { validate: () => boolean }).validate();
-    if (this.formInvalid) {
+    if (
+      !(this.$refs.entireForm as Vue & { validate: () => boolean }).validate()
+    ) {
       this.changeLoading(true);
       this.changeLoading(false);
       return;
@@ -552,60 +585,63 @@ export default class BikeInfo extends Vue {
       this.changeLoading(true);
 
       var proposal_id: number;
-      var response: any;
-
-      if (this.form.hasNote) {
+      if (form.hasNote) {
         const data = simulationHelper.handle(this.form);
-        response = await bikeService.getNextStep(data);
+        const response = await bikeService.getNextStep(data);
         proposal_id = response.id;
+
+        if (response.error) {
+          this.fail(response);
+          return;
+        }
+
+        const bid = await bikeService.generateBid(
+          proposal_id,
+          this.form.voucher,
+          this.program_name.toLowerCase() == "pqp"
+        );
+
+        if (bid.error) {
+          this.fail(bid);
+          return;
+        }
+
+        const _data: INextStepDTO = {
+          action: 0,
+          recaptchaToken: this.form.recaptchaToken,
+          insurance_premium: bid.proposal.insurance_premium,
+          proposal: {
+            associate_bikes: response.associate_bikes,
+            partner_step: bid.proposal.partner_step,
+            status: bid.proposal.status,
+            id: bid.proposal.id,
+            associate_step: 1,
+            chosen_bid_id: bid.chosen_bid_id,
+            proposal_images: [],
+            proposal_coverages: [],
+          },
+        };
+
+        const secondResponse = await bikeService.getNextStep(_data);
+
+        if (secondResponse.error) {
+          this.fail(secondResponse);
+          return;
+        }
       } else {
         const data = simulationHelper.handleNoNote(this.form);
-        response = await bikeService.setAssociateBike(data);
-        proposal_id = response.id;
+        console.log("data", data);
+        const response = await bikeService.setAssociateBike(data);
+        proposal_id = response.proposal_id;
+
+        if (response.error) {
+          this.fail(response);
+          return;
+        }
       }
-
-      if (response.error) {
-        this.fail(response);
-        return;
-      }
-
-      const bid = await bikeService.generateBid(
-        proposal_id,
-        this.form.voucher,
-        this.program_name.toLowerCase() == "pqp"
-      );
-
-      if (bid.error) {
-        this.fail(bid);
-        return;
-      }
-
-      const _data: INextStepDTO = {
-        action: 0,
-        recaptchaToken: this.form.recaptchaToken,
-        insurance_premium: bid.proposal.insurance_premium,
-        proposal: {
-          associate_bikes: response.associate_bikes,
-          partner_step: bid.proposal.partner_step,
-          status: bid.proposal.status,
-          id: bid.proposal.id,
-          associate_step: 1,
-          chosen_bid_id: bid.chosen_bid_id,
-          proposal_images: [],
-          proposal_coverages: [],
-        },
-      };
-
-      response = await bikeService.getNextStep(_data);
-
-      if (response.error) {
-        this.fail(response);
-        return;
-      }
-
-      this.$router.push(`/simulation/proposal-values/${bid.proposal.id}`);
 
       this.changeLoading(false);
+      this.$router.push(`/simulation/proposal-values/${proposal_id}`);
     } else {
       this.changeMainDialog({
         msg: "Validação necessária",
@@ -646,6 +682,10 @@ export default class BikeInfo extends Vue {
 
   @Watch("form.hasNote")
   onHasNoteChange(val: boolean, oldVal: boolean) {
+    (
+      this.$refs.entireForm as Vue & { resetValidation: () => boolean }
+    ).resetValidation();
+
     if (val == false) {
       this.changeMainDialog({
         msg: `<b>1 -</b> O Seguro Clube Santuu, Sem Nota, é um seguro feito pelo LMI (Limite Máximo de Indenização) determinado pelo cliente e de acordo com configurações e ano da bicicleta, considerando a depreciação pelo uso.
@@ -671,9 +711,7 @@ export default class BikeInfo extends Vue {
       const dialog = this.$store.state.dialog;
       dialog.isResponseOk = undefined;
       this.$store.commit(MutationTypes.CHANGE_COVERAGES, dialog);
-      (
-        this.$refs.entireForm as Vue & { resetValidation: () => boolean }
-      ).resetValidation();
+      (this.$refs.entireForm as Vue & { reset: () => boolean }).reset();
     }
   }
 
