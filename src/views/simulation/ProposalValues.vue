@@ -12,7 +12,7 @@
     <v-card class="box-content">
       <v-row class="mt-10 mr-10">
         <v-col cols="9">
-          <v-divider class="ma-10"></v-divider>
+          <v-divider class="ma-5 ma-md-10"></v-divider>
         </v-col>
         <v-col cols="3">
           <img
@@ -538,7 +538,7 @@ export default class ProposalValues extends Vue {
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
 #logo {
-  max-width: 100px;
+  max-width: 70px;
 }
 .alert {
   z-index: 999;
@@ -601,6 +601,9 @@ h3 {
   .content {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+  }
+  #logo {
+    max-width: 100px;
   }
 }
 @media (min-width: 960px) {

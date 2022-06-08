@@ -1,4 +1,4 @@
-import { IForm, INextStepDTO } from "@/types/simulation";
+import { IForm, INextStepDTO, IProposalDTO } from "@/types/simulation";
 
 export class SimulationHelper {
   handle(form: IForm): INextStepDTO {
@@ -21,6 +21,27 @@ export class SimulationHelper {
             situation: form.situation || 0,
           },
         ],
+      },
+    };
+    return data;
+  }
+  handleNoNote(form: IForm) {
+    const data = {
+      origin_store_id: form.originStore,
+      associate_bike: {
+        price: form.price || 0,
+        brand: form.brand,
+        category: form.category,
+        date_of_acquisition: form.acquisitionDate,
+        date_of_manufacturing: form.manufactureYear,
+        bike_is_origin: form.isOrigin,
+        is_electrical: form.isElectrical,
+        bike_use: 1,
+        rental_bike: null,
+        has_tax_invoice: true,
+        model: form.modelId,
+        model_desc: form.modelDesc,
+        situation: form.situation || 0,
       },
     };
     return data;

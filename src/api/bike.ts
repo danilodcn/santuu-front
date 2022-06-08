@@ -1,5 +1,9 @@
 import { APIBase } from "./index";
-import { INextStepDTO } from "@/types/simulation";
+import {
+  IAssociateBikeDTO,
+  INextStepDTO,
+  IProposalDTO,
+} from "@/types/simulation";
 
 export class BikeService extends APIBase {
   async getBrands(program = "") {
@@ -24,6 +28,11 @@ export class BikeService extends APIBase {
 
   async getNextStep(data: INextStepDTO | typeof Object) {
     const url = "/api/insurance/proposal/get-next-step/";
+    return await this.request({ url, method: "POST", data });
+  }
+
+  async setAssociateBike(data: any) {
+    const url = "/dashboard/proposal/associate_bike/";
     return await this.request({ url, method: "POST", data });
   }
 

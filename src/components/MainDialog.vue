@@ -23,9 +23,9 @@
       </v-card-actions>
       <v-card-text
         id="dialog"
-        :class="{ ident: dialog.ident }"
+        :class="{ ident: dialog.ident, 'pb-10': dialog.termsAndConditions }"
         v-html="dialog.msg"
-        class="px-10 pb-10"
+        class="px-10"
       ></v-card-text>
       <div v-if="dialog.termsAndConditions">
         <v-divider></v-divider>
@@ -78,6 +78,8 @@ export default class MainDialog extends Vue {
   response(value: boolean) {
     this.check = false;
     this.dialog.active = false;
+    this.dialog.termsAndConditions = false;
+    this.dialog.btnOkCancel = false;
     this.dialog.isResponseOk = value;
     this.$store.commit(MutationTypes.CHANGE_COVERAGES, this.dialog);
   }

@@ -15,7 +15,7 @@
         >
       </v-row>
       <v-card-text class="px-0">
-        <v-form class="px-3" ref="entireForm">
+        <v-form class="px-3" ref="entireForm" v-model="formInvalid">
           <v-container fluid class="content">
             <div class="item">
               <v-select
@@ -365,7 +365,12 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { Mutation } from "vuex-class";
 import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
-import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
+import {
+  IForm,
+  IFormItems,
+  INextStepDTO,
+  IProposalDTO,
+} from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
 import { CurrencyFormatter } from "@/utils/currency";
 import { BikeService } from "@/api/bike";
@@ -424,6 +429,7 @@ export default class BikeInfo extends Vue {
   qrCode = {} as IQRCode;
   program_name = this.$route.query?.program?.toString() || "";
   todayDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+  formInvalid = true;
 
   obrigatory = [
     (v: string) =>
@@ -535,9 +541,8 @@ export default class BikeInfo extends Vue {
   }
 
   async submitForm() {
-    if (
-      !(this.$refs.entireForm as Vue & { validate: () => boolean }).validate()
-    ) {
+    (this.$refs.entireForm as Vue & { validate: () => boolean }).validate();
+    if (this.formInvalid) {
       this.changeLoading(true);
       this.changeLoading(false);
       return;
@@ -545,27 +550,33 @@ export default class BikeInfo extends Vue {
 
     if (this.form.recaptchaToken != "") {
       this.changeLoading(true);
-      var data = simulationHelper.handle(this.form);
-      const response = await bikeService.getNextStep(data);
+
+      var proposal_id: number;
+      var response: any;
+
+      if (this.form.hasNote) {
+        const data = simulationHelper.handle(this.form);
+        response = await bikeService.getNextStep(data);
+        proposal_id = response.id;
+      } else {
+        const data = simulationHelper.handleNoNote(this.form);
+        response = await bikeService.setAssociateBike(data);
+        proposal_id = response.id;
+      }
+
+      if (response.error) {
+        this.fail(response);
+        return;
+      }
 
       const bid = await bikeService.generateBid(
-        response.id,
+        proposal_id,
         this.form.voucher,
         this.program_name.toLowerCase() == "pqp"
       );
 
       if (bid.error) {
-        this.changeMainDialog({
-          msg:
-            bid.axiosError.response.data?.error ||
-            "Não foi possível continuar com a proposta, verifique o valor preenchido e os outros dados",
-          title: "Erro!",
-          persistent: false,
-          active: true,
-          bntClose: true,
-        });
-
-        this.changeLoading(false);
+        this.fail(bid);
         return;
       }
 
@@ -585,7 +596,12 @@ export default class BikeInfo extends Vue {
         },
       };
 
-      await bikeService.getNextStep(_data);
+      response = await bikeService.getNextStep(_data);
+
+      if (response.error) {
+        this.fail(response);
+        return;
+      }
 
       this.$router.push(`/simulation/proposal-values/${bid.proposal.id}`);
 
@@ -599,6 +615,19 @@ export default class BikeInfo extends Vue {
         bntClose: true,
       });
     }
+  }
+
+  fail(response: any) {
+    this.changeMainDialog({
+      msg:
+        response.axiosError.response.data?.error ||
+        "Não foi possível continuar com a proposta, verifique o valor preenchido e os outros dados",
+      title: "Erro!",
+      persistent: false,
+      active: true,
+      bntClose: true,
+    });
+    this.changeLoading(false);
   }
 
   @Watch("form.brand")
@@ -642,7 +671,9 @@ export default class BikeInfo extends Vue {
       const dialog = this.$store.state.dialog;
       dialog.isResponseOk = undefined;
       this.$store.commit(MutationTypes.CHANGE_COVERAGES, dialog);
-      (this.$refs.entireForm as Vue & { reset: () => boolean }).reset();
+      (
+        this.$refs.entireForm as Vue & { resetValidation: () => boolean }
+      ).resetValidation();
     }
   }
 

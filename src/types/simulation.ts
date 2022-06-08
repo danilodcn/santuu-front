@@ -26,7 +26,7 @@ export interface IFormItems {
   originStore: IStore[];
 }
 
-interface IAssociateBikeDTO {
+export interface IAssociateBikeDTO {
   bike_price: number;
   bike_use?: number | null;
   brand_id: number | string;
@@ -39,13 +39,13 @@ interface IAssociateBikeDTO {
   situation: number;
 }
 
-interface IProposalDTO {
+export interface IProposalDTO {
   id?: number | string;
   status?: number | string;
   origin_store_id?: number | string;
   associate_step?: number | string;
   partner_step?: number | string;
-  associate_bikes: Array<IAssociateBikeDTO>;
+  associate_bikes?: Array<IAssociateBikeDTO>;
   chosen_bid_id?: number | string;
   proposal_coverages?: [];
   proposal_images?: [];
