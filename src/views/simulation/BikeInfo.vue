@@ -569,7 +569,7 @@ export default class BikeInfo extends Vue {
   }
 
   async onCaptchaExpired() {
-    this.form.recaptchaToken = undefined;
+    this.form.recaptchaToken = "";
   }
 
   async submitForm() {
