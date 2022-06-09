@@ -23,7 +23,9 @@
           />
         </v-col>
       </v-row>
-      <DetailBox :table="tableResume">Resumo da proposta</DetailBox>
+      <DetailBox :table="tableResume" :key="keyResume"
+        >Resumo da proposta</DetailBox
+      >
       <DetailBox :table="tableBike">Bike</DetailBox>
       <h3>
         Coberturas
@@ -167,7 +169,7 @@
 
       <v-row class="prices">
         <v-col md="4" cols="12">
-          <PriceBox :bad="true" :bold="false" :price="proposal.iof"
+          <PriceBox :bad="true" :bold="false" :price="iof"
             >Valor do IOF
             <InfoDialog
               text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
@@ -323,6 +325,7 @@ export default class ProposalValues extends Vue {
   proposal = {} as IProposal;
   proposal_id = this.$route.params.proposal_id;
   origin = this.$route.query.origin;
+  keyResume = 0;
 
   alertEnabled = false;
   alertMessage = "Alerta!";
@@ -330,18 +333,29 @@ export default class ProposalValues extends Vue {
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLDialog!: CallFunctionDialog;
 
-  sumCoverages() {
-    let value = 0;
+  sumCoverages(): { grossPremium: number; iof: number } {
+    let basicPremium = 0;
+    let iof = 0;
+    let grossPremium = 0;
     this.$store.state.proposal_coverages.forEach((element: ICoverage) => {
       if (element.enabled) {
-        value += Number(element.amount) * this.proposal.program.iof_tax_rate;
+        basicPremium += Number(element.amount);
       }
+      grossPremium = basicPremium * this.proposal.program.iof_tax_rate;
+      iof = grossPremium - basicPremium;
     });
-    return Number(value.toFixed(2));
+    return {
+      grossPremium: Number(grossPremium.toFixed(2)),
+      iof: Number(iof.toFixed(2)),
+    };
   }
 
   get price() {
-    return this.sumCoverages();
+    return this.sumCoverages().grossPremium;
+  }
+
+  get iof() {
+    return this.sumCoverages().iof;
   }
 
   formatPrice = formatPrice;
@@ -504,7 +518,8 @@ export default class ProposalValues extends Vue {
     const coverage = this.$store.state.proposal_coverages[index];
     const value = coverage.amount;
     if (
-      this.sumCoverages() - value < this.proposal.program.minimal_premium &&
+      this.sumCoverages().grossPremium - value <
+        this.proposal.program.minimal_premium &&
       coverage.enabled
     ) {
       event.stopPropagation();
@@ -527,11 +542,15 @@ export default class ProposalValues extends Vue {
       enabled: toEnabled,
     });
     this.updateCoverage(indexDB, toEnabled);
+    this.updateResume();
+  }
 
-    // this.tableResume.rows[0].values[2] = {
-    //   value: `R$ ${this.sumCoverages()}`,
-    //   description: "",
-    // };
+  updateResume() {
+    this.tableResume.rows[0].values[2] = {
+      value: `R$ ${this.sumCoverages().grossPremium}`,
+      description: "",
+    };
+    this.keyResume += 1;
   }
 
   created() {
