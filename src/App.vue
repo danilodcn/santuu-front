@@ -13,7 +13,7 @@
       </nav>
       <main-dialog /> -->
       <div id="content-main" class="col">
-        <LoadingMain></LoadingMain>
+        <loading-main></loading-main>
         <main-dialog />
         <router-view />
       </div>
