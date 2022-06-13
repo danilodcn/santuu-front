@@ -365,7 +365,7 @@ export default class ProposalValues extends Vue {
       if (element.enabled) {
         basicPremium += Number(element.amount);
       }
-      grossPremium = basicPremium * this.proposal.program.iof_tax_rate * ();
+      grossPremium = basicPremium * this.proposal.program.iof_tax_rate;
       iof = grossPremium - basicPremium;
     });
     return {
