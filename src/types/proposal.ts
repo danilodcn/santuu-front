@@ -25,6 +25,11 @@ export interface IProposalBid {
   number_of_installments: number;
 }
 
+export interface IVoucher {
+  id: number;
+  discount_percentage: string;
+}
+
 export interface IProposal {
   id: number;
   created_at: string;
@@ -38,4 +43,5 @@ export interface IProposal {
   insurance_premium: number;
   calculated_insurance_premium: number;
   deductible_enabled: boolean;
+  voucher: IVoucher;
 }

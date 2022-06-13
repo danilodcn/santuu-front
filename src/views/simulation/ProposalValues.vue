@@ -167,7 +167,31 @@
         </tbody>
       </v-simple-table>
 
-      <v-row class="prices">
+      <v-row class="prices" justify="center">
+        <v-col md="4" cols="12" v-if="hasDiscount">
+          <PriceBox
+            :good="true"
+            :bold="false"
+            :price="proposal.gross_insurance_premium"
+            >Prêmio bruto total
+            <InfoDialog
+              text="Termo utilizado para definir o preço final em dinheiro que o segurado paga ao segurador, incluídos os encargos (IOF), para que este assuma um determinado conjunto de riscos, pagando-lhe uma indenização em caso de sinistro"
+            >
+              <v-icon size="16">mdi-information</v-icon>
+            </InfoDialog>
+          </PriceBox>
+        </v-col>
+        <v-col md="4" cols="12" v-if="hasDiscount">
+          <PriceBox
+            :good="true"
+            :bold="false"
+            :price="-proposal.insurance_premium_discount"
+            >Desconto de {{ proposal.voucher.discount_percentage }}%
+            <InfoDialog text="Valor a ser descontado do prêmio bruto total">
+              <v-icon size="16">mdi-information</v-icon>
+            </InfoDialog>
+          </PriceBox>
+        </v-col>
         <v-col md="4" cols="12">
           <PriceBox :bad="true" :bold="false" :price="iof"
             >Valor do IOF
@@ -341,13 +365,17 @@ export default class ProposalValues extends Vue {
       if (element.enabled) {
         basicPremium += Number(element.amount);
       }
-      grossPremium = basicPremium * this.proposal.program.iof_tax_rate;
+      grossPremium = basicPremium * this.proposal.program.iof_tax_rate * ();
       iof = grossPremium - basicPremium;
     });
     return {
       grossPremium: Number(grossPremium.toFixed(2)),
       iof: Number(iof.toFixed(2)),
     };
+  }
+
+  get hasDiscount(): boolean {
+    return this.proposal.voucher != undefined;
   }
 
   get price() {
