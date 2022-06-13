@@ -173,6 +173,24 @@
             </div>
 
             <div class="item" v-show="form.hasNote != undefined">
+              <v-text-field
+                color="grey"
+                filled
+                v-model="form.voucher"
+                label="Voucher"
+                clearable
+                @blur="onVoucherBLur"
+              >
+              </v-text-field>
+              <info-dialog
+                text="Caso você tenha um voucher promocional insira-o aqui."
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+            </div>
+
+            <div class="item" v-show="form.hasNote != undefined">
               <v-autocomplete
                 :rules="obrigatory"
                 color="grey"
@@ -336,23 +354,6 @@
               </v-select>
               <info-dialog
                 text="A sua bicicleta é eletrica?"
-                class="info-button"
-              >
-                <v-icon size="18">mdi-information</v-icon>
-              </info-dialog>
-            </div>
-
-            <div class="item" v-show="form.hasNote != undefined">
-              <v-text-field
-                color="grey"
-                filled
-                v-model="form.voucher"
-                label="Voucher"
-                clearable
-              >
-              </v-text-field>
-              <info-dialog
-                text="Caso você tenha um voucher promocional insira-o aqui."
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
@@ -551,16 +552,58 @@ export default class BikeInfo extends Vue {
     this.changeLoading(false);
   }
 
-  async getStores(brand_id: string, bike_situation: number, program: string) {
+  async getStores(
+    brand_id: string,
+    bike_situation: number,
+    program: string,
+    voucher: string
+  ) {
     this.changeLoading(true);
 
     const response = await bikeService.getStores(
       brand_id,
       bike_situation,
-      program
+      program,
+      voucher
     );
     this.formItems.originStore = response;
     this.changeLoading(false);
+  }
+
+  async onVoucherBLur() {
+    this.getStores(
+      this.form.brand,
+      this.form.situation || 0,
+      this.program_name,
+      this.form.voucher
+    );
+
+    const voucher = await bikeService.getVoucherInfo(this.form.voucher);
+    let message, title, persistent;
+
+    if (voucher.isValid) {
+      const date = new Date(voucher.expirationDate);
+      const formattedDate = date
+        .toISOString()
+        .substr(0, 10)
+        .split("-")
+        .reverse()
+        .join("/");
+      message = `O voucher selecionado é válido até o dia ${formattedDate} e possui desconto de <strong>${voucher.discountPercentage}%</strong>`;
+      title = "Sucesso";
+      persistent = false;
+    } else {
+      message = "Esse voucher não é válido! <strong>Tente outro!</strong>";
+      title = "Erro!";
+      persistent = true;
+    }
+    this.changeMainDialog({
+      active: true,
+      bntClose: true,
+      msg: message || "",
+      persistent,
+      title,
+    });
   }
 
   async onCaptchaVerified(token: string) {
@@ -736,14 +779,10 @@ export default class BikeInfo extends Vue {
     this.getStores(
       this.form.brand,
       this.form.situation || 0,
-      this.program_name
+      this.program_name,
+      ""
     );
   }
-
-  // @Watch("price")
-  // onPriceChange(val: string) {
-  //   console.log(val, "fazer requisição da loja");
-  // }
 
   async created() {
     this.changeLoading(true);
