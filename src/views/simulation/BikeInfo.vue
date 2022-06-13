@@ -777,7 +777,9 @@ h5 {
   transform: translateY(0px) translateX(-30px) scale(0.8);
 }
 .box-content {
-  margin: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
   padding: 50px 0px;
   max-width: 1080px;
 }
@@ -814,7 +816,9 @@ h5 {
     gap: 1rem;
   }
   .box-content {
-    margin: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
     padding: 50px 30px;
   }
   #row-captcha {

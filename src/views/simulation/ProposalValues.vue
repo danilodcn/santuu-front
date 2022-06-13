@@ -166,9 +166,8 @@
           </template>
         </tbody>
       </v-simple-table>
-
       <v-row class="prices" justify="center">
-        <v-col md="4" cols="12" v-if="hasDiscount">
+        <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
           <PriceBox
             :good="true"
             :bold="false"
@@ -177,40 +176,32 @@
             <InfoDialog
               text="Termo utilizado para definir o preço final em dinheiro que o segurado paga ao segurador, incluídos os encargos (IOF), para que este assuma um determinado conjunto de riscos, pagando-lhe uma indenização em caso de sinistro"
             >
-              <v-icon size="16">mdi-information</v-icon>
+              <v-icon size="12">mdi-information</v-icon>
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col md="4" cols="12" v-if="hasDiscount">
+        <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
           <PriceBox
             :good="true"
             :bold="false"
             :price="-proposal.insurance_premium_discount"
             >Desconto de {{ proposal.voucher.discount_percentage }}%
             <InfoDialog text="Valor a ser descontado do prêmio bruto total">
-              <v-icon size="16">mdi-information</v-icon>
+              <v-icon size="12">mdi-information</v-icon>
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col md="4" cols="12">
+        <v-col md="4" cols="12" class="d-flex d-md-none">
           <PriceBox :bad="true" :bold="false" :price="iof"
             >Valor do IOF
             <InfoDialog
               text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
             >
-              <v-icon size="16">mdi-information</v-icon>
+              <v-icon size="12">mdi-information</v-icon>
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col md="4" cols="12">
-          <PriceBox :bold="true" :good="true" :price="price">
-            Prêmio a pagar
-            <InfoDialog text="Valor final a ser pago">
-              <v-icon size="16">mdi-information</v-icon>
-            </InfoDialog>
-          </PriceBox>
-        </v-col>
-        <v-col md="4" cols="12">
+        <v-col md="4" cols="12" class="d-flex d-md-none">
           <PriceBox
             :bold="true"
             :good="true"
@@ -220,7 +211,7 @@
             "
             :price="price"
             >Em até<InfoDialog text="Máximo número de parcelas">
-              <v-icon size="16">mdi-information</v-icon>
+              <v-icon size="12">mdi-information</v-icon>
             </InfoDialog></PriceBox
           >
         </v-col>
@@ -238,6 +229,62 @@
         </v-btn>
       </v-row>
     </v-card>
+    <v-bottom-navigation app class="d-flex d-none">
+      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex" v-if="hasDiscount">
+        <PriceBox
+          :good="true"
+          :bold="false"
+          :price="proposal.gross_insurance_premium"
+          >Prêmio bruto total
+          <InfoDialog
+            text="Termo utilizado para definir o preço final em dinheiro que o segurado paga ao segurador, incluídos os encargos (IOF), para que este assuma um determinado conjunto de riscos, pagando-lhe uma indenização em caso de sinistro"
+          >
+            <v-icon size="12">mdi-information</v-icon>
+          </InfoDialog>
+        </PriceBox>
+      </v-col>
+      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex" v-if="hasDiscount">
+        <PriceBox
+          :good="true"
+          :bold="false"
+          :price="-proposal.insurance_premium_discount"
+          >Desconto de {{ proposal.voucher.discount_percentage }}%
+          <InfoDialog text="Valor a ser descontado do prêmio bruto total">
+            <v-icon size="12">mdi-information</v-icon>
+          </InfoDialog>
+        </PriceBox>
+      </v-col>
+      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex">
+        <PriceBox :bad="true" :bold="false" :price="iof"
+          >Valor do IOF
+          <InfoDialog
+            text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
+          >
+            <v-icon size="12">mdi-information</v-icon>
+          </InfoDialog>
+        </PriceBox>
+      </v-col>
+      <v-col md="2" class="ma-0 pa-0 d-flex">
+        <PriceBox :bold="true" :good="true" :price="price">
+          Prêmio a pagar
+          <InfoDialog text="Valor final a ser pago">
+            <v-icon size="12">mdi-information</v-icon>
+          </InfoDialog>
+        </PriceBox>
+      </v-col>
+      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex" cols="12">
+        <PriceBox
+          :bold="true"
+          :good="true"
+          v-if="proposal.proposal_bids"
+          :numberInstallments="proposal.proposal_bids[0].number_of_installments"
+          :price="price"
+          >Em até<InfoDialog text="Máximo número de parcelas">
+            <v-icon size="12">mdi-information</v-icon>
+          </InfoDialog></PriceBox
+        >
+      </v-col>
+    </v-bottom-navigation>
   </v-container>
 </template>
 
@@ -589,6 +636,10 @@ export default class ProposalValues extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.price-box {
+  font-size: 14px;
+  border-radius: 0px;
+}
 #logo {
   max-width: 70px;
 }
@@ -629,7 +680,7 @@ h3 {
   color: $main-dark-color !important;
 }
 .prices {
-  margin-top: 70px;
+  margin-top: 50px;
   margin-bottom: 20px;
 }
 .back-foward {
@@ -667,6 +718,7 @@ h3 {
 </style>
 <style>
 .info-button {
+  min-width: 0px !important;
   width: 20px !important;
   height: 20px !important;
 }
