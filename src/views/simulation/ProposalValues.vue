@@ -23,10 +23,10 @@
           />
         </v-col>
       </v-row>
-      <DetailBox :table="tableResume" :key="keyResume"
+      <DetailBox :table="tableResume" :key="keyResume" class="pb-0"
         >Resumo da proposta</DetailBox
       >
-      <DetailBox :table="tableBike">Bike</DetailBox>
+      <DetailBox :table="tableBike" class="pb-0">Bike</DetailBox>
       <h3>
         Coberturas
         <InfoDialog
