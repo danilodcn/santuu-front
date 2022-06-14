@@ -290,7 +290,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { Mutation } from "vuex-class";
+import { Mutation, Getter, Action } from "vuex-class";
 import DetailBox, {
   IDetailedInfo,
   ITableRow,
@@ -300,7 +300,13 @@ import { IProposal, ICoverage } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
-import { MutationTypes, IDialog } from "@/store";
+import {
+  MutationTypes,
+  GetterTypes,
+  IDialog,
+  ActionsTypes,
+  ISwitchToEnable,
+} from "@/store";
 import { CoverageService } from "@/api/coverage";
 
 const coverageService = new CoverageService();
@@ -381,6 +387,7 @@ const tableCoverage = {
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
+type ChangeEnableAction = (payload: ISwitchToEnable) => void;
 
 @Component({
   components: {
@@ -403,6 +410,10 @@ export default class ProposalValues extends Vue {
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLDialog!: CallFunctionDialog;
+
+  @Getter(GetterTypes.INSURANCE_PREMIUM) getInsurancePremium!: string;
+
+  @Action(ActionsTypes.CHANGE_ENABLED) changeEnable!: ChangeEnableAction;
 
   sumCoverages(): { grossPremium: number; iof: number } {
     let basicPremium = 0;
@@ -454,6 +465,10 @@ export default class ProposalValues extends Vue {
     this.changeLoading(false);
   }
 
+  get insurancePremium() {
+    return `R$ ${this.proposal.insurance_premium}`;
+  }
+
   setValues() {
     // Criando tabela de resumo da proposta
     const numberInstallments =
@@ -476,7 +491,7 @@ export default class ProposalValues extends Vue {
         description: "",
       },
       {
-        value: `R$ ${this.proposal.insurance_premium}`,
+        value: `R$ ${this.getInsurancePremium}`,
         description: "",
       },
       {
@@ -612,6 +627,8 @@ export default class ProposalValues extends Vue {
   onSwitchChange(index: number, indexDB: number, event: Event) {
     const coverage = this.$store.state.proposal_coverages[index];
     const toEnabled = !coverage.enabled;
+    this.changeEnable({ enabled: toEnabled, index });
+
     this.$store.commit(MutationTypes.CHANGE_ENABLED, {
       index: index,
       enabled: toEnabled,
