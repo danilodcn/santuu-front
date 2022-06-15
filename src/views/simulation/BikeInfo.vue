@@ -45,15 +45,15 @@
 
             <div class="item" v-show="form.hasNote">
               <v-select
-                :rules="obrigatoryNote"
+                :rules="[(v) => v != undefined || 'Campo obrigatório']"
                 color="grey"
                 v-model="form.situation"
                 attach
                 filled
                 label="Sua Bike é:"
                 :items="[
-                  { name: 'Nova', id: 1 },
-                  { name: 'Usada', id: 2 },
+                  { name: 'Nova', id: 0 },
+                  { name: 'Usada', id: 1 },
                 ]"
                 item-text="name"
                 item-value="id"
@@ -571,6 +571,10 @@ export default class BikeInfo extends Vue {
   }
 
   async onVoucherBLur() {
+    if (this.form.voucher == "") {
+      return null;
+    }
+
     this.getStores(
       this.form.brand,
       this.form.situation || 0,
@@ -593,8 +597,9 @@ export default class BikeInfo extends Vue {
       title = "Sucesso";
       persistent = false;
     } else {
+      this.form.voucher = "";
       message = "Esse voucher não é válido! <strong>Tente outro!</strong>";
-      title = "Erro!";
+      title = "Erro";
       persistent = true;
     }
     this.changeMainDialog({
@@ -688,7 +693,7 @@ export default class BikeInfo extends Vue {
     } else {
       this.changeMainDialog({
         msg: "Validação necessária",
-        title: "Erro!",
+        title: "Erro",
         persistent: false,
         active: true,
         bntClose: true,
@@ -701,7 +706,7 @@ export default class BikeInfo extends Vue {
       msg:
         response.axiosError.response.data?.error ||
         "Não foi possível continuar com a proposta, verifique o valor preenchido e os outros dados",
-      title: "Erro!",
+      title: "Erro",
       persistent: false,
       active: true,
       bntClose: true,

@@ -127,7 +127,6 @@ class UpdateSwitch {
 })
 export default class DetailedBox extends Vue {
   @Prop() table!: ITable;
-  @Prop() sumCoverages!: () => number;
   @Prop() proposal!: IProposal;
   widthCell!: string;
   messageAlert!: string;

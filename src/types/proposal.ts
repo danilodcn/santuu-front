@@ -23,6 +23,10 @@ export interface IAssociateBike {
 export interface IProposalBid {
   id: number;
   number_of_installments: number;
+  amount: number;
+  discount_amount: number;
+  gross_amount: number;
+  minimal_amount: number;
 }
 
 export interface IVoucher {
@@ -44,4 +48,5 @@ export interface IProposal {
   calculated_insurance_premium: number;
   deductible_enabled: boolean;
   voucher: IVoucher;
+  number_of_installments: number;
 }

@@ -192,7 +192,7 @@
           </PriceBox>
         </v-col>
         <v-col md="4" cols="12" class="d-flex d-md-none">
-          <PriceBox :bad="true" :bold="false" :price="iof"
+          <PriceBox :bad="true" :bold="false" :price="proposal.iof"
             >Valor do IOF
             <InfoDialog
               text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
@@ -206,10 +206,8 @@
             :bold="true"
             :good="true"
             v-if="proposal.proposal_bids"
-            :numberInstallments="
-              proposal.proposal_bids[0].number_of_installments
-            "
-            :price="price"
+            :numberInstallments="proposal.number_of_installments"
+            :price="proposal.insurance_premium"
             >Em até<InfoDialog text="Máximo número de parcelas">
               <v-icon size="12">mdi-information</v-icon>
             </InfoDialog></PriceBox
@@ -255,7 +253,7 @@
         </PriceBox>
       </v-col>
       <v-col md="2" class="ma-0 pa-0 d-none d-md-flex">
-        <PriceBox :bad="true" :bold="false" :price="iof"
+        <PriceBox :bad="true" :bold="false" :price="proposal.iof"
           >Valor do IOF
           <InfoDialog
             text="O IOF é a sigla para Imposto sobre Operações Financeiras. Esse imposto é calculado sobre o valor do prêmio líquido para se obter o valor final do seguro a ser pago (prêmio a pagar)"
@@ -265,7 +263,7 @@
         </PriceBox>
       </v-col>
       <v-col md="2" class="ma-0 pa-0 d-flex">
-        <PriceBox :bold="true" :good="true" :price="price">
+        <PriceBox :bold="true" :good="true" :price="proposal.insurance_premium">
           Prêmio a pagar
           <InfoDialog text="Valor final a ser pago">
             <v-icon size="12">mdi-information</v-icon>
@@ -277,8 +275,8 @@
           :bold="true"
           :good="true"
           v-if="proposal.proposal_bids"
-          :numberInstallments="proposal.proposal_bids[0].number_of_installments"
-          :price="price"
+          :numberInstallments="proposal.number_of_installments"
+          :price="proposal.insurance_premium"
           >Em até<InfoDialog text="Máximo número de parcelas">
             <v-icon size="12">mdi-information</v-icon>
           </InfoDialog></PriceBox
@@ -404,33 +402,8 @@ export default class ProposalValues extends Vue {
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLDialog!: CallFunctionDialog;
 
-  sumCoverages(): { grossPremium: number; iof: number } {
-    let basicPremium = 0;
-    let iof = 0;
-    let grossPremium = 0;
-    this.$store.state.proposal_coverages.forEach((element: ICoverage) => {
-      if (element.enabled) {
-        basicPremium += Number(element.amount);
-      }
-      grossPremium = basicPremium * this.proposal.program.iof_tax_rate;
-      iof = grossPremium - basicPremium;
-    });
-    return {
-      grossPremium: Number(grossPremium.toFixed(2)),
-      iof: Number(iof.toFixed(2)),
-    };
-  }
-
   get hasDiscount(): boolean {
     return this.proposal.voucher != undefined;
-  }
-
-  get price() {
-    return this.sumCoverages().grossPremium;
-  }
-
-  get iof() {
-    return this.sumCoverages().iof;
   }
 
   formatPrice = formatPrice;
@@ -512,6 +485,7 @@ export default class ProposalValues extends Vue {
     // Ordenar
     this.proposal.proposal_coverages.sort((a, b) => a.order - b.order);
     // Criando tabela de coberturas
+    tableCoverage.rows = [];
     this.proposal.proposal_coverages.forEach(function (coverage) {
       const coverageObj = [
         {
@@ -552,6 +526,7 @@ export default class ProposalValues extends Vue {
       },
     ];
     const response = await coverageService.updateCoverage(updates);
+    this.getProposal(parseInt(this.proposal_id));
   }
 
   async updateDeductibleEnabled(proposal_id: number, enabled: boolean) {
@@ -560,6 +535,7 @@ export default class ProposalValues extends Vue {
       enabled: enabled,
     };
     const response = await proposalService.updateDeductibleEnabled(update);
+    this.getProposal(parseInt(this.proposal_id));
   }
 
   toAlert(message: string, time: number) {
@@ -577,7 +553,7 @@ export default class ProposalValues extends Vue {
         bntClose: true,
         msg: "Esta cobertura é básica e não pode ser desativada.",
         persistent: false,
-        title: "Erro!",
+        title: "Erro",
       });
     }
   }
@@ -587,13 +563,14 @@ export default class ProposalValues extends Vue {
       this.proposal.id,
       this.proposal.deductible_enabled
     );
+    this.updateValues();
   }
 
   changeStatus(event: Event, index: number) {
     const coverage = this.$store.state.proposal_coverages[index];
     const value = coverage.amount;
     if (
-      this.sumCoverages().grossPremium - value <
+      this.proposal.insurance_premium - value <
         this.proposal.program.minimal_premium &&
       coverage.enabled
     ) {
@@ -604,7 +581,7 @@ export default class ProposalValues extends Vue {
         bntClose: true,
         msg: "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
         persistent: false,
-        title: "Erro!",
+        title: "Erro",
       });
     }
   }
@@ -612,20 +589,20 @@ export default class ProposalValues extends Vue {
   onSwitchChange(index: number, indexDB: number, event: Event) {
     const coverage = this.$store.state.proposal_coverages[index];
     const toEnabled = !coverage.enabled;
-    this.$store.commit(MutationTypes.CHANGE_ENABLED, {
-      index: index,
-      enabled: toEnabled,
-    });
     this.updateCoverage(indexDB, toEnabled);
-    this.updateResume();
+    this.updateValues();
   }
 
   updateResume() {
     this.tableResume.rows[0].values[2] = {
-      value: `R$ ${this.sumCoverages().grossPremium}`,
+      value: `R$ ${this.proposal.insurance_premium}`,
       description: "",
     };
     this.keyResume += 1;
+  }
+
+  updateValues() {
+    this.updateResume();
   }
 
   created() {
