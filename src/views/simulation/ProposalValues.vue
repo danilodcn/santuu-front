@@ -298,10 +298,7 @@ import { IProposal, ICoverage } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
-import {
-  MutationTypes,
-  IDialog,
-} from "@/store";
+import { MutationTypes, IDialog } from "@/store";
 import { CoverageService } from "@/api/coverage";
 
 const coverageService = new CoverageService();
