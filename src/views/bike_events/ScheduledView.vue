@@ -86,7 +86,5 @@
 </template>
 
 <script>
-    $(document).ready(function(){
-        $("input[type=file]").prop('required',true);
-    })
+ 
 </script>
