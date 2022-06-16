@@ -29,6 +29,11 @@ const routes: Array<RouteConfig> = [
     name: "bike-info",
     component: () => import("../views/simulation/BikeInfo.vue"),
   },
+  {
+    path: "/bike-events/available",
+    name: "available",
+    component: () => import("../views/bike_events/AvailableView.vue"),
+  },
 ];
 
 const router = new VueRouter({
