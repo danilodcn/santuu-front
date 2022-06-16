@@ -288,7 +288,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { Mutation, Getter, Action } from "vuex-class";
+import { Mutation } from "vuex-class";
 import DetailBox, {
   IDetailedInfo,
   ITableRow,
@@ -300,10 +300,7 @@ import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import {
   MutationTypes,
-  GetterTypes,
   IDialog,
-  ActionsTypes,
-  ISwitchToEnable,
 } from "@/store";
 import { CoverageService } from "@/api/coverage";
 
@@ -385,7 +382,6 @@ const tableCoverage = {
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
-type ChangeEnableAction = (payload: ISwitchToEnable) => void;
 
 @Component({
   components: {
@@ -460,7 +456,7 @@ export default class ProposalValues extends Vue {
         description: "",
       },
       {
-        value: `R$ ${this.getInsurancePremium}`,
+        value: `R$ ${this.proposal.insurance_premium}`,
         description: "",
       },
       {
@@ -600,15 +596,6 @@ export default class ProposalValues extends Vue {
   onSwitchChange(index: number, indexDB: number, event: Event) {
     const coverage = this.$store.state.proposal_coverages[index];
     const toEnabled = !coverage.enabled;
-<<<<<<< HEAD
-=======
-    this.changeEnable({ enabled: toEnabled, index });
-
-    this.$store.commit(MutationTypes.CHANGE_ENABLED, {
-      index: index,
-      enabled: toEnabled,
-    });
->>>>>>> ebc004dd8b53070dd8ffae0ca8cebbce9dddae36
     this.updateCoverage(indexDB, toEnabled);
     this.updateValues();
   }
