@@ -60,7 +60,7 @@
                 <div class="bike-certificate-container white-block">
                     <div class="row row-inputs">
                         <form action="{% url 'bike_event_index' %}" id="" method="GET" enctype=multipart/form-data">
-<!--                            {% csrf_token %}-->
+                            {% csrf_token %}
                                 <div class="form-grid">
                             <li v-for= "field in form" :keys="field"></li>
                                 <p>{{field.label}}</p>
