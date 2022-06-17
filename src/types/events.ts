@@ -9,3 +9,11 @@ export interface IEvents {
 export interface IFormItems {
   events: IEvents[];
 }
+
+export interface IFormCheckin {
+  bike_brand: string;
+  bike_category: string;
+  bike_model: string;
+  bike_right?: File;
+  bike_left?: File;
+}
