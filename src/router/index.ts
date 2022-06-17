@@ -34,6 +34,11 @@ const routes: Array<RouteConfig> = [
     name: "available",
     component: () => import("../views/bike_events/AvailableView.vue"),
   },
+  {
+    path: "/bike-events/checkin",
+    name: "checkin",
+    component: () => import("../views/bike_events/CheckinView.vue"),
+  },
 ];
 
 const router = new VueRouter({

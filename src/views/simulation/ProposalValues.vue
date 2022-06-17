@@ -654,7 +654,9 @@ h3 {
   padding: 50px 30px 10px 30px;
 }
 .box-content {
-  margin: 10px;
+  margin: auto;
+  margin-top: 40px;
+  max-width: 1080px;
   padding: 20px;
 }
 .success-santuu {
@@ -676,7 +678,6 @@ h3 {
     font-size: 14px !important;
   }
   .box-content {
-    margin: 30px;
     padding: 50px;
   }
   .back-foward button {
