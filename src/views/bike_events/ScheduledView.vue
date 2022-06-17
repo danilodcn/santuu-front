@@ -1,4 +1,6 @@
-<template>
+<!-- Acho que não é utilizado isso nos eventos, mas vou deixar de standby na dúvida  -->
+
+<!-- <template>
   <v-container class="content-container">
     <div id="termModal" class="modal">
       <div class="modal-content">
@@ -23,12 +25,7 @@
           Civil.
         </p>
         <br />
-        <a
-          href="/dashboard/insurance_claim/discharge?sinister={{sinister.id}}"
-          class="btn-certificate btn-resume-sinister"
-        >
-          Aceitar</a
-        >
+        <a href="#" class="btn-certificate btn-resume-sinister"> Aceitar</a>
       </div>
     </div>
     <h3 class="title-content">{{ bike_event.name }}</h3>

@@ -1,4 +1,6 @@
-<template>
+<!-- Acho que não é utilizado isso nos eventos, mas vou deixar de standby na dúvida  -->
+
+<!-- <template>
   <v-container>
     <div id="termModal" class="modal">
       <div class="modal-content">
@@ -23,11 +25,7 @@
           Civil.
         </p>
         <br />
-        <a
-          href="/dashboard/insurance_claim/discharge?sinister={{sinister.id}}"
-          class="btn-certificate btn-resume-sinister"
-          >Aceitar</a
-        >
+        <a href="#" class="btn-certificate btn-resume-sinister">Aceitar</a>
       </div>
     </div>
     <div class="container">
@@ -72,17 +70,10 @@
               method="GET"
               enctype="multipart/form-data"
             >
-              <template v-for="field in form">
-                <div :key="field">
-                  <div class="form-grid">
-                    <p>{{ field.label }}</p>
-                    <span>{{ field }}</span>
-                    <li v-if="field.errors"></li>
-                    <div class="error-msg">{{ field.errors }}</div>
-                  </div>
-                  <button class="btn-certificate" id="botao">Eventos</button>
-                </div>
-              </template>
+              <v-row justify="space-between" class="mx-5">
+                <v-btn text>Voltar</v-btn>
+                <v-btn text class="button">Fazer Check-in</v-btn>
+              </v-row>
             </form>
           </div>
         </div>
@@ -90,3 +81,33 @@
     </div>
   </v-container>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import InfoDialog from "@/components/shared/InfoDialog.vue";
+
+@Component({
+  components: {
+    InfoDialog,
+  },
+})
+export default class Available extends Vue {
+  bike = {
+    brand: "Caloi",
+    serial_number: "40028922",
+    model: "Intel",
+  };
+  bike_event = {
+    name: "UCI WORLD CUP - PETRÓPOLIS - RJ",
+    initial_date: "20-02-2000",
+    final_date: "20-02-2030",
+    poster: {
+      url: "https://santuu-storage-production.s3.amazonaws.com/bike_event/7e17c950-9929-41a0-a7d4-cc79b915ef7f.png?AWSAccessKeyId=AKIAXOYKOXGQ7UE4CH42&Signature=BTRVbdq7IBnZZnj4JHdK0cHMTMk%3D&Expires=1656015537",
+    },
+    description: "2022 MERCEDES-BENZ UCI MOUNTAIN BIKE WORLD CUP",
+  };
+  sinister = {
+    date: "30-02-2030",
+  };
+}
+</script> -->
