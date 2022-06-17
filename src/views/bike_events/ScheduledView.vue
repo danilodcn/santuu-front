@@ -17,10 +17,8 @@
             <strong>Data de Final:</strong>
             <p>{{ bike_event.final_date }}</p>
           </li>
-
           <li v-if="biker.has_checkin">
             <strong>Protocolo de Check-in:</strong>
-
             <p>{{ biker.protocol }}</p>
             <div class="info-proposal">
               <div class="proposal-program">
