@@ -1,4 +1,6 @@
-<template>
+<!-- Acho que não é utilizado isso nos eventos, mas vou deixar de standby na dúvida  -->
+
+<!-- <template>
   <v-container class="content-container">
     <div id="termModal" class="modal">
       <div class="modal-content">
@@ -121,5 +123,4 @@
 <<<<<<< HEAD
 
 <script></script>
-=======
->>>>>>> 6b9e948b2f3a2f07c3521840b6e21eeb8b69d0fc
+======= >>>>>>> 6b9e948b2f3a2f07c3521840b6e21eeb8b69d0fc -->
