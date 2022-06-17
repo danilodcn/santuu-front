@@ -23,12 +23,7 @@
           Civil.
         </p>
         <br />
-        <a
-          href="/dashboard/insurance_claim/discharge?sinister={{sinister.id}}"
-          class="btn-certificate btn-resume-sinister"
-        >
-          Aceitar</a
-        >
+        <a href="#" class="btn-certificate btn-resume-sinister"> Aceitar</a>
       </div>
     </div>
     <h3 class="title-content">{{ bike_event.name }}</h3>
