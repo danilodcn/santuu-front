@@ -262,6 +262,9 @@ export default class Available extends Vue {
   margin-top: 10px;
   font-size: 0.8em;
 }
+.event-info strong {
+  color: #b5ba3c;
+}
 .title-content {
   font-weight: 500;
   color: $main-dark-color;
