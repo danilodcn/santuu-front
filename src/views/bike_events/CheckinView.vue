@@ -17,7 +17,7 @@
         </v-col>
         <!-- <v-col cols="6" class="pl-15">
           <a href="{% url 'bike_event_available_view' pk=bike_event.id %}">
-            <img class="event_image" :src="bike_event.poster.url" />
+            <img class="event_image" :src="bike_event.poster" />
           </a>
         </v-col> -->
       </v-row>
@@ -150,8 +150,10 @@ import { BikeService } from "@/api/bike";
 import { EventsService } from "@/api/bike_events";
 
 type CallFunctionLoading = (loading: boolean) => void;
+
 const bikeService = new BikeService();
 const eventsService = new EventsService();
+
 const form: IFormCheckin = {
   bike_brand: "",
   bike_category: "",
@@ -167,6 +169,14 @@ const formItens = {
   bike_left: File,
 };
 
+interface IBikeEvent {
+  name: string;
+  initial_date: string;
+  final_date: string;
+  poster: string;
+  description: string;
+}
+
 @Component({
   components: {
     InfoDialog,
@@ -180,13 +190,11 @@ export default class Available extends Vue {
   obrigatory = [(v: string) => !!v || "Campo obrigatório"];
 
   bike_event = {
-    name: "UCI WORLD CUP - PETRÓPOLIS - RJ",
-    initial_date: "20-02-2000",
-    final_date: "20-02-2030",
-    poster: {
-      url: "https://santuu-storage-production.s3.amazonaws.com/bike_event/7e17c950-9929-41a0-a7d4-cc79b915ef7f.png?AWSAccessKeyId=AKIAXOYKOXGQ7UE4CH42&Signature=BTRVbdq7IBnZZnj4JHdK0cHMTMk%3D&Expires=1656015537",
-    },
-    description: "2022 MERCEDES-BENZ UCI MOUNTAIN BIKE WORLD CUP",
+    name: "Carregando...",
+    initial_date: "Carregando...",
+    final_date: "Carregando...",
+    poster: "Carregando...",
+    description: "Carregando...",
   };
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
@@ -222,6 +230,26 @@ export default class Available extends Vue {
     this.formItens.model = response;
     this.changeLoading(false);
   }
+  async getEvents(event_id = "") {
+    this.changeLoading(true);
+    const response = await eventsService.getEvents(event_id);
+    response[0].initial_date = this.formatDate(response[0].initial_date);
+    response[0].final_date = this.formatDate(response[0].final_date);
+    this.bike_event = response[0];
+    this.changeLoading(false);
+  }
+
+  formatDate(grossDate: string) {
+    const date = new Date(grossDate);
+
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    const formatted = `${day}/${month}/${year}`;
+
+    return formatted;
+  }
 
   submitForm() {
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
@@ -231,6 +259,7 @@ export default class Available extends Vue {
 
   created() {
     this.getBrands();
+    this.getEvents("5");
   }
 }
 </script>
