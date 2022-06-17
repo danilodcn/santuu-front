@@ -16,7 +16,7 @@ export class EventsService extends APIBase {
       method: "POST",
       data: data,
       headers: {
-        Authorization: `Bearer ${"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU1NDk5NjM5LCJqdGkiOiJlYjA3NmUyNTYxNDc0NGVkYmExMTgzMjJjNjhiNGI1NCIsInVzZXJfaWQiOjIwMjM3LCJmaXJzdF9uYW1lIjoiVmluaWNpdXMgQ2Fpblx1MDBlMyIsInJvbGUiOlsic3VwZXJ1c2VyIl0sInByb2R1Y3RzIjpbXSwicHJvZ3JhbXMiOltdfQ.nr4MnKZ5ILuloxNAmaRgOyk7Fqr1rWIC0KMSQeDE1NE"}`,
+        Authorization: `Bearer ${"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU1NTExNDUyLCJqdGkiOiI0YzYwNGQxOTdkY2Y0ZDY0OTJjOGNkNjQ3MzQ5MGI3MyIsInVzZXJfaWQiOjIwMjM3LCJmaXJzdF9uYW1lIjoiVmluaWNpdXMgQ2Fpblx1MDBlMyIsInJvbGUiOlsic3VwZXJ1c2VyIl0sInByb2R1Y3RzIjpbXSwicHJvZ3JhbXMiOltdfQ.QpVtx-TKAqzhztXkQqI9LQ4pF6t3xfOBqZwrEe595Ok"}`,
         "Content-Type": "multipart/form-data",
       },
     });

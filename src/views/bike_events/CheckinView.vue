@@ -143,13 +143,14 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { Mutation } from "vuex-class";
-import { MutationTypes } from "@/store";
+import { IDialog, MutationTypes } from "@/store";
 import { IBrand, ICategory, IModel } from "@/types/bike";
 import { IFormCheckin } from "@/types/events";
 import { BikeService } from "@/api/bike";
 import { EventsService } from "@/api/bike_events";
 
 type CallFunctionLoading = (loading: boolean) => void;
+type CallFunctionDialog = (payload: IDialog) => void;
 
 const bikeService = new BikeService();
 const eventsService = new EventsService();
@@ -160,6 +161,7 @@ const form: IFormCheckin = {
   bike_model: "",
   bike_right: undefined,
   bike_left: undefined,
+  event_id: "5",
 };
 const formItens = {
   brand: [] as IBrand[],
@@ -198,6 +200,7 @@ export default class Available extends Vue {
   };
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
   @Watch("form.bike_brand")
   onBrandChange(val: number, oldVal: number) {
@@ -251,10 +254,36 @@ export default class Available extends Vue {
     return formatted;
   }
 
-  submitForm() {
+  async submitForm() {
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      eventsService.doCheckin(this.form);
+      const response = await eventsService.doCheckin(this.form);
+      if (response.error) {
+        this.fail(response);
+        this.changeLoading(false);
+        return;
+      }
+    } else {
+      this.changeMainDialog({
+        msg: "Algo deu errado",
+        title: "Ops...",
+        persistent: false,
+        active: true,
+        bntClose: true,
+      });
     }
+  }
+
+  fail(response: any) {
+    this.changeMainDialog({
+      msg:
+        response.axiosError.response.data?.error ||
+        "Não foi possível continuar com seu check-in",
+      title: "Erro",
+      persistent: false,
+      active: true,
+      bntClose: true,
+    });
+    this.changeLoading(false);
   }
 
   created() {
@@ -297,7 +326,7 @@ export default class Available extends Vue {
 .title-content {
   font-weight: 500;
   color: $main-dark-color;
-  margin: 0px auto 20px 45px;
+  margin: 0px auto 50px 45px;
 }
 .event_image {
   transform: translate(-20px, -20px);

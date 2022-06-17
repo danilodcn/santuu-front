@@ -16,4 +16,5 @@ export interface IFormCheckin {
   bike_model: string;
   bike_right?: File;
   bike_left?: File;
+  event_id: string;
 }
