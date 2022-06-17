@@ -75,7 +75,7 @@
         class="bike-certificate-container white-block"
         style="border-radius: 8px; padding-left: 20px"
       >
-        {%if biker.has_checkin == False %}
+        <div v-if="biker.has_checkin == False"></div>
         <div class="row row-inputs">
           <form method="post" enctype="multipart/form-data">
             <template v-for="field in form">
@@ -123,5 +123,8 @@
     </div>
   </v-container>
 </template>
+<<<<<<< HEAD
 
 <script></script>
+=======
+>>>>>>> 6b9e948b2f3a2f07c3521840b6e21eeb8b69d0fc
