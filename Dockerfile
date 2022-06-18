@@ -8,7 +8,6 @@ RUN apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install
 
 # CMD ["tail", "-f", "/dev/null"]
 CMD ["npm", "run", "serve"]
