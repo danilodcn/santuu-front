@@ -7,17 +7,24 @@ const baseConfig: AxiosRequestConfig = {
 
 export class APIBase {
   private client: AxiosInstance;
+  public config!: AxiosRequestConfig;
+
   constructor(config: AxiosRequestConfig = {}) {
     config = {
       ...baseConfig,
       ...config,
     };
     this.client = axios.create(config);
+    this.config = {};
   }
 
   request(config: AxiosRequestConfig) {
+    const _config = {
+      ...this.config,
+      ...config,
+    };
     return this.client
-      .request(config)
+      .request(_config)
       .then((res) => {
         return res.data;
       })
