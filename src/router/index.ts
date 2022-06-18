@@ -39,6 +39,11 @@ const routes: Array<RouteConfig> = [
     name: "checkin",
     component: () => import("../views/bike_events/CheckinView.vue"),
   },
+  {
+    path: "/bike-events/quiz",
+    name: "quiz",
+    component: () => import("../views/bike_events/QuizView.vue"),
+  },
 ];
 
 const router = new VueRouter({
