@@ -8,11 +8,20 @@ interface ITypeComponent {
 const COMPONENT_TYPES: ITypeComponent = {
   short_answer: {
     name: "v-text-field",
-    props: [{ placeholder: "sua resposta" }],
+    props: [{ placeholder: "sua resposta", clearable: true, filled: true }],
   },
-  long_answer: { name: "v-textarea", props: [{ placeholder: "sua resposta" }] },
-  list: { name: "v-select", props: [{ placeholder: "sua resposta" }] },
-  select_box: { name: "select-box", props: [{ multiple: true }] },
+  long_answer: {
+    name: "v-textarea",
+    props: [{ placeholder: "sua resposta", clearable: true, filled: true }],
+  },
+  list: {
+    name: "v-select",
+    props: [{ placeholder: "sua resposta", clearable: true, filled: true }],
+  },
+  select_box: {
+    name: "select-box",
+    props: [{ multiple: true }],
+  },
   select: { name: "select-box", props: [{ multiple: false }] },
 };
 
