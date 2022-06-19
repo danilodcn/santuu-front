@@ -4,8 +4,8 @@
     <div class="card-item-container">
       <li v-if="bike_events"></li>
       <ul>
-        <template v-for="bike_event in bike_events">
-          <li class="item-proposal">
+        <template v-for="(bike_event, index) in bike_events">
+          <li class="item-proposal" :key="`item-${index}`">
             <strong>Nome:</strong>
             <p>
               {{ bike_event }}
@@ -17,17 +17,13 @@
             <strong>Data de Final:</strong>
             <p>{{ bike_event.final_date }}</p>
           </li>
-          <li v-if="biker.has_checkin">
+          <li v-if="biker.has_checkin" :key="`checkin-${index}`">
             <strong>Protocolo de Check-in:</strong>
             <p>{{ biker.protocol }}</p>
             <div class="info-proposal">
               <div class="proposal-program">
                 {% if bike_event.poster %}
-                <img
-                  src="{{bike_event.poster.url}}"
-                  width="80px"
-                  height="60px"
-                />
+                <img :src="bike_event.poster.url" width="80px" height="60px" />
               </div>
             </div>
           </li>
