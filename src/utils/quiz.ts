@@ -1,4 +1,5 @@
 import { IQuestion } from "@/types/quiz";
+import { required } from "@/utils/rules";
 
 interface ITypeComponent {
   [key: string]: { name: string; props: any[] };
@@ -9,8 +10,10 @@ const COMPONENT_TYPES: ITypeComponent = {
     name: "v-text-field",
     props: [{ placeholder: "sua resposta" }],
   },
-  long_answer: { name: "v-textarea", props: [] },
-  select: { name: "v-select", props: [] },
+  long_answer: { name: "v-textarea", props: [{ placeholder: "sua resposta" }] },
+  list: { name: "v-select", props: [{ placeholder: "sua resposta" }] },
+  select_box: { name: "select-box", props: [{ multiple: true }] },
+  select: { name: "select-box", props: [{ multiple: false }] },
 };
 
 interface IQuestionTypeComponent {
@@ -18,6 +21,7 @@ interface IQuestionTypeComponent {
   props: any[];
   title: string;
   description: string;
+  model: any;
 }
 
 class QuizHelper {
@@ -31,11 +35,16 @@ class QuizHelper {
         const props = type.props;
         props.push({ items: question.options });
 
+        if (question.required) {
+          props.push({ rules: [required] });
+        }
+
         questionTypeComponents.push({
           component: type.name,
           props: props,
           title: question.title,
           description: question.description,
+          model: null,
         });
       }
     });

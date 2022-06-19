@@ -8,10 +8,16 @@
     />
     <v-card elevation="0">
       <v-col v-for="(question, i) in questions" :key="i">
-        <span>{{ question.title }}</span>
+        <span class="text-subtitle-1">{{ question.title }}</span>
         <v-spacer />
-        <span>{{ question.description }}</span>
-        <component :is="question.component" v-bind="question.props" />
+        <v-subheader> {{ question.description }} </v-subheader>
+        <v-spacer />
+        Resposta: {{ question.model }}
+        <component
+          :is="question.component"
+          v-bind="question.props"
+          v-model="question.model"
+        />
       </v-col>
       <v-card-actions>
         <v-btn>Enviar Resposta</v-btn>
@@ -26,9 +32,10 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { IQuestion, IQuiz } from "@/types/quiz";
 import { quizHelper, IQuestionTypeComponent } from "@/utils/quiz";
 import { VSelect, VTextarea, VTextField } from "vuetify/lib";
+import SelectBox from "./shared/SelectBox.vue";
 
 @Component({
-  components: { VSelect, VTextarea, VTextField },
+  components: { VSelect, VTextarea, VTextField, SelectBox },
 })
 export default class MainDialog extends Vue {
   @Prop({ default: {} }) quiz!: IQuiz;
