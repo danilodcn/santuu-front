@@ -4,8 +4,8 @@
       <h3 class="title-content">Eventos Concluidos</h3>
       <div class="card-item-container">
         <ul>
-          <template v-for="bike_event in bike_events">
-            <li class="item-proposal">
+          <template v-for="(bike_event, index) in bike_events">
+            <li class="item-proposal" :key="index">
               <strong>Nome:</strong>
               <p>
                 {{ bike_event }}
@@ -20,7 +20,7 @@
                 <div class="proposal-program">
                   <li v-if="bike_event.poster">
                     <img
-                      src="{{bike_event.poster.url}}"
+                      :src="bike_event.poster.url"
                       width="80px"
                       height="60px"
                     />

@@ -147,7 +147,7 @@ import { IDialog, MutationTypes } from "@/store";
 import { IBrand, ICategory, IModel } from "@/types/bike";
 import { IFormCheckin } from "@/types/events";
 import { BikeService } from "@/api/bike";
-import { EventsService } from "@/api/bike_events";
+import { EventsService } from "@/api/bikeEvents";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -235,7 +235,7 @@ export default class Available extends Vue {
   }
   async getEvents(bike_event = "") {
     this.changeLoading(true);
-    const response = await eventsService.getEvents(bike_event);
+    const response = await eventsService.getEvent({ id: bike_event });
     response[0].initial_date = this.formatDate(response[0].initial_date);
     response[0].final_date = this.formatDate(response[0].final_date);
     this.bike_event = response[0];

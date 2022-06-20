@@ -37,22 +37,27 @@ const routes: Array<RouteConfig> = [
   {
     path: "/bike-events/available", //Eventos Disponível
     name: "available",
-    component: () => import("../views/bike_events/AvailableView.vue"),
+    component: () => import("../views/bike_events/EventsAvailableView.vue"),
   },
   {
-    path: "/bike-events/scheduled",
+    path: "/bike-events/scheduled", //Meus Eventos
     name: "scheduled",
-    component: () => import("../views/bike_events/ScheduledView.vue"),
+    component: () => import("../views/bike_events/MyEventsView.vue"),
   },
   {
     path: "/bike-events/concluded", //Eventos Concluídos
     name: "concluded",
-    component: () => import("../views/bike_events/ConcludedView.vue"),
+    component: () => import("../views/bike_events/EventsConcludedView.vue"),
   },
   {
     path: "/bike-events/checkin",
     name: "event-checkin",
     component: () => import("../views/bike_events/CheckinView.vue"),
+  },
+  {
+    path: "/bike-events/quiz",
+    name: "quiz",
+    component: () => import("../views/bike_events/QuizView.vue"),
   },
   {
     path: "/bike-events/success",
