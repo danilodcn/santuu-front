@@ -161,7 +161,7 @@ const form: IFormCheckin = {
   bike_model: "",
   bike_right: undefined,
   bike_left: undefined,
-  event_id: "5",
+  bike_event: "5",
 };
 const formItens = {
   brand: [] as IBrand[],
@@ -233,9 +233,9 @@ export default class Available extends Vue {
     this.formItens.model = response;
     this.changeLoading(false);
   }
-  async getEvents(event_id = "") {
+  async getEvents(bike_event = "") {
     this.changeLoading(true);
-    const response = await eventsService.getEvents(event_id);
+    const response = await eventsService.getEvents(bike_event);
     response[0].initial_date = this.formatDate(response[0].initial_date);
     response[0].final_date = this.formatDate(response[0].final_date);
     this.bike_event = response[0];
