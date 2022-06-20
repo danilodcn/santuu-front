@@ -24,7 +24,6 @@ class EventsService extends APIAuthBase {
       method: "PUT",
       data: data,
       headers: {
-        Authorization: `Bearer ${"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU1NzM0OTAyLCJqdGkiOiI5OGRlZjBhNWM4NTE0MjY0YjkzZWEzNWNlZDVhY2ZkYSIsInVzZXJfaWQiOjIwMjM3LCJmaXJzdF9uYW1lIjoiVmluaWNpdXMgQ2Fpblx1MDBlMyIsInJvbGUiOlsic3VwZXJ1c2VyIl0sInByb2R1Y3RzIjpbXSwicHJvZ3JhbXMiOltdfQ.z8hEYT4lmWfU5EhAGUC68BwlQQTg9AKEyezh0yhoMug"}`,
         "Content-Type": "multipart/form-data",
       },
     });
