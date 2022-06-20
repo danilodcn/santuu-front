@@ -40,7 +40,7 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/bike_events/AvailableView.vue"),
   },
   {
-    path: "/bike-events/scheduled",
+    path: "/bike-events/scheduled", //Meus Eventos
     name: "scheduled",
     component: () => import("../views/bike_events/ScheduledView.vue"),
   },

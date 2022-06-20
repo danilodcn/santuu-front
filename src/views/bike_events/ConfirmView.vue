@@ -82,4 +82,5 @@ export default class Available extends Vue {
     description: "2022 MERCEDES-BENZ UCI MOUNTAIN BIKE WORLD CU
   }
 }
+}
 </script>

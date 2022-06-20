@@ -22,7 +22,7 @@
             <p>{{ biker.protocol }}</p>
             <div class="info-proposal">
               <div class="proposal-program">
-                {% if bike_event.poster %}
+                <li v-if="bike_event.poster"></li>
                 <img :src="bike_event.poster.url" width="80px" height="60px" />
               </div>
             </div>
@@ -30,11 +30,10 @@
           >
         </template>
       </ul>
-      {% else %}
       <span>
         Para fazer o seu check-in escolha um evento
         <a
-          onclick="document.location.href='/dashboard/bike/events/available'"
+          onclick="document.location.href='available'"
           style="color: #cccb00; font-weight: 700; cursor: pointer"
           >clicando aqui.</a
         >
