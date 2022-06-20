@@ -1,4 +1,4 @@
-import { AuthProviderInterface } from "./auth.provider";
+import { AuthProvider, AuthProviderInterface } from "./auth.provider";
 import { APIBase } from "./index";
 
 interface IUserDataDTO {
@@ -7,8 +7,15 @@ interface IUserDataDTO {
 }
 
 class APIAuthBase extends APIBase {
-  constructor(private auth: AuthProviderInterface) {
+  auth!: AuthProviderInterface;
+  constructor(auth: AuthProviderInterface | null = null) {
     super();
+
+    if (!auth) {
+      this.auth = new AuthProvider();
+    } else {
+      this.auth = auth;
+    }
     this.inicializeAuth();
   }
 

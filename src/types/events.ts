@@ -1,4 +1,4 @@
-export interface IEvents {
+export interface IEvent {
   name: string;
   description: string;
   poster: string;
@@ -7,7 +7,7 @@ export interface IEvents {
 }
 
 export interface IFormItems {
-  events: IEvents[];
+  events: IEvent[];
 }
 
 export interface IFormCheckin {
