@@ -55,4 +55,3 @@ export default class Available extends Vue {
   };
 }
 </script>
--->
