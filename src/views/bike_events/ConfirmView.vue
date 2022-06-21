@@ -72,15 +72,15 @@ export default class Available extends Vue {
     date: "30-02-2030",
   };
   biker = {
-    bike_event : {
-    name: "UCI WORLD CUP - PETRÓPOLIS - RJ",
-    initial_date: "20-02-2000",
-    final_date: "20-02-2030",
-    poster: {
-      url: "https://santuu-storage-production.s3.amazonaws.com/bike_event/7e17c950-9929-41a0-a7d4-cc79b915ef7f.png?AWSAccessKeyId=AKIAXOYKOXGQ7UE4CH42&Signature=BTRVbdq7IBnZZnj4JHdK0cHMTMk%3D&Expires=1656015537",
+    bike_event: {
+      name: "UCI WORLD CUP - PETRÓPOLIS - RJ",
+      initial_date: "20-02-2000",
+      final_date: "20-02-2030",
+      poster: {
+        url: "https://santuu-storage-production.s3.amazonaws.com/bike_event/7e17c950-9929-41a0-a7d4-cc79b915ef7f.png?AWSAccessKeyId=AKIAXOYKOXGQ7UE4CH42&Signature=BTRVbdq7IBnZZnj4JHdK0cHMTMk%3D&Expires=1656015537",
+      },
+      description: "2022 MERCEDES-BENZ UCI MOUNTAIN BIKE WORLD CU",
     },
-    description: "2022 MERCEDES-BENZ UCI MOUNTAIN BIKE WORLD CU
-  }
-}
+  };
 }
 </script>
