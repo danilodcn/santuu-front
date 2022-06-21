@@ -21,7 +21,7 @@ class EventsService extends APIAuthBase {
     console.log(data);
     return await this.request({
       url,
-      method: "PUT",
+      method: "POST",
       data: data,
       headers: {
         "Content-Type": "multipart/form-data",

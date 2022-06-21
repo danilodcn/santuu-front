@@ -11,6 +11,7 @@ export interface IFormItems {
 }
 
 export interface IFormCheckin {
+  user: string;
   bike_brand: string;
   bike_category: string;
   bike_model: string;
