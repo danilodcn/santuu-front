@@ -18,3 +18,9 @@ export function formatDateToBar(grossDate: string) {
 
   return formatted;
 }
+
+export function setSocialImage(url: string) {
+  return document
+    .querySelector('meta[property="og:image"]')
+    ?.setAttribute("content", url);
+}

@@ -8,13 +8,24 @@
           <v-card-title class="pt-0">
             <v-col class="col-12 mb-0 mb-md-15 py-0 share">
               <span>Compartilhe:</span>
-              <v-icon class="pl-2 pl-md-1 py-0">fab fa-whatsapp</v-icon>
-              <v-icon class="pl-2 py-0">fab fa-facebook</v-icon>
-              <v-icon class="pl-2 py-0">fab fa-instagram</v-icon>
+              <twitter-button
+                class="pa-0 share-button--circle share-button--outline"
+                btnText
+                :description="`Vamos para o ${bike_event.name}`"
+              />
+              <whats-app-button
+                class="pa-0 share-button--circle share-button--outline"
+                btnText
+                :description="`Vamos para o ${bike_event.name}`"
+              />
+              <facebook-button
+                class="pa-0 share-button--circle share-button--outline"
+                btnText
+                :description="`Vamos para o ${bike_event.name}`"
+              />
             </v-col>
           </v-card-title>
         </v-col>
-
         <v-col class="col-10 offset-1 pt-6">
           <h4>{{ bike_event.name }}</h4>
         </v-col>
@@ -49,6 +60,7 @@
         </v-col> -->
       </v-row>
       <v-divider class="mt-15"></v-divider>
+      <meta property="og:image" :content="bike_event.poster" />
       <v-card-actions class="back-forward">
         <v-row justify="end" class="mx-5">
           <v-btn text class="button">Quero me inscrever</v-btn>
@@ -59,13 +71,16 @@
 </template>
 
 <script lang="ts">
+import TwitterButton from "vue-share-buttons/src/components/TwitterButton.vue";
+import WhatsAppButton from "vue-share-buttons/src/components/WhatsAppButton.vue";
+import FacebookButton from "vue-share-buttons/src/components/FacebookButton.vue";
 import "@fortawesome/fontawesome-free/css/all.css";
 import { Component, Vue } from "vue-property-decorator";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { Mutation } from "vuex-class";
 import { IDialog, MutationTypes } from "@/store";
 import { EventsService } from "@/api/bikeEvents";
-import { formatDateToBar } from "@/utils/utils";
+import { formatDateToBar, setSocialImage } from "@/utils/utils";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -75,6 +90,9 @@ const eventsService = new EventsService();
 @Component({
   components: {
     InfoDialog,
+    TwitterButton,
+    WhatsAppButton,
+    FacebookButton,
   },
 })
 export default class Available extends Vue {
@@ -100,6 +118,7 @@ export default class Available extends Vue {
     response[0].initial_date = formatDateToBar(response[0].initial_date);
     response[0].final_date = formatDateToBar(response[0].final_date);
     this.bike_event = response[0];
+    setSocialImage(this.bike_event.poster);
     this.changeLoading(false);
   }
 
@@ -123,13 +142,21 @@ export default class Available extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.share-button::v-deep svg {
+  width: 10px;
+  height: 10px;
+  transform: translateY(-9px) !important;
+}
+.share-button::v-deep {
+  margin-top: 6px;
+  min-width: 22px;
+  min-height: 22px;
+  height: 22px;
+}
 .share span {
   margin-left: 0px;
+  margin-right: 10px;
   font-size: 0.7em;
-  color: $main-dark-color;
-}
-.share i::v-deep {
-  font-size: 0.7em !important;
 }
 img {
   width: 100%;
@@ -189,13 +216,18 @@ iframe {
   .share {
     margin-top: 10px;
   }
-  .share i::v-deep {
-    margin-top: 0px;
-    margin-left: 20px;
-    font-size: 1.1em !important;
-  }
   .share span {
     font-size: 1em;
+  }
+  .share-button::v-deep svg {
+    width: 15px;
+    height: 15px;
+    transform: translateY(-2px) !important;
+  }
+  .share-button::v-deep {
+    margin-top: -1px;
+    min-width: 35px;
+    min-height: 35px;
   }
 }
 </style>
