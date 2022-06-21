@@ -418,7 +418,6 @@ export default class ProposalValues extends Vue {
     const response = await proposalService.getProposal(id);
 
     this.proposal = response;
-    console.log(response);
     this.setValues();
     this.$store.commit(
       MutationTypes.CHANGE_COVERAGES,

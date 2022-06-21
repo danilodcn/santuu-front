@@ -10,7 +10,11 @@ class EventsService extends APIAuthBase {
   async getEvent(eventTDO: IGetEventDTO): Promise<IEvent[]> {
     const id = eventTDO.id || "";
     const url = `/api/bike-event/events/bike-events/${id}?type=${eventTDO.type}`;
-    return await this.request({ url, method: "GET" });
+    let response = await this.request({ url, method: "GET" });
+    if (!Array.isArray(response)) {
+      response = [response];
+    }
+    return response;
   }
 
   async doCheckin(form: IFormCheckin) {
@@ -18,7 +22,7 @@ class EventsService extends APIAuthBase {
     const data = {
       ...form,
     };
-    console.log(data);
+
     return await this.request({
       url,
       method: "PUT",
