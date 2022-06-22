@@ -80,7 +80,7 @@ import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { Mutation } from "vuex-class";
 import { IDialog, MutationTypes } from "@/store";
 import { EventsService } from "@/api/bikeEvents";
-import { formatDateToBar, setSocialImage } from "@/utils/utils";
+import { formatDateToBar, setSocialProperties } from "@/utils/utils";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -118,7 +118,14 @@ export default class Available extends Vue {
     response[0].initial_date = formatDateToBar(response[0].initial_date);
     response[0].final_date = formatDateToBar(response[0].final_date);
     this.bike_event = response[0];
-    setSocialImage(this.bike_event.poster);
+
+    setSocialProperties(
+      window.location.href,
+      this.bike_event.name,
+      this.bike_event.description,
+      this.bike_event.poster
+    );
+
     this.changeLoading(false);
   }
 
@@ -145,7 +152,7 @@ export default class Available extends Vue {
 .share-button::v-deep svg {
   width: 10px;
   height: 10px;
-  transform: translateY(-9px) !important;
+  transform: translateY(-7px) !important;
 }
 .share-button::v-deep {
   margin-top: 6px;
