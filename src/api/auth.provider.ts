@@ -1,9 +1,5 @@
 import { APIBase } from ".";
 
-// FIXME Variável usada apenas para desenvolvimento
-const ACCESS_TOKEN =
-  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU1OTQyMjcyLCJqdGkiOiI1Y2ZjOGRkYWU4OTY0N2Q0OTNkNDQ4Y2Q0ZTNkZmY5ZCIsInVzZXJfaWQiOjIwMjM3LCJmaXJzdF9uYW1lIjoiVmluaWNpdXMgQ2Fpblx1MDBlMyIsInJvbGUiOlsic3VwZXJ1c2VyIl0sInByb2R1Y3RzIjpbXSwicHJvZ3JhbXMiOltdfQ.JxG1vNbvzIVyp9Fnp-wlSR7tqJbj3HEotYSUKWeOikU";
-
 interface AuthProviderInterface {
   authType: string;
   getToken(data: IAuthDTO): Promise<string>;
@@ -49,10 +45,6 @@ class AuthProvider implements AuthProviderInterface {
   }
 
   private get storageToken() {
-    const access_token = ACCESS_TOKEN;
-
-    if (access_token) return access_token;
-
     const token = window.localStorage.getItem("token");
     return token || "";
   }
