@@ -156,7 +156,6 @@ const bikeService = new BikeService();
 const eventsService = new EventsService();
 
 const form: IFormCheckin = {
-  user: "20784",
   bike_brand: "",
   bike_category: "",
   bike_model: "",
@@ -217,7 +216,7 @@ export default class Available extends Vue {
   }
 
   async getBrands() {
-    // this.changeLoading(true);
+    this.changeLoading(true);
     const response = await bikeService.getBrands();
     this.formItens.brand = response;
     this.changeLoading(false);
