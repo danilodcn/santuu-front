@@ -6,7 +6,7 @@
       v-text="quiz.description"
       class="text-subtitle-1 text-justify"
     />
-    <v-card elevation="0">
+    <v-form elevation="0" ref="form">
       <v-col v-for="(question, i) in questions" :key="i">
         <span class="text-subtitle-1">{{ question.title }}</span>
         <v-spacer />
@@ -18,7 +18,7 @@
           v-model="value[i]"
         />
       </v-col>
-    </v-card>
+    </v-form>
   </v-card>
 </template>
 
@@ -40,7 +40,7 @@ export default class QuizForm extends Vue {
   @Watch("quiz.questions")
   onQuizQuestionsChange(val: IQuestion[]) {
     if (val) {
-      this.questions = quizHelper.handle(val);
+      this.questions = quizHelper.mountQuestions(val);
 
       this.questions.forEach((item, i) => {
         this.value[i] = item.model;
@@ -59,6 +59,10 @@ export default class QuizForm extends Vue {
   onModelChanged(val: any[]) {
     this.value = val;
     this.$emit("input", val);
+  }
+
+  validate() {
+    return (this.$refs.form as Vue & { validate: () => any })?.validate();
   }
 }
 </script>

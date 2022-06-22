@@ -3,9 +3,9 @@
     <v-checkbox
       v-for="(item, i) in items"
       :key="`item-${i}`"
-      v-model="selected"
       :label="item"
       :value="item"
+      v-model="selected"
       v-bind="getProps()"
     />
   </v-container>
