@@ -1,13 +1,15 @@
 <template>
-  <v-card :to="'/new/bike-events/available/' + data.id.toString()">
+  <v-card :to="'/bike-events/event?event_id=' + data.id.toString()">
     <v-img
       :src="data.url"
       :alt="`imagem do evento ${data.name}`"
-      min-height="150"
+      height="150"
     ></v-img>
     <v-card-title>
       <v-col class="ma-0 pa-0">
-        <span class="text-body-1 break mx-auto" v-text="data.name" />
+        <div class="name">
+          <span class="text-body-2 break mx-auto" v-text="data.name" />
+        </div>
         <v-divider />
         <v-row class="ma-0 pa-0" align="center">
           <v-col cols="2" align-self="center">
@@ -47,6 +49,11 @@ export default class EventCard extends Vue {
 </script>
 
 <style scoped>
+.name {
+  line-height: 20px;
+  overflow: hidden;
+  height: 50px;
+}
 .break {
   min-width: none;
   word-break: break-word;
