@@ -1,8 +1,11 @@
 <template>
   <v-container class="content-container">
-    <v-btn @click="getQuiz">Click aqui</v-btn>
     <v-card class="px-0 px-md-5 py-10">
-      <quiz-form :quiz="quiz"></quiz-form>
+      <quiz-form :quiz="quiz" v-model="model"></quiz-form>
+      <v-card-actions>
+        <v-btn type="submit" class="primary">Enviar Resposta</v-btn>
+        <v-btn @click="clearAll()" class="primary">Limpar Respostas</v-btn>
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -23,12 +26,22 @@ import { quizService } from "@/api/quiz";
 export default class QuizView extends Vue {
   quizID = 1;
   quiz = {};
+  model: any[] = [];
+
   async getQuiz() {
     this.quiz = await quizService.getQuiz(this.quizID);
   }
 
+  onChange(val: any) {
+    this.model = val;
+  }
+
   created() {
     this.getQuiz();
+  }
+
+  clearAll() {
+    this.model = this.model.map(() => null);
   }
 }
 </script>
