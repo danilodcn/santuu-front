@@ -14,7 +14,7 @@ class EventsService extends APIAuthBase {
   }
 
   async doCheckin(form: IFormCheckin) {
-    const url = `/api/bike-event/bike-event-user/checkin/`;
+    const url = `/api/bike-event/bike-event-user/`;
     const data = {
       ...form,
     };
