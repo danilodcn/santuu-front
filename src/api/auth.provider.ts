@@ -2,7 +2,7 @@ import { APIBase } from ".";
 
 // FIXME Variável usada apenas para desenvolvimento
 const ACCESS_TOKEN =
-  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU1NjAyMDQ4LCJqdGkiOiI1NmIxYzRjNTllMDM0ZjVmYmQ3ZDViN2E1ZTg4ZjZkMSIsInVzZXJfaWQiOjE3MTk4LCJmaXJzdF9uYW1lIjoiVEVTVEUiLCJyb2xlIjpbInN1cGVydXNlciJdLCJwcm9kdWN0cyI6WyJTQSIsIlNBIiwiU0EiLCJTQSIsIlNBIl0sInByb2dyYW1zIjpbMCwxLDMsMCwwXSwic2hvcF9uYW1lIjoiU2FudHV1IEJpa2UgRWNvc3lzdGVtIn0.oCbOSwMdgMEmAMCJk4oTndRzDGW0RhhdnpU09yfDWPE";
+  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU1OTA4MzczLCJqdGkiOiI0YWZmNDUyMmNhOTY0NGZlYTA5YTU5MmIzY2E0MTMxNCIsInVzZXJfaWQiOjIwMjM3LCJmaXJzdF9uYW1lIjoiVmluaWNpdXMgQ2Fpblx1MDBlMyIsInJvbGUiOlsic3VwZXJ1c2VyIl0sInByb2R1Y3RzIjpbXSwicHJvZ3JhbXMiOltdfQ.la0eZTJjTkYiP7e7KTQLLMVdkuP2qOo1JkJesjA_Ekw";
 
 interface AuthProviderInterface {
   authType: string;
@@ -27,7 +27,6 @@ class AuthProvider implements AuthProviderInterface {
     const data = { token };
 
     const response = await this.api.request({ url, method: "POST", data });
-    console.log(response);
 
     throw new Error("Method not implemented.");
   }
@@ -45,19 +44,16 @@ class AuthProvider implements AuthProviderInterface {
     const url = "/api/token/auth/";
 
     const response = await this.api.request({ url, method: "GET", data });
-    console.log(response);
 
     return response.access;
   }
 
   private get storageToken() {
     const access_token = ACCESS_TOKEN;
-    console.log(access_token, "access_token do env");
 
     if (access_token) return access_token;
 
     const token = window.localStorage.getItem("token");
-    console.log(token, "token");
     return token || "";
   }
 

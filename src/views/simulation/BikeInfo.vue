@@ -678,7 +678,6 @@ export default class BikeInfo extends Vue {
         }
       } else {
         const data = simulationHelper.handleNoNote(this.form);
-        console.log("data", data);
         const response = await bikeService.setAssociateBike(data);
         proposal_id = response.proposal_id;
 

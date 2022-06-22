@@ -148,6 +148,7 @@ import { IBrand, ICategory, IModel } from "@/types/bike";
 import { IFormCheckin } from "@/types/events";
 import { BikeService } from "@/api/bike";
 import { EventsService } from "@/api/bikeEvents";
+import { formatDateToBar } from "@/utils/utils";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -235,23 +236,14 @@ export default class Available extends Vue {
   }
   async getEvents(bike_event = "") {
     this.changeLoading(true);
-    const response = await eventsService.getEvent({ id: bike_event });
-    response[0].initial_date = this.formatDate(response[0].initial_date);
-    response[0].final_date = this.formatDate(response[0].final_date);
+    const response = await eventsService.getEvent({
+      id: bike_event,
+      type: "going",
+    });
+    response[0].initial_date = formatDateToBar(response[0].initial_date);
+    response[0].final_date = formatDateToBar(response[0].final_date);
     this.bike_event = response[0];
     this.changeLoading(false);
-  }
-
-  formatDate(grossDate: string) {
-    const date = new Date(grossDate);
-
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-
-    const formatted = `${day}/${month}/${year}`;
-
-    return formatted;
   }
 
   async submitForm() {
