@@ -28,7 +28,6 @@ export default class QuizView extends Vue {
   }
 
   created() {
-    console.log("Criando view do quiz");
     this.getQuiz();
   }
 }

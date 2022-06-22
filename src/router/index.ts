@@ -64,6 +64,11 @@ const routes: Array<RouteConfig> = [
     name: "event-success",
     component: () => import("../views/bike_events/SuccessView.vue"),
   },
+  {
+    path: "/bike-events/event",
+    name: "event",
+    component: () => import("../views/bike_events/EventsView.vue"),
+  },
 ];
 
 const router = new VueRouter({
