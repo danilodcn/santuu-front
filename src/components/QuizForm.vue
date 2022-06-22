@@ -10,7 +10,7 @@
       <v-col v-for="(question, i) in questions" :key="i">
         <span class="text-subtitle-1">{{ question.title }}</span>
         <v-spacer />
-        <v-subheader> {{ question.description }} </v-subheader>
+        <span class="mx-0 px-0 text-body-2">{{ question.description }}</span>
         <v-spacer />
         Resposta: {{ question.model }}
         <component
@@ -20,8 +20,8 @@
         />
       </v-col>
       <v-card-actions>
-        <v-btn>Enviar Resposta</v-btn>
-        <v-btn>Limpar Formulário</v-btn>
+        <v-btn type="submit" class="primary">Enviar Resposta</v-btn>
+        <v-btn @click="clearAll()" class="primary">Limpar Formulário</v-btn>
       </v-card-actions>
     </v-card>
   </v-card>
@@ -46,6 +46,12 @@ export default class MainDialog extends Vue {
     if (val) {
       this.questions = quizHelper.handle(val);
     }
+  }
+
+  clearAll() {
+    this.questions.forEach((item) => {
+      item.model = null;
+    });
   }
 }
 </script>
