@@ -252,6 +252,7 @@ export default class Available extends Vue {
       if (response.error) {
         this.fail(response);
         this.changeLoading(false);
+        console.log(response);
         return;
       }
     } else {
