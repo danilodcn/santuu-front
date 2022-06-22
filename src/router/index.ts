@@ -35,19 +35,9 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/bike_events/indexView.vue"),
   },
   {
-    path: "/bike-events/available", //Eventos Disponível
-    name: "available",
-    component: () => import("../views/bike_events/EventsAvailableView.vue"),
-  },
-  {
-    path: "/bike-events/scheduled", //Meus Eventos
-    name: "scheduled",
-    component: () => import("../views/bike_events/MyEventsView.vue"),
-  },
-  {
-    path: "/bike-events/concluded", //Eventos Concluídos
-    name: "concluded",
-    component: () => import("../views/bike_events/EventsConcludedView.vue"),
+    path: "/bike-events/events", //Eventos Disponível/Meu Eventos/Finalizados
+    name: "events",
+    component: () => import("../views/bike_events/EventsView.vue"),
   },
   {
     path: "/bike-events/checkin",
@@ -67,7 +57,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/bike-events/event",
     name: "event",
-    component: () => import("../views/bike_events/EventsView.vue"),
+    component: () => import("../views/bike_events/EventView.vue"),
   },
 ];
 
