@@ -33,8 +33,18 @@ interface IQuestionTypeComponent {
   model: any;
 }
 
+interface IAnswer {
+  question: number;
+  answer: string;
+}
+
+interface IMountAnswer {
+  quiz: number;
+  answers: IAnswer[];
+}
+
 class QuizHelper {
-  handle(questions: IQuestion[]): IQuestionTypeComponent[] {
+  mountQuestions(questions: IQuestion[]): IQuestionTypeComponent[] {
     const questionTypeComponents: IQuestionTypeComponent[] = [];
 
     questions.forEach((question) => {
@@ -59,6 +69,21 @@ class QuizHelper {
     });
 
     return questionTypeComponents;
+  }
+
+  mountRequestData(
+    answers: string[],
+    questions: IQuestion[],
+    quizID: number
+  ): IMountAnswer {
+    const res: IMountAnswer = { quiz: quizID, answers: [] };
+    questions.forEach((value, i) => {
+      const question = value.id;
+      const answer = (answers[i] || "").toString();
+      res.answers.push({ question, answer });
+    });
+    console.log(res);
+    return res;
   }
 }
 

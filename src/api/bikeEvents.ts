@@ -7,13 +7,19 @@ interface IGetEventDTO {
 }
 
 class EventsService extends APIAuthBase {
-  async getEvent(eventTDO: IGetEventDTO): Promise<IEvent[]> {
+  async getEvent(eventTDO: IGetEventDTO) {
     const id = eventTDO.id || "";
-    const url = `/api/bike-event/events/bike-events/${id}?type=${eventTDO.type}`;
+    const url = `/api/bike-event/events/bike-events/?event_id=${id}&type=${eventTDO.type}`;
     let response = await this.request({ url, method: "GET" });
+
+    if (response.error) {
+      return response;
+    }
+
     if (!Array.isArray(response)) {
       response = [response];
     }
+
     return response;
   }
 
