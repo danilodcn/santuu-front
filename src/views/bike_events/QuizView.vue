@@ -21,7 +21,7 @@ import { quizService } from "@/api/quiz";
   name: "QuizView",
 })
 export default class QuizView extends Vue {
-  quizID = 2;
+  quizID = 1;
   quiz = {};
   async getQuiz() {
     this.quiz = await quizService.getQuiz(this.quizID);
