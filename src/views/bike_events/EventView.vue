@@ -58,9 +58,14 @@
       <meta property="og:image" :content="bike_event.poster" />
       <v-card-actions class="back-forward" v-if="!bike_event.registered">
         <v-row justify="end" class="mx-5">
-          <v-btn text class="button" to="/bike-events/quiz/?quiz=1"
-            >Quero me inscrever</v-btn
-          >
+          <v-btn
+            text
+            class="button"
+            v-if="quizID"
+            :to="`/bike-events/quiz/?quiz=${quizID}`"
+            v-text="'Quero me inscrever'"
+          />
+          <span v-else>Não tem questionário</span>
         </v-row>
       </v-card-actions>
     </v-card>
@@ -78,6 +83,7 @@ import { Mutation } from "vuex-class";
 import { IDialog, MutationTypes } from "@/store";
 import { EventsService } from "@/api/bikeEvents";
 import { formatDateToBar, setSocialProperties } from "@/utils/utils";
+import { IQuiz } from "@/types/quiz";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -100,12 +106,19 @@ export default class Available extends Vue {
     poster: "Carregando...",
     description: "Carregando...",
     registered: false,
+    quiz: [] as IQuiz[],
   };
 
   event_id = this.$route.query.event_id;
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
+
+  get quizID(): number {
+    const quiz = this.bike_event.quiz[0];
+
+    return quiz?.id;
+  }
 
   async getEvents(bike_event = "-1") {
     this.changeLoading(true);

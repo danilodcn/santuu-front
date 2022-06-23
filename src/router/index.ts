@@ -30,7 +30,7 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/simulation/BikeInfo.vue"),
   },
   {
-    path: "/bike-events/index", //Página Inicial
+    path: "/bike-events/", //Página Inicial
     name: "event-index",
     component: () => import("../views/bike_events/indexView.vue"),
   },
