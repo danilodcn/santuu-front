@@ -148,7 +148,7 @@ import { IBrand, ICategory, IModel } from "@/types/bike";
 import { IFormCheckin } from "@/types/events";
 import { BikeService } from "@/api/bike";
 import { EventsService } from "@/api/bikeEvents";
-import { formatDateToBar } from "@/utils/utils";
+import { formatDateDetail } from "@/utils/utils";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -240,8 +240,8 @@ export default class Available extends Vue {
       id: bike_event,
       type: "going",
     });
-    response[0].initial_date = formatDateToBar(response[0].initial_date);
-    response[0].final_date = formatDateToBar(response[0].final_date);
+    response[0].initial_date = formatDateDetail(response[0].initial_date);
+    response[0].final_date = formatDateDetail(response[0].final_date);
     this.bike_event = response[0];
     this.changeLoading(false);
   }

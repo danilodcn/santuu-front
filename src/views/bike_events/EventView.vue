@@ -54,18 +54,21 @@
           ></iframe>
         </v-col>
       </v-row>
-      <v-divider class="mt-15" v-if="!bike_event.registered"></v-divider>
+      <v-divider class="mt-15"></v-divider>
       <meta property="og:image" :content="bike_event.poster" />
-      <v-card-actions class="back-forward" v-if="!bike_event.registered">
+      <v-card-actions class="back-forward">
         <v-row justify="end" class="mx-5">
           <v-btn
+            v-if="!bike_event.registered && quizID"
             text
             class="button"
-            v-if="quizID"
             :to="`/bike-events/quiz/?quiz=${quizID}`"
             v-text="'Quero me inscrever'"
           />
-          <span v-else>Não tem questionário</span>
+          <span v-else>Você já está cadastrado</span>
+          <v-icon color="primary" size="16" class="pl-5"
+            >mdi-check-circle</v-icon
+          >
         </v-row>
       </v-card-actions>
     </v-card>
@@ -82,7 +85,7 @@ import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { Mutation } from "vuex-class";
 import { IDialog, MutationTypes } from "@/store";
 import { EventsService } from "@/api/bikeEvents";
-import { formatDateToBar, setSocialProperties } from "@/utils/utils";
+import { formatDateDetail, setSocialProperties } from "@/utils/utils";
 import { IQuiz } from "@/types/quiz";
 
 type CallFunctionLoading = (loading: boolean) => void;
@@ -137,8 +140,8 @@ export default class Available extends Vue {
       return;
     }
 
-    response[0].initial_date = formatDateToBar(response[0].initial_date);
-    response[0].final_date = formatDateToBar(response[0].final_date);
+    response[0].initial_date = formatDateDetail(response[0].initial_date);
+    response[0].final_date = formatDateDetail(response[0].final_date);
     this.bike_event = response[0];
 
     setSocialProperties(
@@ -164,18 +167,6 @@ export default class Available extends Vue {
     this.changeLoading(false);
   }
 
-  formatDate(grossDate: string) {
-    const date = new Date(grossDate);
-
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-
-    const formatted = `${day}/${month}/${year}`;
-
-    return formatted;
-  }
-
   created() {
     this.getEvents(this.event_id as string);
   }
@@ -184,6 +175,9 @@ export default class Available extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.back-forward span {
+  color: $main-dark-color;
+}
 .ident {
   text-indent: 30px;
 }

@@ -13,10 +13,10 @@
           </v-col>
           <v-col
             cols="2"
-            class="ma-auto pa-0 text-center mt-n2"
+            class="ma-0 pa-0 text-center icon-registered"
             v-if="data.registered"
           >
-            <v-icon color="primary">mdi-check-circle</v-icon>
+            <v-icon color="primary" size="16">mdi-check-circle</v-icon>
           </v-col>
         </v-row>
         <v-divider />
@@ -59,6 +59,9 @@ export default class EventCard extends Vue {
 </script>
 
 <style scoped>
+.icon-registered {
+  margin-top: -6px !important;
+}
 .name {
   line-height: 20px;
   overflow: hidden;

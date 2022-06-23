@@ -32,7 +32,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/bike-events/", //Página Inicial
     name: "event-index",
-    component: () => import("../views/bike_events/indexView.vue"),
+    component: () => import("../views/bike_events/IndexView.vue"),
   },
   {
     path: "/bike-events/events", //Eventos Disponível/Meu Eventos/Finalizados
