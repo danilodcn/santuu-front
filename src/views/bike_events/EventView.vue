@@ -59,14 +59,17 @@
       <v-card-actions class="back-forward">
         <v-row justify="end" class="mx-5">
           <v-btn
-            v-if="!bike_event.registered && quizID"
-            text
-            class="button"
+            v-if="!bike_event.registered"
+            class="button primary"
             :to="`/bike-events/quiz/?quiz=${quizID}`"
             v-text="'Quero me inscrever'"
           />
           <span v-else>Você já está cadastrado</span>
-          <v-icon color="primary" size="16" class="pl-5"
+          <v-icon
+            v-if="bike_event.registered"
+            color="primary"
+            size="16"
+            class="pl-5"
             >mdi-check-circle</v-icon
           >
         </v-row>
@@ -228,7 +231,6 @@ h3 {
 .more {
   text-transform: none;
 }
-.button,
 .more {
   color: $main-dark-color !important;
 }

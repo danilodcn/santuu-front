@@ -46,7 +46,7 @@ a {
   text-align: center;
   font-weight: 500;
   color: $main-dark-color;
-  margin: 30px auto 60px 10px;
+  margin: 30px auto 30px 10px;
 }
 .card-events:hover {
   transform: scale(1.05);
@@ -61,7 +61,7 @@ a {
   }
   .title-content {
     font-weight: 800;
-    margin: 30px auto 30px 10px;
+    margin: 30px auto 60px 10px;
   }
 }
 </style>
