@@ -79,7 +79,10 @@ class QuizHelper {
     const res: IMountAnswer = { quiz: quizID, answers: [] };
     questions.forEach((value, i) => {
       const question = value.id;
-      const answer = (answers[i] || "").toString();
+      let answer = answers[i] || "";
+      if (Array.isArray(answer)) {
+        answer = answer.join(";");
+      }
       res.answers.push({ question, answer });
     });
     console.log(res);

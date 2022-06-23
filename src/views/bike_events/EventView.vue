@@ -54,11 +54,13 @@
           ></iframe>
         </v-col>
       </v-row>
-      <v-divider class="mt-15"></v-divider>
+      <v-divider class="mt-15" v-if="!bike_event.registered"></v-divider>
       <meta property="og:image" :content="bike_event.poster" />
-      <v-card-actions class="back-forward">
+      <v-card-actions class="back-forward" v-if="!bike_event.registered">
         <v-row justify="end" class="mx-5">
-          <v-btn text class="button">Quero me inscrever</v-btn>
+          <v-btn text class="button" to="/bike-events/quiz/?quiz=1"
+            >Quero me inscrever</v-btn
+          >
         </v-row>
       </v-card-actions>
     </v-card>
@@ -97,6 +99,7 @@ export default class Available extends Vue {
     final_date: "Carregando...",
     poster: "Carregando...",
     description: "Carregando...",
+    registered: false,
   };
 
   event_id = this.$route.query.event_id;

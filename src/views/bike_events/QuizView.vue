@@ -27,9 +27,13 @@ import { IQuiz } from "@/types/quiz";
   name: "QuizView",
 })
 export default class QuizView extends Vue {
-  quizID = 1;
   quiz: IQuiz = {} as IQuiz;
   model: any[] = [];
+
+  get quizID() {
+    const id = this.$route.query.quiz as string;
+    return Number(id);
+  }
 
   async getQuiz() {
     this.quiz = await getQuizService.handle(this.quizID);

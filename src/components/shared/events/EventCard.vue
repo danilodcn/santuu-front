@@ -7,9 +7,18 @@
     ></v-img>
     <v-card-title>
       <v-col class="ma-0 pa-0">
-        <div class="name">
-          <span class="text-body-2 break mx-auto" v-text="data.name" />
-        </div>
+        <v-row class="ma-0 pa-0">
+          <v-col cols="10" class="name ma-0 pa-0">
+            <span class="text-body-2 break mx-auto" v-text="data.name" />
+          </v-col>
+          <v-col
+            cols="2"
+            class="ma-auto pa-0 text-center mt-n1"
+            v-if="data.registered"
+          >
+            <v-icon color="primary">mdi-check-circle</v-icon>
+          </v-col>
+        </v-row>
         <v-divider />
         <v-row class="ma-0 pa-0" align="center">
           <v-col cols="2" align-self="center">
@@ -36,6 +45,7 @@ interface ICardData {
   url: string;
   name: string;
   final_date: string;
+  registered: boolean;
 }
 
 @Component

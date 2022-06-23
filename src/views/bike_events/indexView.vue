@@ -2,18 +2,18 @@
   <div class="content-container">
     <h3 class="title-content">O que deseja fazer?</h3>
     <div class="cards-sinister">
-      <a href="available" class="card-events">
+      <router-link to="/bike-events/events/?type=going" class="card-events">
         <img src="@/assets/bike.svg/" width="125px" height="85px" />
         <p>Eventos Disponíveis</p>
-      </a>
-      <a href="scheduled" class="card-events">
+      </router-link>
+      <router-link to="/bike-events/events/?type=my_events" class="card-events">
         <img src="@/assets/checklist.svg" width="125px" height="85px" />
         <p>Meus Eventos</p>
-      </a>
-      <a href="concluded" class="card-events">
+      </router-link>
+      <router-link to="/bike-events/events/?type=finished" class="card-events">
         <img src="@/assets/bike.svg/" width="125px" height="85px" />
         <p>Eventos Finalizados</p>
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
