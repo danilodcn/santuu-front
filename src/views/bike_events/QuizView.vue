@@ -84,6 +84,7 @@ export default class QuizView extends VuePlus {
     console.log("Dados", data);
 
     await answerQuestion.handle(data);
+    this.$router.push({ path: "/bike-events/events?type=my_events" });
   }
 }
 </script>
