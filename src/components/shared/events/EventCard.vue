@@ -13,7 +13,7 @@
           </v-col>
           <v-col
             cols="2"
-            class="ma-auto pa-0 text-center mt-n1"
+            class="ma-auto pa-0 text-center mt-n2"
             v-if="data.registered"
           >
             <v-icon color="primary">mdi-check-circle</v-icon>
