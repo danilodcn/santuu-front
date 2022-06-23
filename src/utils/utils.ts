@@ -1,3 +1,7 @@
+import { Vue, Watch } from "vue-property-decorator";
+import { IDialog, MutationTypes } from "@/store";
+import { Mutation } from "vuex-class";
+
 export function formatPrice(price: number): string {
   return Number(price).toFixed(2);
 }
@@ -39,4 +43,55 @@ export function setSocialProperties(
   document
     .querySelector('meta[property="og:image"]')
     ?.setAttribute("content", image);
+}
+
+type CallFunctionDialog = (payload: IDialog) => void;
+type TermsParams = {
+  message: string;
+  messageOk: string;
+  messageCancel: string;
+  agreeFunction?: () => any;
+  disagreeFunction?: () => any;
+};
+export class VuePlus extends Vue {
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
+
+  agreeFunction = () => {
+    return;
+  };
+  disagreeFunction = () => {
+    return;
+  };
+
+  requestAcceptTerms(params: TermsParams) {
+    this.changeMainDialog({
+      msg: params.message,
+      title: "Termos e Condições",
+      persistent: true,
+      active: true,
+      bntClose: false,
+      btnOkCancel: true,
+      msgOk: params.messageOk,
+      msgCancel: params.messageCancel,
+      ident: false,
+      termsAndConditions: true,
+    });
+    if (params.agreeFunction != undefined) {
+      this.agreeFunction = params.agreeFunction;
+    }
+    if (params.disagreeFunction != undefined) {
+      this.disagreeFunction = params.disagreeFunction;
+    }
+  }
+
+  @Watch("$store.state.dialog.isResponseOk")
+  onResponseChange(val: boolean) {
+    if (val) {
+      this.agreeFunction();
+    } else {
+      const dialog = this.$store.state.dialog;
+      dialog.isResponseOk = undefined;
+      this.disagreeFunction();
+    }
+  }
 }

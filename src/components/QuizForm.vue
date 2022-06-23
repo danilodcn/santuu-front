@@ -1,25 +1,17 @@
 <template>
-  <v-card>
-    <v-card-title v-text="quiz.title" class="text-h4" />
-    <v-spacer />
-    <v-card-subtitle
-      v-text="quiz.description"
-      class="text-subtitle-1 text-justify"
-    />
-    <v-form elevation="0" ref="form">
-      <v-col v-for="(question, i) in questions" :key="i">
-        <span class="text-subtitle-1">{{ question.title }}</span>
-        <v-spacer />
-        <span class="mx-0 px-0 text-body-2">{{ question.description }}</span>
-        <v-spacer />
-        <component
-          :is="question.component"
-          v-bind="question.props"
-          v-model="value[i]"
-        />
-      </v-col>
-    </v-form>
-  </v-card>
+  <v-form elevation="0" ref="form">
+    <v-col v-for="(question, i) in questions" :key="i">
+      <span class="text-subtitle-1">{{ question.title }}</span>
+      <v-spacer />
+      <span class="mx-0 px-0 text-body-2">{{ question.description }}</span>
+      <v-spacer />
+      <component
+        :is="question.component"
+        v-bind="question.props"
+        v-model="value[i]"
+      />
+    </v-col>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -66,3 +58,7 @@ export default class QuizForm extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import "@/scss/main.scss";
+</style>

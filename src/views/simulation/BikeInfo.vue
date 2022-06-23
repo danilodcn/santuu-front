@@ -391,22 +391,18 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { VuePlus } from "@/utils/utils";
 import { Mutation } from "vuex-class";
 import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
-import {
-  IForm,
-  IFormItems,
-  INextStepDTO,
-  IProposalDTO,
-} from "@/types/simulation";
+import { IForm, IFormItems, INextStepDTO } from "@/types/simulation";
 import { SimulationHelper } from "@/helper/simulation";
 import { CurrencyFormatter } from "@/utils/currency";
 import { BikeService } from "@/api/bike";
 import { QRCodeService } from "@/api/qr_code";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { IQRCode } from "@/types/qr_code";
-import { IDialog, MutationTypes } from "@/store";
+import { MutationTypes } from "@/store";
 
 const bikeService = new BikeService();
 const qrCodeService = new QRCodeService();
@@ -441,7 +437,6 @@ const formItems: IFormItems = {
 };
 
 type CallFunctionLoading = (loading: boolean) => void;
-type CallFunctionDialog = (payload: IDialog) => void;
 
 @Component({
   components: {
@@ -449,7 +444,7 @@ type CallFunctionDialog = (payload: IDialog) => void;
     VueRecaptcha,
   },
 })
-export default class BikeInfo extends Vue {
+export default class BikeInfo extends VuePlus {
   menu = false;
   form = form;
   formItems = formItems;
@@ -474,7 +469,6 @@ export default class BikeInfo extends Vue {
   ];
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
-  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
   // Date input starts
   datePast(value: string) {
@@ -734,31 +728,17 @@ export default class BikeInfo extends Vue {
     ).resetValidation();
 
     if (val == false) {
-      this.changeMainDialog({
-        msg: `<b>1 -</b> O Seguro Clube Santuu, Sem Nota, é um seguro feito pelo LMI (Limite Máximo de Indenização) determinado pelo cliente e de acordo com configurações e ano da bicicleta, considerando a depreciação pelo uso.
+      this.requestAcceptTerms({
+        message: `<b>1 -</b> O Seguro Clube Santuu, Sem Nota, é um seguro feito pelo LMI (Limite Máximo de Indenização) determinado pelo cliente e de acordo com configurações e ano da bicicleta, considerando a depreciação pelo uso.
               <br/><b>2 -</b> Em caso de sinistro total ou parcial, o reembolso será em dinheiro, de acordo com cobertura acionada e LMI (Limite Máximo de Indenização) aceito.
               <br/><b>3 -</b> Nesta modalidade de seguro Sem Nota, NÃO haverá reposição do bem por item igual ou similar ao Novo como no produto convencional do Clube Santuu
               <br/><b>4 -</b> O cliente, ao aceitar esse termo, garante que o produto, apesar de não ter nota fiscal, não é um produto proveniente de roubo/furto ou ato ilícito. A procedência do produto é 100% garantida pelo cliente que está solicitando o seguro.`,
-        title: "Termos e Condições",
-        persistent: true,
-        active: true,
-        bntClose: false,
-        btnOkCancel: true,
-        msgOk: "Continuar",
-        msgCancel: "Voltar",
-        ident: false,
-        termsAndConditions: true,
+        messageOk: "Continuar",
+        messageCancel: "Voltar",
+        disagreeFunction: () => {
+          (this.$refs.entireForm as Vue & { reset: () => boolean }).reset();
+        },
       });
-    }
-  }
-
-  @Watch("$store.state.dialog.isResponseOk")
-  onResponseChange(val: boolean) {
-    if (!val) {
-      const dialog = this.$store.state.dialog;
-      dialog.isResponseOk = undefined;
-      this.$store.commit(MutationTypes.CHANGE_COVERAGES, dialog);
-      (this.$refs.entireForm as Vue & { reset: () => boolean }).reset();
     }
   }
 
