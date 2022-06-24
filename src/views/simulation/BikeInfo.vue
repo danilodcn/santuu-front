@@ -35,7 +35,7 @@
               >
               </v-select>
               <info-dialog
-                :text="`Informe se você possui ou não a nota fical da sua bike!`"
+                :text="`Sua bike possui nota fiscal?`"
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
@@ -214,8 +214,8 @@
               >
               </v-autocomplete>
               <info-dialog
-                :text="`Loja de origem na qual foi comprada a bike!
-                Se sua loja não estiver na lista, selecionar Santuu Bike Store.`"
+                :text="`Loja/Parceiro de origem na qual foi comprada a bike!
+                Se sua loja/parceiro não estiver na lista, selecionar Santuu Bike Store.`"
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
