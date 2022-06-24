@@ -45,6 +45,7 @@ interface ICardData {
   url: string;
   name: string;
   final_date: string;
+  local: string;
   registered: boolean;
 }
 

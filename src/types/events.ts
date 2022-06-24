@@ -4,6 +4,7 @@ export interface IEvent {
   poster: string;
   initial_date: string;
   final_date: string;
+  local: string;
   registered?: boolean;
 }
 
