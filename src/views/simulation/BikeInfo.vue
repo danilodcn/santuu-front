@@ -172,9 +172,8 @@
               </info-dialog>
               <info-dialog
                 v-if="!form.hasNote"
-                :text="`O valor da bicicleta deve ser um valor determinado. Determinar o valor real 
-                da bike de acordo com configurações e ano da bicicleta, considerando a depreciação 
-                pelo uso e valor de mercado usado atual.`"
+                :text="`O valor da sua bike deve ser o valor de mercado atual considerando a marca
+                , modelo, ano e estado de conservação da bicicleta.`"
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
@@ -214,8 +213,8 @@
               >
               </v-autocomplete>
               <info-dialog
-                :text="`Loja/Parceiro de origem na qual foi comprada a bike!
-                Se sua loja/parceiro não estiver na lista, selecionar Santuu Bike Store.`"
+                :text="`Loja de origem na qual foi comprada a bike ou parceiro que indicou a Santuu.
+                Se sua loja ou parceiro não estiver na lista, selecionar Santuu Bike Store.`"
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
