@@ -158,16 +158,8 @@ export default class Available extends Vue {
   }
 
   fail(response: any) {
-    this.changeMainDialog({
-      msg:
-        response.axiosError.response.data?.error ||
-        "Houve algum erro na hora de carregar o evento",
-      title: "Erro",
-      persistent: true,
-      active: true,
-      bntClose: false,
-    });
     this.changeLoading(false);
+    this.$router.push({ path: "/bike-events/events?type=my_events" });
   }
 
   created() {

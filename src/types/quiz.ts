@@ -13,6 +13,7 @@ interface IQuiz {
   questions: IQuestion[];
   title: string;
   description: string;
+  terms_and_conditions: string;
 }
 
 export { IQuiz, IQuestion };

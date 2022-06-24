@@ -7,6 +7,9 @@
           <event-card :data="event" />
         </v-col>
       </template>
+      <h4 class="no-event" v-if="events.length < 1">
+        Nenhum evento disponível
+      </h4>
     </v-row>
   </v-container>
 </template>
@@ -55,6 +58,11 @@ export default class Available extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.no-event {
+  font-weight: 200;
+  color: $main-dark-color;
+  margin: 40px auto 0px 40px;
+}
 .title-content {
   font-weight: 500;
   color: $main-dark-color;

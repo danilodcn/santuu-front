@@ -64,10 +64,7 @@ export default class QuizView extends VuePlus {
     )?.validate();
     if (isValid) {
       this.requestAcceptTerms({
-        message: `<b>1 -</b> O Seguro Clube Santuu, Sem Nota, é um seguro feito pelo LMI (Limite Máximo de Indenização) determinado pelo cliente e de acordo com configurações e ano da bicicleta, considerando a depreciação pelo uso.
-              <br/><b>2 -</b> Em caso de sinistro total ou parcial, o reembolso será em dinheiro, de acordo com cobertura acionada e LMI (Limite Máximo de Indenização) aceito.
-              <br/><b>3 -</b> Nesta modalidade de seguro Sem Nota, NÃO haverá reposição do bem por item igual ou similar ao Novo como no produto convencional do Clube Santuu
-              <br/><b>4 -</b> O cliente, ao aceitar esse termo, garante que o produto, apesar de não ter nota fiscal, não é um produto proveniente de roubo/furto ou ato ilícito. A procedência do produto é 100% garantida pelo cliente que está solicitando o seguro.`,
+        message: this.quiz.terms_and_conditions,
         messageOk: "Continuar",
         messageCancel: "Voltar",
         agreeFunction: this.submitForm,
