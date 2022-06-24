@@ -35,8 +35,7 @@
               >
               </v-select>
               <info-dialog
-                :text="`Indique se sua bike é nova ou usada! Consideramos bike Nova 
-                todas as bicicletas que tem até 60 (sessenta) dias decorridos da data da nota fiscal.`"
+                :text="`Informe se você possui ou não a nota fical da sua bike!`"
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
@@ -163,9 +162,19 @@
               >
               </v-text-field>
               <info-dialog
+                v-if="form.hasNote"
                 :text="`Preço Sugerido ao Consumidor (PSC), 
             definido pelo fabricante em seu website, para o modelo da sua bicicleta no ano vigente... 
             ou seja, o preço da sua bicicleta NOVA.`"
+                class="info-button"
+              >
+                <v-icon size="18">mdi-information</v-icon>
+              </info-dialog>
+              <info-dialog
+                v-if="!form.hasNote"
+                :text="`O valor da bicicleta deve ser um valor determinado. Determinar o valor real 
+                da bike de acordo com configurações e ano da bicicleta, considerando a depreciação 
+                pelo uso e valor de mercado usado atual.`"
                 class="info-button"
               >
                 <v-icon size="18">mdi-information</v-icon>
