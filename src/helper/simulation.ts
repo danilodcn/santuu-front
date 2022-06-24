@@ -40,7 +40,7 @@ export class SimulationHelper {
         bike_use: 1,
         rental_bike: null,
         has_tax_invoice: true,
-        model: form.model,
+        model: form.modelDesc,
         situation: form.situation || 0,
       },
     };

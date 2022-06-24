@@ -706,6 +706,10 @@ export default class BikeInfo extends VuePlus {
     });
     this.changeLoading(false);
   }
+  resetPrice() {
+    this.form.price = 0;
+    this.textPrice = "00,00";
+  }
 
   @Watch("form.brand")
   onBrandChange(val: number, oldVal: number) {
@@ -728,6 +732,7 @@ export default class BikeInfo extends VuePlus {
     ).resetValidation();
 
     if (val == false) {
+      this.resetPrice();
       this.requestAcceptTerms({
         message: `<b>1 -</b> O Seguro Clube Santuu, Sem Nota, é um seguro feito pelo LMI (Limite Máximo de Indenização) determinado pelo cliente e de acordo com configurações e ano da bicicleta, considerando a depreciação pelo uso.
               <br/><b>2 -</b> Em caso de sinistro total ou parcial, o reembolso será em dinheiro, de acordo com cobertura acionada e LMI (Limite Máximo de Indenização) aceito.
@@ -752,9 +757,13 @@ export default class BikeInfo extends VuePlus {
       );
 
       this.form.modelDesc = model[0].description_1;
-      this.form.price = (model[0] || model).price;
       this.form.modelId = model[0].id;
-      this.textPrice = this.form.price.toString().replace(".", ",");
+      if (this.form.hasNote) {
+        this.form.price = (model[0] || model).price;
+        this.textPrice = this.form.price.toString().replace(".", ",");
+      } else {
+        this.resetPrice();
+      }
     } else {
       this.form.modelDesc = val;
       this.form.price = undefined;
