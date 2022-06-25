@@ -2,16 +2,16 @@
   <v-app id="app" light>
     <v-row>
       <div id="fake-menu"></div>
-      <!-- <nav id="dev-nav">
-        <router-link to="/">Home</router-link> |
+      <nav id="dev-nav">
         <router-link to="/simulation/bike-info">BikeInfo</router-link> |
+        <router-link to="/bike-events/">Eventos</router-link> |
+        <router-link to="/bike-events/checkin">Checkin</router-link> |
         <router-link to="/simulation/proposal-values">
           Proposal Values
         </router-link>
         |
-        <router-link to="/about">About</router-link>
+        <router-link to="/raffle">Sorteador</router-link>
       </nav>
-      <main-dialog /> -->
       <div id="content-main" class="col">
         <loading-main></loading-main>
         <main-dialog />
@@ -56,6 +56,10 @@ export default class HelloWorld extends Vue {
 #dev-nav {
   padding: 30px;
   text-align: center;
+
+  width: 320px !important;
+  height: 1000px;
+  background-color: rgb(204, 166, 166);
 
   a {
     font-weight: bold;
