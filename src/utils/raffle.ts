@@ -10,6 +10,7 @@ interface IAdicionalField {
   component: string;
   text?: string;
   getProps(props?: any[]): Promise<any[]>;
+  execute?(data: any): void;
 }
 
 interface IRaffleType {
@@ -20,9 +21,9 @@ interface IRaffleType {
 interface IRaffleTypeAction {
   type: IRaffleType;
   resultText: string;
-  verboseResultText?: string;
+  verboseResultText: string;
   memberName: string;
-  verboseMemberName?: string;
+  verboseMemberName: string;
   adicionalField?: IAdicionalField;
   adicionalAction?: IAdicionalField;
 }
@@ -30,15 +31,14 @@ interface IRaffleTypeAction {
 const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
   {
     type: { type: RaffleTypes.BIKE_EVENT, name: "Evento" },
-    resultText: "O número sorteado foi:",
-    verboseResultText: "Os números sorteados foram:",
+    resultText: "O participante sorteado foi:",
+    verboseResultText: "Os participantes sorteados foram:",
     memberName: "participante",
     verboseMemberName: "participantes",
     adicionalField: {
       component: "v-autocomplete",
-      getProps: async (props: any[]) => {
+      getProps: async () => {
         const events = await eventService.getEvent({ id: "", type: "" });
-        console.log("meus eventos", events);
 
         return [
           { filled: true },
@@ -61,10 +61,10 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
   },
   {
     type: { type: RaffleTypes.NUMBER, name: "Numero" },
-    resultText: "O participante sorteado foi:",
-    verboseResultText: "Os participantes sorteados foram:",
-    memberName: "participante",
-    verboseMemberName: "participantes",
+    resultText: "O número sorteado foi:",
+    verboseResultText: "Os números sorteados foram:",
+    memberName: "número",
+    verboseMemberName: "números",
   },
 ];
 
