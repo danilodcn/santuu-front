@@ -1,24 +1,15 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/",
-    name: "home",
-    component: HomeView,
+    path: "/raffle",
+    name: "raffle",
+    component: () => import("@/views/RaffleView.vue"),
   },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  },
+
   {
     path: "/simulation/proposal-values/:proposal_id/",
     name: "proposal-values",
@@ -32,7 +23,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/bike-events/", //Página Inicial
     name: "event-index",
-    component: () => import("../views/bike_events/IndexView.vue"),
+    component: () => import("@/views/bike_events/IndexView.vue"),
   },
   {
     path: "/bike-events/events", //Eventos Disponível/Meu Eventos/Finalizados
