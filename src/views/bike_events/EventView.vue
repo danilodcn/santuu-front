@@ -44,9 +44,30 @@
         <v-col class="col-10 offset-1 offset-md-0 pt-8 pt-md-14">
           <h4>Local</h4>
         </v-col>
-        <v-col class="col-10 offset-1 offset-md-0 py-0 mb-15">
+        <v-col class="col-10 offset-1 offset-md-0 py-0 text-justify">
+          <p class="pl-8 mb-5">
+            <strong>CEP:</strong> {{ bike_event.address.zipcode }}<br />
+            <strong>Endereço:</strong> {{ bike_event.address.street }}<br />
+            <strong>Número:</strong> {{ bike_event.address.number }}<br />
+            <strong>Bairo:</strong> {{ bike_event.address.neighborhood }}<br />
+            <strong>Complemento:</strong> {{ bike_event.address.complement
+            }}<br />
+            <strong>Cidade:</strong> {{ bike_event.address.city }}<br />
+            <strong>Estado:</strong> {{ bike_event.address.state }}<br />
+          </p>
+          <p
+            class="text-justify ident mb-15"
+            v-if="bike_event.coordinates != ''"
+          >
+            Você pode conferir o endereço no mapa abaixo!
+          </p>
+        </v-col>
+        <v-col
+          class="col-10 offset-1 offset-md-0 py-0 mb-15"
+          v-if="bike_event.coordinates != ''"
+        >
           <iframe
-            :src="`https://maps.google.com/maps?q=${bike_event.local}&amp;hl=ptbr;z=16.25&amp;output=embed`"
+            :src="`https://maps.google.com/maps?q=${bike_event.coordinates}&amp;hl=ptbr;z=16.25&amp;output=embed`"
             style="border: 0"
             allowfullscreen=""
             loading="lazy"
@@ -90,6 +111,7 @@ import { IDialog, MutationTypes } from "@/store";
 import { EventsService } from "@/api/bikeEvents";
 import { formatDateDetail, setSocialProperties } from "@/utils/utils";
 import { IQuiz } from "@/types/quiz";
+import { IEvent } from "@/types/events";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -105,15 +127,26 @@ const eventsService = new EventsService();
   },
 })
 export default class Available extends Vue {
-  bike_event = {
+  bike_event: IEvent = {
     name: "Carregando...",
     initial_date: "Carregando...",
     final_date: "Carregando...",
     poster: "Carregando...",
     description: "Carregando...",
-    local: "",
+    coordinates: "",
     registered: false,
-    quiz: [] as IQuiz[],
+    address: {
+      country: "Carregando...",
+      state: "Carregando...",
+      city: "Carregando...",
+      zipcode: "Carregando...",
+      street: "Carregando...",
+      complement: "Carregando...",
+      number: "Carregando...",
+      neighborhood: "Carregando...",
+      address_type: "Carregando...",
+    },
+    quiz: {} as IQuiz,
   };
 
   event_id = this.$route.query.event_id;
@@ -122,9 +155,9 @@ export default class Available extends Vue {
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
   get quizID(): number {
-    const quiz = this.bike_event.quiz[0];
+    const quiz = this.bike_event.quiz;
 
-    return quiz?.id;
+    return quiz?.id || 0;
   }
 
   async getEvents(bike_event = "-1") {

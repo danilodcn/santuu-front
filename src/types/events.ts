@@ -1,12 +1,17 @@
+import { IAddress } from "@/types/address";
+import { IQuiz } from "./quiz";
+
 export interface IEvent {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   poster: string;
   initial_date: string;
   final_date: string;
-  local: string;
+  coordinates: string;
+  address?: IAddress;
   registered?: boolean;
+  quiz?: IQuiz;
 }
 
 export interface IFormItems {

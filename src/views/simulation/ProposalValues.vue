@@ -700,11 +700,6 @@ h3 {
 }
 </style>
 <style>
-@media (max-width: 768px) {
-  body {
-    overflow-x: clip;
-  }
-}
 .info-button {
   min-width: 0px !important;
   width: 20px !important;

@@ -54,6 +54,7 @@ export default class HelloWorld extends Vue {
   background-color: #f9f9fc !important;
 }
 #dev-nav {
+  display: none;
   padding: 30px;
   text-align: center;
 
@@ -68,6 +69,11 @@ export default class HelloWorld extends Vue {
     &.router-link-exact-active {
       color: #42b983;
     }
+  }
+}
+@media (max-width: 768px) {
+  body {
+    overflow-x: clip;
   }
 }
 </style>

@@ -41,11 +41,6 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/bike_events/QuizView.vue"),
   },
   {
-    path: "/bike-events/success",
-    name: "event-success",
-    component: () => import("../views/bike_events/SuccessView.vue"),
-  },
-  {
     path: "/bike-events/event",
     name: "event",
     component: () => import("../views/bike_events/EventView.vue"),
