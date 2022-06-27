@@ -2,7 +2,9 @@
   <v-container fluid>
     <v-card class="box-content">
       <v-row justify="space-between">
-        <v-col cols="9" class="title d-md-none d-sm-none d-none d-lg-flex"
+        <v-col
+          cols="9"
+          class="title d-md-none d-sm-none d-none d-lg-flex pl-0 pl-md-12"
           ><h5>Nova Proposta de Seguro</h5></v-col
         >
         <v-col cols="12" lg="3"
@@ -464,17 +466,9 @@ export default class BikeInfo extends VuePlus {
   todayDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
   formIsValid = false;
 
-  obrigatory = [
-    (v: string) =>
-      !!v || v == "0" || this.form.hasNote == undefined || "Campo obrigatório",
-  ];
-  obrigatoryNote = [
-    (v = "") => !!v || this.form.hasNote != true || "Campo obrigatório",
-  ];
-  obrigatoryNoNote = [
-    (v = "") =>
-      !!v || v == "0" || this.form.hasNote != false || "Campo obrigatório", // != false => [undefined, true]
-  ];
+  obrigatory = [];
+  obrigatoryNote = [];
+  obrigatoryNoNote = [];
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
 
@@ -626,11 +620,9 @@ export default class BikeInfo extends VuePlus {
     if (
       !(this.$refs.entireForm as Vue & { validate: () => boolean }).validate()
     ) {
-      this.changeLoading(true);
-      this.changeLoading(false);
       return;
     }
-
+    console.log("Fresq");
     if (this.form.recaptchaToken != "") {
       this.changeLoading(true);
 

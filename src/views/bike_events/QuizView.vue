@@ -81,6 +81,21 @@ export default class QuizView extends VuePlus {
     console.log("Dados", data);
 
     await answerQuestion.handle(data);
+
+    this.changeMainDialog({
+      msg: "Seu cadastro foi concluído com sucesso",
+      title: "Cadastrado com sucesso",
+      persistent: true,
+      active: true,
+      bntClose: false,
+      btnOkOnly: true,
+      msgOk: "Ir para meus eventos",
+      ident: false,
+      afterFunction: this.toMyEvents,
+    });
+  }
+
+  toMyEvents(value: boolean) {
     this.$router.push({ path: "/bike-events/events?type=my_events" });
   }
 }

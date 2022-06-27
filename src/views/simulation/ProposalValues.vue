@@ -666,7 +666,8 @@ h3 {
   margin-bottom: 20px;
 }
 .back-foward {
-  margin-top: 80px;
+  margin-top: 40px;
+  margin-bottom: 50px;
 }
 .back-foward button {
   font-size: 12px !important;
@@ -680,6 +681,7 @@ h3 {
     padding: 50px;
   }
   .back-foward button {
+    margin-top: 80px;
     font-size: 16px !important;
   }
   .content {
@@ -698,6 +700,11 @@ h3 {
 }
 </style>
 <style>
+@media (max-width: 768px) {
+  body {
+    overflow-x: clip;
+  }
+}
 .info-button {
   min-width: 0px !important;
   width: 20px !important;

@@ -18,11 +18,13 @@ export interface IDialog {
   bntClose: boolean;
   persistent: boolean;
   btnOkCancel?: boolean;
+  btnOkOnly?: boolean;
   msgOk?: string;
   msgCancel?: string;
   isResponseOk?: boolean;
   ident?: boolean;
   termsAndConditions?: boolean;
+  afterFunction?: (value: boolean) => any;
 }
 
 const state = {
@@ -33,11 +35,13 @@ const state = {
     bntClose: false,
     persistent: false,
     btnOkCancel: false,
+    btnOkOnly: false,
     msgOk: "",
     msgCancel: "",
     isResponseOk: undefined,
     ident: true,
     termsAndConditions: false,
+    afterFunction: undefined,
   } as IDialog,
   proposal_coverages: [] as ICoverage[],
   loading: false,

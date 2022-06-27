@@ -36,30 +36,28 @@
         >
         </v-checkbox>
       </div>
-      <v-row class="px-0 mx-0" justify="center">
-        <v-col class="px-0 mx-0" justify="center">
-          <v-btn
-            class="col-6"
-            small
-            text
-            color="red"
-            @click="response(false)"
-            v-if="dialog.btnOkCancel"
-          >
-            {{ dialog.msgCancel }}
-          </v-btn>
-          <v-btn
-            v-show="check"
-            class="col-6"
-            small
-            text
-            color="primary"
-            @click="response(true)"
-            v-if="dialog.btnOkCancel"
-          >
-            {{ dialog.msgOk }}
-          </v-btn>
-        </v-col>
+      <v-row class="px-0 mx-0 py-4" justify="end">
+        <v-btn
+          class="col-6"
+          small
+          text
+          color="red"
+          @click="response(false, dialog.afterFunction)"
+          v-if="dialog.btnOkCancel && !dialog.btnOkOnly"
+        >
+          {{ dialog.msgCancel }}
+        </v-btn>
+        <v-btn
+          v-show="check || !dialog.termsAndConditions"
+          class="col-6"
+          small
+          text
+          color="primary"
+          @click="response(true, dialog.afterFunction)"
+          v-if="dialog.btnOkCancel || dialog.btnOkOnly"
+        >
+          {{ dialog.msgOk }}
+        </v-btn>
       </v-row>
     </v-card>
   </v-dialog>
@@ -75,7 +73,14 @@ export default class MainDialog extends Vue {
   @State((state: RootState) => state.dialog) dialog!: IDialog;
   check = false;
 
-  response(value: boolean) {
+  response(
+    value: boolean,
+    afterFunction: any | ((value: boolean) => any) = undefined
+  ) {
+    if (afterFunction != undefined) {
+      afterFunction(value);
+    }
+
     this.check = false;
     this.dialog.active = false;
     this.dialog.termsAndConditions = false;
