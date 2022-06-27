@@ -46,7 +46,9 @@
 
             <div class="item" v-show="form.hasNote">
               <v-select
-                :rules="[(v) => v != undefined || 'Campo obrigatório']"
+                :rules="[
+                  (v) => v != undefined || !form.hasNote || 'Campo obrigatório',
+                ]"
                 color="grey"
                 v-model="form.situation"
                 attach
