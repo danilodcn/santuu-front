@@ -73,7 +73,7 @@ export default class HelloWorld extends Vue {
 }
 @media (max-width: 768px) {
   body {
-    overflow-x: clip;
+    overflow-x: clip !important;
   }
 }
 </style>
