@@ -23,8 +23,12 @@ import InfoDialog from "@/components/shared/InfoDialog.vue";
 import QuizForm from "@/components/QuizForm.vue";
 import { getQuizService } from "@/api/quiz/getQuiz";
 import { answerQuestion } from "@/api/quiz/answerQuiz";
+import { Mutation } from "vuex-class";
 import { quizHelper } from "@/utils/quiz";
 import { IQuiz } from "@/types/quiz";
+import { MutationTypes } from "@/store";
+
+type CallFunctionLoading = (loading: boolean) => void;
 
 @Component({
   components: {
@@ -36,6 +40,8 @@ import { IQuiz } from "@/types/quiz";
 export default class QuizView extends VuePlus {
   quiz: IQuiz = {} as IQuiz;
   model: any[] = [];
+
+  @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
 
   get quizID() {
     const id = this.$route.query.quiz as string;
@@ -73,17 +79,24 @@ export default class QuizView extends VuePlus {
   }
 
   async submitForm() {
+    this.changeLoading(true);
+
     const data = quizHelper.mountRequestData(
       this.model,
       this.quiz.questions,
       this.quizID
     );
-    console.log("Dados", data);
 
-    await answerQuestion.handle(data);
+    let response = await answerQuestion.handle(data);
+    console.log(response);
+
+    if (response.error) {
+      this.fail(response);
+      return;
+    }
 
     this.changeMainDialog({
-      msg: "Seu cadastro foi concluído com sucesso",
+      msg: "Sua inscrição foi enviada por e-mail e SMS",
       title: "Cadastrado com sucesso",
       persistent: true,
       active: true,
@@ -93,10 +106,24 @@ export default class QuizView extends VuePlus {
       ident: false,
       afterFunction: this.toMyEvents,
     });
+
+    this.changeLoading(false);
   }
 
   toMyEvents(value: boolean) {
     this.$router.push({ path: "/bike-events/events?type=my_events" });
+  }
+
+  fail(response: any) {
+    this.changeLoading(false);
+    this.changeMainDialog({
+      msg: response.axiosError.response.data.error,
+      title: "Erro",
+      persistent: true,
+      active: true,
+      bntClose: true,
+      ident: false,
+    });
   }
 }
 </script>

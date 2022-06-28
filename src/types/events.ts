@@ -11,7 +11,7 @@ export interface IEvent {
   coordinates: string;
   address?: IAddress;
   registered?: boolean;
-  quiz?: IQuiz;
+  quiz?: IQuiz[];
 }
 
 export interface IFormItems {

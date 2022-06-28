@@ -41,7 +41,10 @@
             {{ bike_event.final_date }}
           </p>
         </v-col>
-        <v-col class="col-10 offset-1 offset-md-0 pt-8 pt-md-14">
+        <v-col
+          class="col-10 offset-1 offset-md-0 pt-8 pt-md-14"
+          v-if="bike_event.address || bike_event.coordinates"
+        >
           <h4>Local</h4>
         </v-col>
         <v-col
@@ -49,14 +52,34 @@
           v-if="bike_event.address"
         >
           <p class="pl-8 mb-5">
-            <strong>CEP:</strong> {{ bike_event.address.zipcode }}<br />
-            <strong>Endereço:</strong> {{ bike_event.address.street }}<br />
-            <strong>Número:</strong> {{ bike_event.address.number }}<br />
-            <strong>Bairo:</strong> {{ bike_event.address.neighborhood }}<br />
-            <strong>Complemento:</strong> {{ bike_event.address.complement
-            }}<br />
-            <strong>Cidade:</strong> {{ bike_event.address.city }}<br />
-            <strong>Estado:</strong> {{ bike_event.address.state }}<br />
+            <span v-if="bike_event.address.zipcode">
+              <strong>CEP:</strong>
+              {{ bike_event.address.zipcode }}<br />
+            </span>
+            <span v-if="bike_event.address.street">
+              <strong>Endereço:</strong>
+              {{ bike_event.address.street }}<br />
+            </span>
+            <span v-if="bike_event.address.number">
+              <strong>Número:</strong>
+              {{ bike_event.address.number }}<br />
+            </span>
+            <span v-if="bike_event.address.neighborhood">
+              <strong>Bairo:</strong>
+              {{ bike_event.address.neighborhood }}<br />
+            </span>
+            <span v-if="bike_event.address.complement">
+              <strong>Complemento:</strong>
+              {{ bike_event.address.complement }}<br />
+            </span>
+            <span v-if="bike_event.address.city">
+              <strong>Cidade:</strong>
+              {{ bike_event.address.city }}<br />
+            </span>
+            <span v-if="bike_event.address.state">
+              <strong>Estado:</strong>
+              {{ bike_event.address.state }}<br />
+            </span>
           </p>
           <p
             class="text-justify ident mb-15"
@@ -149,7 +172,7 @@ export default class Available extends Vue {
       neighborhood: "Carregando...",
       address_type: "Carregando...",
     },
-    quiz: {} as IQuiz,
+    quiz: [] as IQuiz[],
   };
 
   event_id = this.$route.query.event_id;
@@ -158,15 +181,13 @@ export default class Available extends Vue {
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
   get quizID(): number {
-    const quiz = this.bike_event.quiz;
+    const quiz = this.bike_event.quiz![0];
 
-    return quiz?.id || 0;
+    return quiz?.id || -1;
   }
 
   async getEvents(bike_event = "-1") {
     this.changeLoading(true);
-
-    console.log(bike_event);
 
     let response = await eventsService.getEvent({
       id: bike_event,
