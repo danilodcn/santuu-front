@@ -44,7 +44,10 @@
         <v-col class="col-10 offset-1 offset-md-0 pt-8 pt-md-14">
           <h4>Local</h4>
         </v-col>
-        <v-col class="col-10 offset-1 offset-md-0 py-0 text-justify">
+        <v-col
+          class="col-10 offset-1 offset-md-0 py-0 text-justify"
+          v-if="bike_event.address"
+        >
           <p class="pl-8 mb-5">
             <strong>CEP:</strong> {{ bike_event.address.zipcode }}<br />
             <strong>Endereço:</strong> {{ bike_event.address.street }}<br />
