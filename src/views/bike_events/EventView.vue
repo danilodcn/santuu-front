@@ -105,8 +105,11 @@
       <meta property="og:image" :content="bike_event.poster" />
       <v-card-actions class="back-forward">
         <v-row justify="end" class="mx-5">
+          <span v-if="bike_event.status == '3' || bike_event.status == '4'">
+            Evento indisponível!
+          </span>
           <v-btn
-            v-if="!bike_event.registered"
+            v-else-if="!bike_event.registered"
             class="button primary"
             :to="`/bike-events/quiz/?quiz=${quizID}`"
             v-text="'Quero me inscrever'"
@@ -159,6 +162,7 @@ export default class Available extends Vue {
     final_date: "Carregando...",
     poster: "Carregando...",
     description: "Carregando...",
+    status: "Carregando...",
     coordinates: "",
     registered: false,
     address: {
