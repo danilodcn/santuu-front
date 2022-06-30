@@ -1,6 +1,6 @@
 <template>
   <v-container class="content-container">
-    <h2 class="title-content">Escolha uma opção</h2>
+    <h2 class="title-content my-15">Escolha uma opção</h2>
     <v-row class="cards-sinister justify-center">
       <router-link
         to="/bike-events/events/?type=going"
@@ -46,7 +46,6 @@ a {
   text-align: center;
   font-weight: 500;
   color: $main-dark-color;
-  margin: 30px auto 30px 10px;
 }
 .card-events:hover {
   transform: scale(1.05);
