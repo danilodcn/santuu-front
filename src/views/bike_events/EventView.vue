@@ -30,7 +30,7 @@
           <h4>{{ bike_event.name }}</h4>
         </v-col>
         <v-col class="col-10 offset-1 offset-md-0 py-0 text-justify ident">
-          <p>{{ bike_event.description }}</p>
+          <div id="description" v-html="bike_event.description"></div>
         </v-col>
         <v-col class="col-10 offset-1 offset-md-0 pt-8 pt-md-14">
           <h4>Horário</h4>
@@ -256,7 +256,8 @@ export default class Available extends Vue {
 img {
   width: 100%;
 }
-p {
+p,
+#description {
   color: $main-dark-color;
   margin: 0px;
   font-size: 0.9em;

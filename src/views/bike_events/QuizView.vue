@@ -3,10 +3,9 @@
     <v-card class="pa-5 pa-md-15">
       <v-card-title v-text="quiz.title" class="text-h4" />
       <v-spacer />
-      <v-card-subtitle
-        v-text="quiz.description"
-        class="text-subtitle-1 text-justify"
-      />
+      <v-card-subtitle class="text-subtitle-1 text-justify">
+        <div v-html="quiz.description" />
+      </v-card-subtitle>
       <quiz-form ref="form" :quiz="quiz" v-model="model"></quiz-form>
       <v-card-actions class="justify-end">
         <v-btn @click="clearAll()" class="px-7">Limpar</v-btn>
@@ -71,7 +70,7 @@ export default class QuizView extends VuePlus {
     if (isValid) {
       this.requestAcceptTerms({
         message: this.quiz.terms_and_conditions,
-        messageOk: "Continuar",
+        messageOk: "Confirmar cadastro",
         messageCancel: "Voltar",
         agreeFunction: this.submitForm,
       });

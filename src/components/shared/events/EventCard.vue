@@ -1,10 +1,12 @@
 <template>
   <v-card :to="'/bike-events/event?event_id=' + data.id.toString()">
-    <v-img
-      :src="data.url"
-      :alt="`imagem do evento ${data.name}`"
-      height="150"
-    ></v-img>
+    <v-responsive :aspect-ratio="16 / 9">
+      <v-img
+        class="poster"
+        :src="data.url"
+        :alt="`imagem do evento ${data.name}`"
+      ></v-img>
+    </v-responsive>
     <v-card-title>
       <v-col class="ma-0 pa-0">
         <v-row class="ma-0 pa-0">
@@ -71,5 +73,9 @@ export default class EventCard extends Vue {
 .break {
   min-width: none;
   word-break: break-word;
+}
+.poster {
+  width: 100%;
+  height: 100%;
 }
 </style>
