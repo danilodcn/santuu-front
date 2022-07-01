@@ -3,7 +3,9 @@
     <v-col v-for="(question, i) in questions" :key="i">
       <span class="text-subtitle-1">{{ question.title }}</span>
       <v-spacer />
-      <span class="mx-0 px-0 text-body-2">{{ question.description }}</span>
+      <span class="mx-0 px-0 text-body-2 question-description">{{
+        question.description
+      }}</span>
       <v-spacer />
       <component
         :is="question.component"
@@ -61,4 +63,7 @@ export default class QuizForm extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.question-description {
+  color: #a7a7a7 !important;
+}
 </style>

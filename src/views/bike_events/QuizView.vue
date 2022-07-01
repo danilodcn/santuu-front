@@ -70,7 +70,7 @@ export default class QuizView extends VuePlus {
     if (isValid) {
       this.requestAcceptTerms({
         message: this.quiz.terms_and_conditions,
-        messageOk: "Continuar",
+        messageOk: "Confirmar cadastro",
         messageCancel: "Voltar",
         agreeFunction: this.submitForm,
       });
