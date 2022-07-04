@@ -9,4 +9,5 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ".:/app"
+      - "../static:/static"
     # network_mode: "host"

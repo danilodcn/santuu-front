@@ -30,7 +30,7 @@
           <h4>{{ bike_event.name }}</h4>
         </v-col>
         <v-col class="col-10 offset-1 offset-md-0 py-0 text-justify ident">
-          <p>{{ bike_event.description }}</p>
+          <div id="description" v-html="bike_event.description"></div>
         </v-col>
         <v-col class="col-10 offset-1 offset-md-0 pt-8 pt-md-14">
           <h4>Horário</h4>
@@ -105,8 +105,11 @@
       <meta property="og:image" :content="bike_event.poster" />
       <v-card-actions class="back-forward">
         <v-row justify="end" class="mx-5">
+          <span v-if="bike_event.status == '3' || bike_event.status == '4'">
+            Evento indisponível!
+          </span>
           <v-btn
-            v-if="!bike_event.registered"
+            v-else-if="!bike_event.registered"
             class="button primary"
             :to="`/bike-events/quiz/?quiz=${quizID}`"
             v-text="'Quero me inscrever'"
@@ -159,6 +162,7 @@ export default class Available extends Vue {
     final_date: "Carregando...",
     poster: "Carregando...",
     description: "Carregando...",
+    status: "Carregando...",
     coordinates: "",
     registered: false,
     address: {
@@ -252,7 +256,8 @@ export default class Available extends Vue {
 img {
   width: 100%;
 }
-p {
+p,
+#description {
   color: $main-dark-color;
   margin: 0px;
   font-size: 0.9em;
