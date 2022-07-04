@@ -6,10 +6,12 @@ enum RaffleTypes {
   NUMBER = "number",
 }
 
-interface IAdicionalField {
+interface IAdditionalComponent {
   component: string;
   text?: string;
-  getProps(props?: any[]): Promise<any[]>;
+  props: any[];
+  model?: any;
+  getProps(props?: any[]): Promise<void>;
   execute?(data: any): void;
 }
 
@@ -24,8 +26,7 @@ interface IRaffleTypeAction {
   verboseResultText: string;
   memberName: string;
   verboseMemberName: string;
-  adicionalField?: IAdicionalField;
-  adicionalAction?: IAdicionalField;
+  additionalComponents?: IAdditionalComponent[];
 }
 
 const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
@@ -35,29 +36,31 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
     verboseResultText: "Os participantes sorteados foram:",
     memberName: "participante",
     verboseMemberName: "participantes",
-    adicionalField: {
-      component: "v-autocomplete",
-      getProps: async () => {
-        const events = await eventService.getEvent({ id: "", type: "" });
+    additionalComponents: [
+      {
+        component: "v-autocomplete",
+        props: [{ filled: true }, { outlined: true }, { label: "Evento" }],
+        async getProps() {
+          const events = await eventService.getEvent({ id: "", type: "" });
 
-        return [
-          { filled: true },
-          { outlined: true },
-          { label: "Evento" },
-          {
-            items: events,
-          },
-          { itemText: "name" },
-        ];
+          const props = [
+            {
+              items: events,
+            },
+            { itemText: "name" },
+          ];
+          this.props = this.props.concat(props);
+        },
       },
-    },
-    adicionalAction: {
-      component: "v-btn",
-      text: "Liberar",
-      getProps: async () => {
-        return [{ filled: true }, { outlined: true }, { color: "primary" }];
+      {
+        component: "v-btn",
+        text: "Liberar",
+        props: [{ filled: true }, { outlined: true }, { color: "primary" }],
+        async getProps() {
+          return;
+        },
       },
-    },
+    ],
   },
   {
     type: { type: RaffleTypes.NUMBER, name: "Numero" },

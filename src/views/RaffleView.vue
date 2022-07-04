@@ -27,20 +27,37 @@
               v-model="raffleType"
             ></v-combobox>
           </v-col>
-          <v-col v-if="action && action.adicionalField" cols="12" md="5">
+          <v-col
+            v-if="
+              action &&
+              action.additionalComponents &&
+              action.additionalComponents[0]
+            "
+            cols="12"
+            md="5"
+          >
             <component
-              :is="action.adicionalField.component"
-              v-bind="props.field"
-            />
+              :is="action.additionalComponents[0].component"
+              v-bind="action.additionalComponents[0].props"
+              >{{ action.additionalComponents[0].text }}
+            </component>
           </v-col>
         </v-row>
-        <v-col v-if="action && action.adicionalAction" cols="12">
+        <v-col
+          v-if="
+            action &&
+            action.additionalComponents &&
+            action.additionalComponents[1]
+          "
+          cols="12"
+        >
           <v-row align="center" justify="center" class="mt-3">
             <component
-              :is="action.adicionalAction.component"
-              v-bind="props.action"
-              v-text="action.adicionalAction.text"
-            />
+              :is="action.additionalComponents[1].component"
+              v-bind="action.additionalComponents[1].props"
+            >
+              {{ action.additionalComponents[1].text }}</component
+            >
           </v-row>
         </v-col>
       </v-container>
@@ -134,8 +151,9 @@
 <script lang="ts">
 import { IEvent } from "@/types/events";
 import { BaseComponent } from "@/utils/component";
-import { IRaffleType, IRaffleTypeAction, raffleHelper } from "@/utils/raffle";
+import { IRaffleType, IRaffleTypeAction, raffleHelper } from "@/helper/raffle";
 import { Component, Watch } from "vue-property-decorator";
+import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
 import { VBtn, VAutocomplete } from "vuetify/lib";
 
 type IResult = {
@@ -152,10 +170,7 @@ export default class RaffleView extends BaseComponent {
   raffleType: IRaffleType | null = null;
   action!: IRaffleTypeAction;
   events!: IEvent[];
-  props = {
-    action: [] as any[],
-    field: [] as any[],
-  };
+
   result = {
     results: [{ item: 2, name: "2", order: 0, visible: false }] as IResult[],
     show: false,
@@ -177,37 +192,24 @@ export default class RaffleView extends BaseComponent {
       this.action = raffleHelper.getAction(this.raffleType.type);
     }
     console.log(this.events);
-    this.getAdicionalProps();
+    this.getAdditionalProps();
     this.handleResult();
   }
 
   @Watch("raffleType")
   onTypeChange(value: IRaffleType) {
     this.action = raffleHelper.getAction(value.type);
-    this.getAdicionalProps();
+    this.getAdditionalProps();
   }
 
   optionsName(n: number) {
     return n < 2 ? this.action.memberName : this.action.verboseMemberName;
   }
 
-  getAdicionalProps() {
-    this.getPropsActions();
-    this.getPropsFields();
-  }
-
-  async getPropsActions() {
-    const props = await this.action.adicionalField?.getProps();
-    if (props) {
-      this.props.field = props;
-    }
-  }
-
-  async getPropsFields() {
-    const props = await this.action.adicionalAction?.getProps();
-    if (props) {
-      this.props.action = props;
-    }
+  getAdditionalProps() {
+    this.action.additionalComponents?.forEach((item) => {
+      item.getProps();
+    });
   }
 
   async handleResult() {
