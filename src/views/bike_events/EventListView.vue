@@ -1,6 +1,11 @@
 <template>
-  <v-container class="content-container">
-    <h4 class="title-content">{{ title }}</h4>
+  <v-container class="content-container mt-10 mt-md-3 px-10">
+    <v-row>
+      <v-btn fab small text @click="$router.go(-1)">
+        <v-icon color="primary"> mdi-arrow-left-thick </v-icon>
+      </v-btn>
+      <h4 class="title-content">{{ title }}</h4>
+    </v-row>
     <v-row>
       <template v-for="(event, i) in events">
         <v-col cols="12" sm="6" md="4" v-if="event" :key="`event-${i}`">
@@ -64,9 +69,9 @@ export default class Available extends Vue {
   margin: 40px auto 0px 40px;
 }
 .title-content {
-  font-weight: 500;
+  font-weight: 500 !important;
   color: $main-dark-color;
-  margin: 10px auto 30px 10px;
+  margin: 5px auto 30px 10px;
 }
 .event_image {
   padding: 10px;
@@ -77,7 +82,7 @@ export default class Available extends Vue {
 }
 @media (min-width: 960px) {
   .title-content {
-    font-weight: 800;
+    font-weight: 800 !important;
     font-size: 1.5em;
   }
 }
