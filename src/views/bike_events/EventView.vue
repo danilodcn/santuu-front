@@ -264,7 +264,7 @@ h3 {
   color: $main-dark-color;
 }
 .title-content {
-  font-weight: 500;
+  font-weight: 500 !important;
   color: $main-dark-color;
   margin: 10px auto 10px 10px;
 }
@@ -296,7 +296,7 @@ iframe {
 }
 @media (min-width: 960px) {
   .title-content {
-    font-weight: 800;
+    font-weight: 800 !important;
     font-size: 1.5em;
   }
   iframe {
