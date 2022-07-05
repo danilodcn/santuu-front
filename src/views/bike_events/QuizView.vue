@@ -4,7 +4,7 @@
       <v-card-title v-text="quiz.title" class="text-h4" />
       <v-spacer />
       <v-card-subtitle class="text-subtitle-1 text-justify">
-        <div v-html="quiz.description" />
+        <div v-html="quiz.description"></div>
       </v-card-subtitle>
       <quiz-form ref="form" :quiz="quiz" v-model="model"></quiz-form>
       <v-checkbox
