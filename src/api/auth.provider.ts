@@ -23,8 +23,8 @@ class AuthProvider implements AuthProviderInterface {
     const data = { token };
 
     const response = await this.api.request({ url, method: "POST", data });
-
-    throw new Error("Method not implemented.");
+    if (response.error) return false;
+    else return true;
   }
 
   async getToken(data: IAuthDTO = {}): Promise<string> {

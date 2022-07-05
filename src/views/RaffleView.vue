@@ -27,22 +27,20 @@
               v-model="raffleType"
             ></v-combobox>
           </v-col>
-          <v-col v-if="action && action.adicionalField" cols="12" md="5">
+          <v-col
+            v-for="(component, i) in action.additionalComponents"
+            :key="i"
+            v-bind="component.containerProps"
+          >
             <component
-              :is="action.adicionalField.component"
-              v-bind="props.field"
-            />
+              :is="component.component"
+              v-bind="component.props"
+              v-model="component.model"
+              @click="handleClick(i)"
+              >{{ component.text }}
+            </component>
           </v-col>
         </v-row>
-        <v-col v-if="action && action.adicionalAction" cols="12">
-          <v-row align="center" justify="center" class="mt-3">
-            <component
-              :is="action.adicionalAction.component"
-              v-bind="props.action"
-              v-text="action.adicionalAction.text"
-            />
-          </v-row>
-        </v-col>
       </v-container>
     </v-card>
     <v-spacer class="my-4" />
@@ -55,6 +53,7 @@
               hide-spin-buttons
               type="number"
               class="mx-2 input text-h5"
+              v-model="raffleModel.number"
               outline
               single-line
               reverse
@@ -67,6 +66,7 @@
             <v-text-field
               hide-spin-buttons
               type="number"
+              v-model="raffleModel.min"
               class="mx-2 input text-h5"
               outline
               single-line
@@ -76,6 +76,7 @@
             <v-text-field
               hide-spin-buttons
               type="number"
+              v-model="raffleModel.max"
               class="mx-2 input text-h5"
               outline
               single-line
@@ -134,8 +135,9 @@
 <script lang="ts">
 import { IEvent } from "@/types/events";
 import { BaseComponent } from "@/utils/component";
-import { IRaffleType, IRaffleTypeAction, raffleHelper } from "@/utils/raffle";
+import { IRaffleType, IRaffleTypeAction, raffleHelper } from "@/helper/raffle";
 import { Component, Watch } from "vue-property-decorator";
+import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
 import { VBtn, VAutocomplete } from "vuetify/lib";
 
 type IResult = {
@@ -151,11 +153,13 @@ type IResult = {
 export default class RaffleView extends BaseComponent {
   raffleType: IRaffleType | null = null;
   action!: IRaffleTypeAction;
-  events!: IEvent[];
-  props = {
-    action: [] as any[],
-    field: [] as any[],
+
+  raffleModel = {
+    number: undefined,
+    min: undefined,
+    max: undefined,
   };
+
   result = {
     results: [{ item: 2, name: "2", order: 0, visible: false }] as IResult[],
     show: false,
@@ -176,47 +180,75 @@ export default class RaffleView extends BaseComponent {
       this.raffleType = this.types[0];
       this.action = raffleHelper.getAction(this.raffleType.type);
     }
-    console.log(this.events);
-    this.getAdicionalProps();
-    this.handleResult();
+    this.getAdditionalProps();
+    // this.handleResult();
   }
 
   @Watch("raffleType")
   onTypeChange(value: IRaffleType) {
     this.action = raffleHelper.getAction(value.type);
-    this.getAdicionalProps();
+    this.getAdditionalProps();
   }
 
   optionsName(n: number) {
     return n < 2 ? this.action.memberName : this.action.verboseMemberName;
   }
 
-  getAdicionalProps() {
-    this.getPropsActions();
-    this.getPropsFields();
+  getAdditionalProps() {
+    this.action.additionalComponents?.forEach((item) => {
+      item.getProps();
+    });
   }
 
-  async getPropsActions() {
-    const props = await this.action.adicionalField?.getProps();
-    if (props) {
-      this.props.field = props;
+  async handleClick(index: number) {
+    const component = this.action.additionalComponents?.find(
+      (_, i) => i == index
+    );
+    if (component) {
+      this.changeLoading(true);
+      const result = await component.onClick(this.action);
+      this.changeLoading(false);
+
+      if (result.error) {
+        this.changeMainLDialog({
+          active: true,
+          bntClose: true,
+          msg: result.message || "",
+          persistent: false,
+          title: "Houve um erro",
+        });
+      }
     }
   }
 
-  async getPropsFields() {
-    const props = await this.action.adicionalAction?.getProps();
-    if (props) {
-      this.props.action = props;
+  async getResults() {
+    const result = await this.action.execute(this.raffleModel);
+    if (result.error) {
+      this.changeMainLDialog({
+        active: true,
+        bntClose: true,
+        msg: result.message || "",
+        persistent: false,
+        title: "Houve um erro",
+      });
     }
+    this.result.results = [];
+    result.responses?.forEach((item) => {
+      this.result.results.push({
+        ...item,
+        visible: this.result.showResults,
+      });
+    });
   }
 
   async handleResult() {
     this.changeLoading(true);
     this.result.show = false;
-    setTimeout(() => {
-      this.result.show = true;
-      this.changeLoading(false);
-    }, 300);
+    this.getResults();
+    // setTimeout(() => {
+    //   this.result.show = true;
+    //   this.changeLoading(false);
+    // }, 300);
 
     this.result.resultText =
       this.result.results.length < 2
@@ -226,6 +258,9 @@ export default class RaffleView extends BaseComponent {
     this.result.results.forEach((item) => {
       item.visible = this.result.showResults;
     });
+
+    this.result.show = true;
+    this.changeLoading(false);
   }
 }
 </script>

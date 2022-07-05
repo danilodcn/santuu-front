@@ -46,6 +46,8 @@ interface IAnswer {
 interface IMountAnswer {
   quiz: number;
   answers: IAnswer[];
+  checkbox_email: boolean;
+  checkbox_phone: boolean;
 }
 
 class QuizHelper {
@@ -58,7 +60,7 @@ class QuizHelper {
       const type = COMPONENT_TYPES[question.type];
 
       if (type) {
-        const props = type.props;
+        const props = [...type.props];
         console.log(props, question.placeholder);
         let title = question.title;
 
@@ -78,7 +80,7 @@ class QuizHelper {
           props.push({ rules: [required] });
         }
         if (question.placeholder) {
-          props[0].placeholder = question.placeholder;
+          props.push({ placeholder: question.placeholder });
         }
 
         questionTypeComponents.push({
@@ -99,9 +101,16 @@ class QuizHelper {
   mountRequestData(
     answers: string[],
     questions: IQuestion[],
-    quizID: number
+    quizID: number,
+    checkbox_email: boolean,
+    checkbox_phone: boolean
   ): IMountAnswer {
-    const res: IMountAnswer = { quiz: quizID, answers: [] };
+    const res: IMountAnswer = {
+      quiz: quizID,
+      answers: [],
+      checkbox_email: checkbox_email,
+      checkbox_phone: checkbox_phone,
+    };
     questions.forEach((value, i) => {
       const question = value.id;
       let answer = answers[i] || "";
