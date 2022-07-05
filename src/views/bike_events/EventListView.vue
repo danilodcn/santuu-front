@@ -17,7 +17,9 @@
     </div>
     <v-divider class="mt-10"></v-divider>
     <v-row justify="space-between" class="mt-10 mx-4">
-      <v-btn text @click="$router.go(-1)">Voltar</v-btn>
+      <v-btn text @click="$router.push({ path: '/bike-events/' })"
+        >Voltar</v-btn
+      >
       <v-btn text class="button" disabled>Avançar</v-btn>
     </v-row>
   </v-container>

@@ -59,7 +59,6 @@ a {
     font-size: 0.9em;
   }
   .title-content {
-    font-weight: 800;
     margin: 30px auto 60px auto;
   }
 }
