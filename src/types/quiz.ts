@@ -14,6 +14,7 @@ interface IQuiz {
   title: string;
   description: string;
   terms_and_conditions: string;
+  check: boolean;
 }
 
 export { IQuiz, IQuestion };

@@ -41,6 +41,7 @@ interface IAnswer {
 interface IMountAnswer {
   quiz: number;
   answers: IAnswer[];
+  check: boolean;
 }
 
 class QuizHelper {
@@ -74,9 +75,10 @@ class QuizHelper {
   mountRequestData(
     answers: string[],
     questions: IQuestion[],
-    quizID: number
+    quizID: number,
+    check: boolean
   ): IMountAnswer {
-    const res: IMountAnswer = { quiz: quizID, answers: [] };
+    const res: IMountAnswer = { quiz: quizID, answers: [], check: check };
     questions.forEach((value, i) => {
       const question = value.id;
       let answer = answers[i] || "";
