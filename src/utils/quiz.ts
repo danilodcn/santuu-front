@@ -41,7 +41,8 @@ interface IAnswer {
 interface IMountAnswer {
   quiz: number;
   answers: IAnswer[];
-  check: boolean;
+  checkbox_email: boolean;
+  checkbox_phone: boolean;
 }
 
 class QuizHelper {
@@ -76,9 +77,15 @@ class QuizHelper {
     answers: string[],
     questions: IQuestion[],
     quizID: number,
-    check: boolean
+    checkbox_email: boolean,
+    checkbox_phone: boolean
   ): IMountAnswer {
-    const res: IMountAnswer = { quiz: quizID, answers: [], check: check };
+    const res: IMountAnswer = {
+      quiz: quizID,
+      answers: [],
+      checkbox_email: checkbox_email,
+      checkbox_phone: checkbox_phone,
+    };
     questions.forEach((value, i) => {
       const question = value.id;
       let answer = answers[i] || "";

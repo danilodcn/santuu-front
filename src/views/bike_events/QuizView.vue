@@ -7,12 +7,15 @@
         <div v-html="quiz.description" />
       </v-card-subtitle>
       <quiz-form ref="form" :quiz="quiz" v-model="model"></quiz-form>
-      <v-card-actions class="justify-end">
-        <v-checkbox
+      <v-checkbox
           label="Aceito receber comunicação via e-mail com ofertas e benefícios do Clube Santuu!"
-          :default="true"
-          v-model="check"
+          v-model="checkbox_email"
         />
+        <v-checkbox
+          label="Aceito receber comunicação via celular e benefícios do Clube Santuu!"
+          v-model="checkbox_phone"
+        />
+      <v-card-actions class="justify-end">
         <v-btn @click="clearAll()" class="px-7">Limpar</v-btn>
         <v-btn @click="confirm()" class="primary px-7">Cadastrar</v-btn>
       </v-card-actions>
@@ -44,7 +47,8 @@ type CallFunctionLoading = (loading: boolean) => void;
 export default class QuizView extends VuePlus {
   quiz: IQuiz = {} as IQuiz;
   model: any[] = [];
-  check: any = true;
+  checkbox_email: any = true;
+  checkbox_phone: any = true;
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
 
@@ -90,7 +94,8 @@ export default class QuizView extends VuePlus {
       this.model,
       this.quiz.questions,
       this.quizID,
-      this.check
+      this.checkbox_email,
+      this.checkbox_phone
     );
 
     let response = await answerQuestion.handle(data);
