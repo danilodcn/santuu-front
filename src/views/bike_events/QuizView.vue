@@ -8,13 +8,13 @@
       </v-card-subtitle>
       <quiz-form ref="form" :quiz="quiz" v-model="model"></quiz-form>
       <v-checkbox
-          label="Aceito receber comunicação via e-mail com ofertas e benefícios do Clube Santuu!"
-          v-model="checkbox_email"
-        />
-        <v-checkbox
-          label="Aceito receber comunicação via celular e benefícios do Clube Santuu!"
-          v-model="checkbox_phone"
-        />
+        label="Aceito receber comunicação via e-mail com ofertas e benefícios do Clube Santuu!"
+        v-model="checkbox_email"
+      />
+      <v-checkbox
+        label="Aceito receber comunicação via celular e benefícios do Clube Santuu!"
+        v-model="checkbox_phone"
+      />
       <v-card-actions class="justify-end">
         <v-btn @click="clearAll()" class="px-7">Limpar</v-btn>
         <v-btn @click="confirm()" class="primary px-7">Cadastrar</v-btn>
