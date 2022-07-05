@@ -60,7 +60,7 @@ a {
   }
   .title-content {
     font-weight: 800;
-    margin: 30px auto 60px 10px;
+    margin: 30px auto 60px auto;
   }
 }
 </style>
