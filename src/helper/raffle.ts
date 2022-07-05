@@ -6,13 +6,19 @@ enum RaffleTypes {
   NUMBER = "number",
 }
 
+type OutputClick = {
+  error?: boolean;
+  message?: string;
+};
+
 interface IAdditionalComponent {
   component: string;
   text?: string;
-  props: any[];
+  props: object[];
+  containerProps: object[];
   model?: any;
   getProps(props?: any[]): Promise<void>;
-  execute?(data: any): void;
+  onClick(action: IRaffleTypeAction): Promise<OutputClick>;
 }
 
 interface IRaffleType {
@@ -40,6 +46,7 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
       {
         component: "v-autocomplete",
         props: [{ filled: true }, { outlined: true }, { label: "Evento" }],
+        containerProps: [{ cols: "12" }, { md: "5" }],
         async getProps() {
           const events = await eventService.getEvent({ id: "", type: "" });
 
@@ -48,16 +55,39 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
               items: events,
             },
             { itemText: "name" },
+            { itemValue: "id" },
           ];
           this.props = this.props.concat(props);
+        },
+        async onClick() {
+          return {};
         },
       },
       {
         component: "v-btn",
         text: "Liberar",
         props: [{ filled: true }, { outlined: true }, { color: "primary" }],
+        containerProps: [
+          { cols: "12" },
+          { align: "center" },
+          { justify: "center" },
+          { class: "my-3" },
+        ],
         async getProps() {
           return;
+        },
+
+        async onClick(action: IRaffleTypeAction) {
+          const id: number = action.additionalComponents
+            ?.map((item) => item.model)
+            .find((item) => item);
+
+          if (id) {
+            // TODO fazer requisição para liberar o evento
+            console.log("Enviar requisição para liberar o evento", id);
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          return { error: true, message: "Erro inesperado!" };
         },
       },
     ],

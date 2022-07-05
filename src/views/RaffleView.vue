@@ -28,38 +28,19 @@
             ></v-combobox>
           </v-col>
           <v-col
-            v-if="
-              action &&
-              action.additionalComponents &&
-              action.additionalComponents[0]
-            "
-            cols="12"
-            md="5"
+            v-for="(component, i) in action.additionalComponents"
+            :key="i"
+            v-bind="component.containerProps"
           >
             <component
-              :is="action.additionalComponents[0].component"
-              v-bind="action.additionalComponents[0].props"
-              >{{ action.additionalComponents[0].text }}
+              :is="component.component"
+              v-bind="component.props"
+              v-model="component.model"
+              @click="handleClick(i)"
+              >{{ component.text }}
             </component>
           </v-col>
         </v-row>
-        <v-col
-          v-if="
-            action &&
-            action.additionalComponents &&
-            action.additionalComponents[1]
-          "
-          cols="12"
-        >
-          <v-row align="center" justify="center" class="mt-3">
-            <component
-              :is="action.additionalComponents[1].component"
-              v-bind="action.additionalComponents[1].props"
-            >
-              {{ action.additionalComponents[1].text }}</component
-            >
-          </v-row>
-        </v-col>
       </v-container>
     </v-card>
     <v-spacer class="my-4" />
@@ -210,6 +191,27 @@ export default class RaffleView extends BaseComponent {
     this.action.additionalComponents?.forEach((item) => {
       item.getProps();
     });
+  }
+
+  async handleClick(index: number) {
+    const component = this.action.additionalComponents?.find(
+      (_, i) => i == index
+    );
+    if (component) {
+      this.changeLoading(true);
+      const result = await component.onClick(this.action);
+      this.changeLoading(false);
+
+      if (result.error) {
+        this.changeMainLDialog({
+          active: true,
+          bntClose: true,
+          msg: result.message || "Uma mensagem",
+          persistent: false,
+          title: "um erro",
+        });
+      }
+    }
   }
 
   async handleResult() {
