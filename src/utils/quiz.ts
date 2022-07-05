@@ -51,7 +51,7 @@ class QuizHelper {
       const type = COMPONENT_TYPES[question.type];
 
       if (type) {
-        const props = type.props;
+        const props = [...type.props];
         props.push({ items: question.options });
 
         if (question.required) {
