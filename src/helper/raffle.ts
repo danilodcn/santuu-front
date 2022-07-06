@@ -132,7 +132,7 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
           { cols: "12" },
           { align: "center" },
           { justify: "center" },
-          { class: "my-3" },
+          { class: "my-2 py-0" },
         ],
         async getProps() {
           return;
@@ -197,4 +197,10 @@ class RaffleHelper {
 
 const raffleHelper = new RaffleHelper();
 
-export { raffleHelper, RaffleHelper, IRaffleType, IRaffleTypeAction };
+export {
+  raffleHelper,
+  RaffleHelper,
+  IRaffleType,
+  IRaffleTypeAction,
+  IAdditionalComponent,
+};

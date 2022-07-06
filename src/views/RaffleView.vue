@@ -9,7 +9,11 @@
       >
         <v-img src="@/assets/presente.png" v-bind="imgProps" />
         <span class="text-h4 text-md-h3 mx-5 main-color">Sorteador</span>
-        <v-img src="@/assets/presente.png" v-bind="imgProps" />
+        <v-img
+          src="@/assets/presente.png"
+          id="image-invert"
+          v-bind="imgProps"
+        />
       </v-row>
     </v-container>
     <v-spacer class="my-2" />
@@ -27,7 +31,7 @@
               v-model="raffleType"
             ></v-combobox>
           </v-col>
-          <template v-if="action">
+          <template v-if="action.type">
             <v-col
               v-for="(component, i) in action.additionalComponents"
               :key="i"
@@ -47,8 +51,8 @@
         </v-row>
       </v-container>
     </v-container>
-    <v-divider class="my-2" />
-    <v-container fluid v-if="action">
+    <v-divider class="my-2" v-if="action.type" />
+    <v-container fluid v-if="action.type">
       <v-col>
         <v-row align="center" justify="center" class="text-h5">
           <span class="main-color pb-1">Sortear</span>
@@ -108,19 +112,16 @@
         <span class="main-color">{{ result.resultText }}</span>
       </v-row>
       <v-row align="center" justify="center" class="text-h5 my-6">
-        <v-btn
-          icon
-          rounded
-          outlined
-          fab
+        <button
           color="primary"
-          class="text-h6"
+          class="text-h6 mx-2 result"
           v-for="(item, i) in result.results"
           @click="item.visible = false"
           :class="{ 'bnt-active': item.visible }"
           :key="`result-button-${i}`"
-          v-text="item.visible ? '' : item.name"
-        />
+        >
+          <span v-text="item.visible ? '' : item.name" />
+        </button>
       </v-row>
 
       <v-row align="center" justify="center">
@@ -175,6 +176,10 @@ export default class RaffleView extends BaseComponent {
 
   get types() {
     return raffleHelper.raffleTypes;
+  }
+
+  get hasAction(): boolean {
+    return Boolean(this.action);
   }
 
   @Watch("raffleType")
@@ -235,10 +240,6 @@ export default class RaffleView extends BaseComponent {
     this.changeLoading(true);
     this.result.show = false;
     this.getResults();
-    // setTimeout(() => {
-    //   this.result.show = true;
-    //   this.changeLoading(false);
-    // }, 300);
 
     this.result.resultText =
       this.result.results.length < 2
@@ -266,5 +267,16 @@ export default class RaffleView extends BaseComponent {
 }
 .bnt-active {
   background-color: $main-dark-color;
+}
+
+button.result {
+  border-radius: 50%;
+  border: 2px solid $main-dark-color;
+  width: 80px;
+  height: 80px;
+}
+
+#image-invert {
+  transform: rotateY(180deg);
 }
 </style>
