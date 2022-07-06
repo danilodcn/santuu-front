@@ -8,21 +8,24 @@ interface ITypeComponent {
 const COMPONENT_TYPES: ITypeComponent = {
   short_answer: {
     name: "v-text-field",
-    props: [{ placeholder: "sua resposta", clearable: true, filled: true }],
+    props: [{ placeholder: "Sua resposta", clearable: true, filled: true }],
   },
   long_answer: {
     name: "v-textarea",
-    props: [{ placeholder: "sua resposta", clearable: true, filled: true }],
+    props: [{ placeholder: "Sua resposta", clearable: true, filled: true }],
   },
   list: {
     name: "v-select",
-    props: [{ placeholder: "sua resposta", clearable: true, filled: true }],
+    props: [{ placeholder: "Sua resposta", clearable: true, filled: true }],
   },
   select_box: {
     name: "select-box",
     props: [{ multiple: true }],
   },
-  select: { name: "select-box", props: [{ multiple: false }] },
+  select: {
+    name: "select-box",
+    props: [{ multiple: false }],
+  },
 };
 
 interface IQuestionTypeComponent {
@@ -31,6 +34,8 @@ interface IQuestionTypeComponent {
   title: string;
   description: string;
   model: any;
+  mask: string;
+  group: string;
 }
 
 interface IAnswer {
@@ -41,29 +46,51 @@ interface IAnswer {
 interface IMountAnswer {
   quiz: number;
   answers: IAnswer[];
+  checkbox_email: boolean;
+  checkbox_phone: boolean;
 }
 
 class QuizHelper {
   mountQuestions(questions: IQuestion[]): IQuestionTypeComponent[] {
     const questionTypeComponents: IQuestionTypeComponent[] = [];
 
+    let insideGroup = false;
+
     questions.forEach((question) => {
       const type = COMPONENT_TYPES[question.type];
 
       if (type) {
         const props = [...type.props];
+        console.log(props, question.placeholder);
+        let title = question.title;
+
+        if (!insideGroup && question.group) {
+          insideGroup = true;
+          title = question.group;
+        } else if (question.group) {
+          insideGroup = true;
+          title = "";
+        } else {
+          insideGroup = false;
+        }
+
         props.push({ items: question.options });
 
         if (question.required) {
           props.push({ rules: [required] });
         }
+        if (question.placeholder) {
+          props.push({ placeholder: question.placeholder });
+        }
 
         questionTypeComponents.push({
           component: type.name,
           props: props,
-          title: question.title,
+          title: title,
           description: question.description,
           model: null,
+          mask: question.mask,
+          group: question.group,
         });
       }
     });
@@ -74,9 +101,16 @@ class QuizHelper {
   mountRequestData(
     answers: string[],
     questions: IQuestion[],
-    quizID: number
+    quizID: number,
+    checkbox_email: boolean,
+    checkbox_phone: boolean
   ): IMountAnswer {
-    const res: IMountAnswer = { quiz: quizID, answers: [] };
+    const res: IMountAnswer = {
+      quiz: quizID,
+      answers: [],
+      checkbox_email: checkbox_email,
+      checkbox_phone: checkbox_phone,
+    };
     questions.forEach((value, i) => {
       const question = value.id;
       let answer = answers[i] || "";

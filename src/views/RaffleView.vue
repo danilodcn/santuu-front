@@ -157,7 +157,6 @@ type IResult = {
 export default class RaffleView extends BaseComponent {
   raffleType: IRaffleType | null = null;
   action = {} as IRaffleTypeAction;
-
   raffleModel = {
     number: undefined,
     min: undefined,

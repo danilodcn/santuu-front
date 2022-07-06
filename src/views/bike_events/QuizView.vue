@@ -4,10 +4,20 @@
       <v-card-title v-text="quiz.title" class="text-h4" />
       <v-spacer />
       <v-card-subtitle class="text-subtitle-1 text-justify">
-        <div v-html="quiz.description" />
+        <div v-html="quiz.description"></div>
       </v-card-subtitle>
       <quiz-form ref="form" :quiz="quiz" v-model="model"></quiz-form>
-      <v-card-actions class="justify-end">
+      <v-checkbox
+        class="accept px-3"
+        label="Aceito receber comunicação via e-mail com ofertas e benefícios do Clube Santuu!"
+        v-model="checkbox_email"
+      />
+      <v-checkbox
+        class="accept px-3"
+        label="Aceito receber comunicação via celular e benefícios do Clube Santuu!"
+        v-model="checkbox_phone"
+      />
+      <v-card-actions class="justify-end mt-15">
         <v-btn @click="clearAll()" class="px-7">Limpar</v-btn>
         <v-btn @click="confirm()" class="primary px-7">Cadastrar</v-btn>
       </v-card-actions>
@@ -39,6 +49,8 @@ type CallFunctionLoading = (loading: boolean) => void;
 export default class QuizView extends VuePlus {
   quiz: IQuiz = {} as IQuiz;
   model: any[] = [];
+  checkbox_email: any = true;
+  checkbox_phone: any = true;
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
 
@@ -83,7 +95,9 @@ export default class QuizView extends VuePlus {
     const data = quizHelper.mountRequestData(
       this.model,
       this.quiz.questions,
-      this.quizID
+      this.quizID,
+      this.checkbox_email,
+      this.checkbox_phone
     );
 
     let response = await answerQuestion.handle(data);
@@ -129,6 +143,9 @@ export default class QuizView extends VuePlus {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.accept::v-deep label {
+  font-size: 14px !important;
+}
 .content-container {
   color: $main-dark-color;
   margin: 30px auto 30px auto;

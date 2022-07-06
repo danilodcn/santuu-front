@@ -6,6 +6,9 @@ interface IQuestion {
   description: string;
   required: boolean;
   order: number;
+  mask: string;
+  group: string;
+  placeholder: string;
 }
 
 interface IQuiz {
@@ -14,6 +17,7 @@ interface IQuiz {
   title: string;
   description: string;
   terms_and_conditions: string;
+  check: boolean;
 }
 
 export { IQuiz, IQuestion };
