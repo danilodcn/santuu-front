@@ -53,6 +53,7 @@
               hide-spin-buttons
               type="number"
               class="mx-2 input text-h5"
+              v-model="raffleModel.number"
               outline
               single-line
               reverse
@@ -65,6 +66,7 @@
             <v-text-field
               hide-spin-buttons
               type="number"
+              v-model="raffleModel.min"
               class="mx-2 input text-h5"
               outline
               single-line
@@ -74,6 +76,7 @@
             <v-text-field
               hide-spin-buttons
               type="number"
+              v-model="raffleModel.max"
               class="mx-2 input text-h5"
               outline
               single-line
@@ -150,7 +153,12 @@ type IResult = {
 export default class RaffleView extends BaseComponent {
   raffleType: IRaffleType | null = null;
   action!: IRaffleTypeAction;
-  events!: IEvent[];
+
+  raffleModel = {
+    number: undefined,
+    min: undefined,
+    max: undefined,
+  };
 
   result = {
     results: [{ item: 2, name: "2", order: 0, visible: false }] as IResult[],
@@ -172,9 +180,8 @@ export default class RaffleView extends BaseComponent {
       this.raffleType = this.types[0];
       this.action = raffleHelper.getAction(this.raffleType.type);
     }
-    console.log(this.events);
     this.getAdditionalProps();
-    this.handleResult();
+    // this.handleResult();
   }
 
   @Watch("raffleType")
@@ -206,21 +213,42 @@ export default class RaffleView extends BaseComponent {
         this.changeMainLDialog({
           active: true,
           bntClose: true,
-          msg: result.message || "Uma mensagem",
+          msg: result.message || "",
           persistent: false,
-          title: "um erro",
+          title: "Houve um erro",
         });
       }
     }
   }
 
+  async getResults() {
+    const result = await this.action.execute(this.raffleModel);
+    if (result.error) {
+      this.changeMainLDialog({
+        active: true,
+        bntClose: true,
+        msg: result.message || "",
+        persistent: false,
+        title: "Houve um erro",
+      });
+    }
+    this.result.results = [];
+    result.responses?.forEach((item) => {
+      this.result.results.push({
+        ...item,
+        visible: this.result.showResults,
+      });
+    });
+  }
+
   async handleResult() {
     this.changeLoading(true);
     this.result.show = false;
-    setTimeout(() => {
-      this.result.show = true;
-      this.changeLoading(false);
-    }, 300);
+    this.getResults();
+    // setTimeout(() => {
+    //   this.result.show = true;
+    //   this.changeLoading(false);
+    // }, 300);
 
     this.result.resultText =
       this.result.results.length < 2
@@ -230,6 +258,9 @@ export default class RaffleView extends BaseComponent {
     this.result.results.forEach((item) => {
       item.visible = this.result.showResults;
     });
+
+    this.result.show = true;
+    this.changeLoading(false);
   }
 }
 </script>
