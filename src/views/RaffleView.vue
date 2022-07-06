@@ -27,25 +27,29 @@
               v-model="raffleType"
             ></v-combobox>
           </v-col>
-          <v-col
-            v-for="(component, i) in action.additionalComponents"
-            :key="i"
-            v-bind="component.containerProps"
-          >
-            <component
-              :is="component.component"
-              v-bind="component.props"
-              v-model="component.model"
-              @click="handleClick(i)"
-              >{{ component.text }}
-            </component>
-          </v-col>
+          <template v-if="action">
+            <v-col
+              v-for="(component, i) in action.additionalComponents"
+              :key="i"
+              v-bind="component.containerProps"
+            >
+              <keep-alive>
+                <component
+                  :is="component.component"
+                  v-bind="component.props"
+                  v-model="component.model"
+                  @click="handleClick(i)"
+                  >{{ component.text }}
+                </component>
+              </keep-alive>
+            </v-col>
+          </template>
         </v-row>
       </v-container>
     </v-card>
     <v-spacer class="my-4" />
     <v-card>
-      <v-container fluid>
+      <v-container fluid v-if="action">
         <v-col>
           <v-row align="center" justify="center" class="text-h5">
             <span class="main-color pb-1">Sortear</span>
@@ -152,7 +156,7 @@ type IResult = {
 })
 export default class RaffleView extends BaseComponent {
   raffleType: IRaffleType | null = null;
-  action!: IRaffleTypeAction;
+  action = {} as IRaffleTypeAction;
 
   raffleModel = {
     number: undefined,
@@ -175,29 +179,17 @@ export default class RaffleView extends BaseComponent {
     return raffleHelper.raffleTypes;
   }
 
-  async created() {
-    if (this.types.length != 0) {
-      this.raffleType = this.types[0];
-      this.action = raffleHelper.getAction(this.raffleType.type);
-    }
-    this.getAdditionalProps();
-    // this.handleResult();
-  }
-
   @Watch("raffleType")
-  onTypeChange(value: IRaffleType) {
-    this.action = raffleHelper.getAction(value.type);
-    this.getAdditionalProps();
+  async onTypeChange(value: IRaffleType) {
+    if (value && value.type) {
+      this.changeLoading(true);
+      this.action = await raffleHelper.getAction(value.type);
+      this.changeLoading(false);
+    }
   }
 
   optionsName(n: number) {
     return n < 2 ? this.action.memberName : this.action.verboseMemberName;
-  }
-
-  getAdditionalProps() {
-    this.action.additionalComponents?.forEach((item) => {
-      item.getProps();
-    });
   }
 
   async handleClick(index: number) {

@@ -118,7 +118,7 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
             { itemText: "name" },
             { itemValue: "id" },
           ];
-          this.props = this.props.concat(props);
+          this.props = [...this.props, ...props];
         },
         async onClick() {
           return {};
@@ -173,9 +173,14 @@ class RaffleHelper {
     this.raffleTypes = RAFFLE_ACTIONS.map((item) => item.type);
   }
 
-  getAction(type: string) {
+  async getAction(type: string) {
     const action = RAFFLE_ACTIONS.find((item) => item.type.type === type);
     if (!action) throw new Error(`Action type ${type} not fount on array`);
+
+    const components = action.additionalComponents || [];
+    for (const component of components) {
+      await component.getProps();
+    }
     return action;
   }
 
