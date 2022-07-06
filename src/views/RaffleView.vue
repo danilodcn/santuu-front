@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid>
-    <v-card class="pa-4">
+  <v-card>
+    <v-container fluid class="pa-4">
       <v-row
         align="center"
         justify-md="space-around"
@@ -11,9 +11,9 @@
         <span class="text-h4 text-md-h3 mx-5 main-color">Sorteador</span>
         <v-img src="@/assets/presente.png" v-bind="imgProps" />
       </v-row>
-    </v-card>
-    <v-spacer class="my-4" />
-    <v-card class="pa-4">
+    </v-container>
+    <v-spacer class="my-2" />
+    <v-container fluid class="pa-4">
       <v-container>
         <v-row align-content="center" justify="center" class="mx-auto">
           <v-col cols="12" md="5">
@@ -46,65 +46,64 @@
           </template>
         </v-row>
       </v-container>
-    </v-card>
-    <v-spacer class="my-4" />
-    <v-card>
-      <v-container fluid v-if="action">
-        <v-col>
-          <v-row align="center" justify="center" class="text-h5">
-            <span class="main-color pb-1">Sortear</span>
-            <v-text-field
-              hide-spin-buttons
-              type="number"
-              class="mx-2 input text-h5"
-              v-model="raffleModel.number"
-              outline
-              single-line
-              reverse
-            />
-            <span class="main-color pb-1">{{ optionsName(2) }}</span>
-          </v-row>
+    </v-container>
+    <v-divider class="my-2" />
+    <v-container fluid v-if="action">
+      <v-col>
+        <v-row align="center" justify="center" class="text-h5">
+          <span class="main-color pb-1">Sortear</span>
+          <v-text-field
+            hide-spin-buttons
+            type="number"
+            class="mx-2 input text-h5"
+            v-model="raffleModel.number"
+            outline
+            single-line
+            reverse
+          />
+          <span class="main-color pb-1">{{ optionsName(2) }}</span>
+        </v-row>
 
-          <v-row align="center" justify="center" class="text-h5">
-            <span class="main-color pb-1">Entre</span>
-            <v-text-field
-              hide-spin-buttons
-              type="number"
-              v-model="raffleModel.min"
-              class="mx-2 input text-h5"
-              outline
-              single-line
-              reverse
-            />
-            <span class="main-color pb-1">e</span>
-            <v-text-field
-              hide-spin-buttons
-              type="number"
-              v-model="raffleModel.max"
-              class="mx-2 input text-h5"
-              outline
-              single-line
-              reverse
-            />
-          </v-row>
+        <v-row align="center" justify="center" class="text-h5">
+          <span class="main-color pb-1">Entre</span>
+          <v-text-field
+            hide-spin-buttons
+            type="number"
+            v-model="raffleModel.min"
+            class="mx-2 input text-h5"
+            outline
+            single-line
+            reverse
+          />
+          <span class="main-color pb-1">e</span>
+          <v-text-field
+            hide-spin-buttons
+            type="number"
+            v-model="raffleModel.max"
+            class="mx-2 input text-h5"
+            outline
+            single-line
+            reverse
+          />
+        </v-row>
 
-          <v-row align="center" justify="center">
-            <v-checkbox
-              v-model="result.showResults"
-              label="Visualizar resultado somente ao clicar"
-            />
-          </v-row>
-          <v-row align="center" justify="center">
-            <v-btn color="primary" outlined @click="handleResult()"
-              >Sortear</v-btn
-            >
-          </v-row>
-        </v-col>
-        <v-spacer class="my-6" />
-      </v-container>
-    </v-card>
+        <v-row align="center" justify="center">
+          <v-checkbox
+            v-model="result.showResults"
+            label="Visualizar resultado somente ao clicar"
+          />
+        </v-row>
+        <v-row align="center" justify="center">
+          <v-btn color="primary" outlined @click="handleResult()"
+            >Sortear</v-btn
+          >
+        </v-row>
+      </v-col>
+    </v-container>
 
-    <v-card v-if="result.show" class="mt-4 py-10">
+    <v-divider class="my-3" />
+
+    <v-container fluid v-if="result.show" class="mt-4 py-10">
       <v-row align="center" justify="center" class="text-h5">
         <span class="main-color">{{ result.resultText }}</span>
       </v-row>
@@ -132,8 +131,8 @@
           >Salvar resultado</v-btn
         >
       </v-row>
-    </v-card>
-  </v-container>
+    </v-container>
+  </v-card>
 </template>
 
 <script lang="ts">
