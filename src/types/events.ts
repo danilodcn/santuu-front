@@ -5,6 +5,7 @@ export interface IEvent {
   id?: number;
   name: string;
   description: string;
+  hasActivePresenceConfirmation?: boolean;
   status: string;
   poster: string;
   initial_date: string;

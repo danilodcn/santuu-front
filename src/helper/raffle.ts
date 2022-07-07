@@ -1,6 +1,6 @@
 import { eventService } from "@/api/bikeEvents";
 import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
-import { createPresenceConfirmation } from "@/api/raffle/createPresenceConfirmation";
+import { presenceConfirmationService } from "@/api/raffle/presenceConfirmation";
 
 enum RaffleTypes {
   BIKE_EVENT = "bike-event",
@@ -144,7 +144,7 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
             .find((item) => item);
 
           if (id) {
-            const response = await createPresenceConfirmation.execute({
+            const response = await presenceConfirmationService.event({
               eventID: id,
             });
             if (!response.hasActivePresenceConfirmation) {
@@ -167,9 +167,49 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
     memberName: "número",
     verboseMemberName: "números",
 
-    async execute(input: object) {
+    async execute(input: any) {
+      input.min = Number(input.min);
+      input.max = Number(input.max);
+      input.number = Number(input.number);
+
       console.log(input);
-      return {};
+      if (!input.number)
+        return {
+          error: true,
+          message: `O número de ${this.verboseMemberName} é obrigatório!`,
+        };
+
+      if (input.min >= input.max)
+        return {
+          error: true,
+          message: "Insira os valores de entrada corretamente",
+        };
+
+      const x = [];
+      for (let i = input.min; i < input.max + 1; i++) {
+        x.push(i);
+      }
+      console.log(x, "antes");
+
+      x.sort(function (a, b) {
+        return Math.round(Math.random()) - 0.5;
+      });
+      let out, name;
+      const responses = x.slice(0, input.number).map((item, i) => {
+        name = item.toString();
+        out = {
+          name,
+          item: name,
+          order: i,
+        };
+        return out;
+      });
+      console.log(responses);
+
+      return {
+        error: false,
+        responses,
+      };
     },
   },
 ];

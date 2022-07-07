@@ -47,8 +47,12 @@ export default class Available extends Vue {
 
   async getEvents() {
     let events = await eventService.getEvent({ type: this.type });
-    events = events.map((e: IEvent) => {
-      return { ...e, url: e.poster };
+    events = events.map((e: any) => {
+      return {
+        ...e,
+        url: e.poster,
+        hasActivePresenceConfirmation: e.has_active_presence_confirmation,
+      };
     });
 
     this.events = events;

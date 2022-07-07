@@ -109,18 +109,20 @@
       <v-row align="center" justify="center" class="text-h5">
         <span class="main-color">{{ result.resultText }}</span>
       </v-row>
-      <v-row align="center" justify="center" class="text-h5 my-6">
-        <button
-          color="primary"
-          class="text-h6 mx-2 result"
-          v-for="(item, i) in result.results"
-          @click="item.visible = true"
-          :class="{ 'bnt-inactive': !item.visible }"
-          :key="`result-button-${i}`"
-        >
-          <span v-text="item.visible ? item.name : `${i + 1}º`" />
-        </button>
-      </v-row>
+      <v-col cols="12" sm="10" md="8" class="mx-auto">
+        <v-row align="center" justify="center" class="text-h5 my-6">
+          <button
+            color="primary"
+            class="text-h6 mx-2 result"
+            v-for="(item, i) in result.results"
+            @click="item.visible = true"
+            :class="{ 'bnt-inactive': !item.visible }"
+            :key="`result-button-${i}`"
+          >
+            <span v-text="item.visible ? item.name : `${i + 1}º`" />
+          </button>
+        </v-row>
+      </v-col>
 
       <v-row align="center" justify="center">
         <v-btn color="primary" class="mx-2" @click="() => {}"
