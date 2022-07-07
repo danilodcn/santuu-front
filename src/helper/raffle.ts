@@ -1,6 +1,6 @@
 import { eventService } from "@/api/bikeEvents";
 import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
-import { createPresenceConfirmation } from "@/api/raffle/cretePresenceConfirmation";
+import { createPresenceConfirmation } from "@/api/raffle/createPresenceConfirmation";
 
 enum RaffleTypes {
   BIKE_EVENT = "bike-event",
