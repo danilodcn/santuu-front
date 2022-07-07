@@ -37,15 +37,13 @@
               :key="i"
               v-bind="component.containerProps"
             >
-              <keep-alive>
-                <component
-                  :is="component.component"
-                  v-bind="component.props"
-                  v-model="component.model"
-                  @click="handleClick(i)"
-                  >{{ component.text }}
-                </component>
-              </keep-alive>
+              <component
+                :is="component.component"
+                v-bind="component.props"
+                v-model="component.model"
+                @click="handleClick(i)"
+                >{{ component.text }}
+              </component>
             </v-col>
           </template>
         </v-row>
@@ -116,11 +114,11 @@
           color="primary"
           class="text-h6 mx-2 result"
           v-for="(item, i) in result.results"
-          @click="item.visible = false"
-          :class="{ 'bnt-active': item.visible }"
+          @click="item.visible = true"
+          :class="{ 'bnt-inactive': !item.visible }"
           :key="`result-button-${i}`"
         >
-          <span v-text="item.visible ? '' : item.name" />
+          <span v-text="item.visible ? item.name : `${i + 1}º`" />
         </button>
       </v-row>
 
@@ -137,11 +135,9 @@
 </template>
 
 <script lang="ts">
-import { IEvent } from "@/types/events";
 import { BaseComponent } from "@/utils/component";
 import { IRaffleType, IRaffleTypeAction, raffleHelper } from "@/helper/raffle";
 import { Component, Watch } from "vue-property-decorator";
-import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
 import { VBtn, VAutocomplete } from "vuetify/lib";
 
 type IResult = {
@@ -164,7 +160,7 @@ export default class RaffleView extends BaseComponent {
   };
 
   result = {
-    results: [{ item: 2, name: "2", order: 0, visible: false }] as IResult[],
+    results: [] as IResult[],
     show: false,
     showResults: true,
     resultText: "",
@@ -226,31 +222,30 @@ export default class RaffleView extends BaseComponent {
         persistent: false,
         title: "Houve um erro",
       });
+      return [];
     }
-    this.result.results = [];
+    const results: IResult[] = [];
     result.responses?.forEach((item) => {
-      this.result.results.push({
+      results.push({
         ...item,
         visible: this.result.showResults,
       });
     });
+    return results;
   }
 
   async handleResult() {
     this.changeLoading(true);
-    this.result.show = false;
-    this.getResults();
-
+    this.result.results = await this.getResults();
+    this.result.show = Boolean(this.result.results.length > 0);
     this.result.resultText =
       this.result.results.length < 2
         ? this.action.resultText
         : this.action.verboseResultText;
 
     this.result.results.forEach((item) => {
-      item.visible = this.result.showResults;
+      item.visible = !this.result.showResults;
     });
-
-    this.result.show = true;
     this.changeLoading(false);
   }
 }
@@ -265,8 +260,9 @@ export default class RaffleView extends BaseComponent {
 .input {
   max-width: 4rem;
 }
-.bnt-active {
+.bnt-inactive {
   background-color: $main-dark-color;
+  color: white;
 }
 
 button.result {

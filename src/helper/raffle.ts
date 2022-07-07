@@ -1,6 +1,6 @@
-import { IEvent } from "@/types/events";
 import { eventService } from "@/api/bikeEvents";
 import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
+import { createPresenceConfirmation } from "@/api/raffle/cretePresenceConfirmation";
 
 enum RaffleTypes {
   BIKE_EVENT = "bike-event",
@@ -144,11 +144,18 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
             .find((item) => item);
 
           if (id) {
-            // TODO fazer requisição para liberar o evento
-            console.log("Enviar requisição para liberar o evento", id);
+            const response = await createPresenceConfirmation.execute({
+              eventID: id,
+            });
+            if (!response.hasActivePresenceConfirmation) {
+              return { error: true, message: "Erro ao executar ação!" };
+            } else {
+              this.text = "Liberado";
+              return { error: false, message: "Tudo certo!" };
+            }
+          } else {
+            return { error: true, message: "Selecione um evento!" };
           }
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          return { error: true, message: "Erro inesperado!" };
         },
       },
     ],
