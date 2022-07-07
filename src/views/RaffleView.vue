@@ -113,7 +113,7 @@
         <v-row align="center" justify="center" class="text-h5 my-6">
           <button
             color="primary"
-            class="text-h6 mx-2 result"
+            class="text-h6 mx-2 my-1 result"
             v-for="(item, i) in result.results"
             @click="item.visible = true"
             :class="{ 'bnt-inactive': !item.visible }"

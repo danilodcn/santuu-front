@@ -172,7 +172,6 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
       input.max = Number(input.max);
       input.number = Number(input.number);
 
-      console.log(input);
       if (!input.number)
         return {
           error: true,
@@ -185,17 +184,16 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
           message: "Insira os valores de entrada corretamente",
         };
 
-      const x = [];
+      const array = [];
       for (let i = input.min; i < input.max + 1; i++) {
-        x.push(i);
+        array.push(i);
       }
-      console.log(x, "antes");
 
-      x.sort(function (a, b) {
+      array.sort(() => {
         return Math.round(Math.random()) - 0.5;
       });
       let out, name;
-      const responses = x.slice(0, input.number).map((item, i) => {
+      const responses = array.slice(0, input.number).map((item, i) => {
         name = item.toString();
         out = {
           name,
@@ -204,7 +202,6 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
         };
         return out;
       });
-      console.log(responses);
 
       return {
         error: false,
