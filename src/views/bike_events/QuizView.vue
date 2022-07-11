@@ -8,11 +8,11 @@
       </v-card-subtitle>
       <quiz-form ref="form" :quiz="quiz" v-model="model"></quiz-form>
       <v-checkbox
-        label="Aceito receber comunicação via e-mail com ofertas e benefícios do Clube Santuu!"
+        label="Aceito receber por e-mail informações, ofertas e benefícios do Clube Santuu!"
         v-model="checkbox_email"
       />
       <v-checkbox
-        label="Aceito receber comunicação via celular e benefícios do Clube Santuu!"
+        label="Aceito receber por celular informações, ofertas e benefícios do Clube Santuu!"
         v-model="checkbox_phone"
       />
       <v-card-actions class="justify-end">
@@ -107,8 +107,8 @@ export default class QuizView extends VuePlus {
     }
 
     this.changeMainDialog({
-      msg: "Sua inscrição foi enviada por e-mail e SMS",
-      title: "Cadastrado com sucesso",
+      msg: "Confirmação enviada por e-mail e SMS.",
+      title: "PARABÉNS! INSCRIÇÃO REALIZADA COM SUCESSO!",
       persistent: true,
       active: true,
       bntClose: false,
