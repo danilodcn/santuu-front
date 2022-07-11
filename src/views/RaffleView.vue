@@ -20,37 +20,31 @@
     <v-container fluid class="pa-4">
       <v-container>
         <v-row align-content="center" justify="center" class="mx-auto">
-          <v-col cols="12" md="5">
-            <v-combobox
+          <v-col cols="8" md="5">
+            <v-autocomplete
               filled
               outlined
-              label="Tipo de sorteio"
-              :items="types"
-              :readonly="types.length == 0"
+              label="Selecione o evento"
               item-text="name"
-              v-model="raffleType"
-            ></v-combobox>
+              item-value="id"
+              :items="input.event.items"
+              v-model="input.event.model"
+            />
           </v-col>
-          <template v-if="action.type">
-            <v-col
-              v-for="(component, i) in action.additionalComponents"
-              :key="i"
-              v-bind="component.containerProps"
-            >
-              <component
-                :is="component.component"
-                v-bind="component.props"
-                v-model="component.model"
-                @click="handleClick(i)"
-                >{{ component.text }}
-              </component>
-            </v-col>
-          </template>
+          <v-col cols="12" align-self="center" justify="center" align="center">
+            <v-btn
+              outlined
+              color="primary"
+              class="mt-n5"
+              v-text="input.button.text"
+              @click="handleClick"
+            />
+          </v-col>
         </v-row>
       </v-container>
     </v-container>
-    <v-divider class="my-2" v-if="action.type" />
-    <v-container fluid v-if="action.type">
+    <v-divider class="my-2" v-if="input.event" />
+    <v-container fluid v-if="input.event">
       <v-col>
         <v-row align="center" justify="center" class="text-h5">
           <span class="main-color pb-1">Sortear</span>
@@ -58,35 +52,12 @@
             hide-spin-buttons
             type="number"
             class="mx-2 input text-h5"
-            v-model="raffleModel.number"
+            v-model="input.number"
             outline
             single-line
             reverse
           />
-          <span class="main-color pb-1">{{ optionsName(2) }}</span>
-        </v-row>
-
-        <v-row align="center" justify="center" class="text-h5">
-          <span class="main-color pb-1">Entre</span>
-          <v-text-field
-            hide-spin-buttons
-            type="number"
-            v-model="raffleModel.min"
-            class="mx-2 input text-h5"
-            outline
-            single-line
-            reverse
-          />
-          <span class="main-color pb-1">e</span>
-          <v-text-field
-            hide-spin-buttons
-            type="number"
-            v-model="raffleModel.max"
-            class="mx-2 input text-h5"
-            outline
-            single-line
-            reverse
-          />
+          <span class="main-color pb-1">Participantes</span>
         </v-row>
 
         <v-row align="center" justify="center">
@@ -141,12 +112,24 @@ import { BaseComponent } from "@/utils/component";
 import { IRaffleType, IRaffleTypeAction, raffleHelper } from "@/helper/raffle";
 import { Component, Watch } from "vue-property-decorator";
 import { VBtn, VAutocomplete } from "vuetify/lib";
+import { eventService } from "@/api/bikeEvents";
+import { presenceConfirmationService } from "@/api/raffle/presenceConfirmation";
+import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
 
 type IResult = {
   name: string;
   item: any;
   order: number;
   visible: boolean;
+};
+
+type IInput = {
+  event: {
+    model: any;
+    items: any[];
+  };
+  button: { text: string };
+  number?: number;
 };
 
 @Component({
@@ -159,6 +142,12 @@ export default class RaffleView extends BaseComponent {
     number: undefined,
     min: undefined,
     max: undefined,
+  };
+
+  input: IInput = {
+    event: { items: [], model: null },
+    button: { text: "Liberar" },
+    number: undefined,
   };
 
   result = {
@@ -179,7 +168,11 @@ export default class RaffleView extends BaseComponent {
   get hasAction(): boolean {
     return Boolean(this.action);
   }
+  async created() {
+    console.log("ao criar");
 
+    this.input.event.items = await eventService.getEvent({});
+  }
   @Watch("raffleType")
   async onTypeChange(value: IRaffleType) {
     if (value && value.type) {
@@ -189,34 +182,46 @@ export default class RaffleView extends BaseComponent {
     }
   }
 
-  optionsName(n: number) {
-    return n < 2 ? this.action.memberName : this.action.verboseMemberName;
+  getId(event: any | number): number {
+    if (typeof event == "number") {
+      return event;
+    }
+    return event.id;
   }
 
-  async handleClick(index: number) {
-    const component = this.action.additionalComponents?.find(
-      (_, i) => i == index
-    );
-    if (component) {
-      this.changeLoading(true);
-      const result = await component.onClick(this.action);
-      this.changeLoading(false);
+  async handleClick() {
+    this.changeLoading(true);
+    console.log(this.input.event.model);
 
-      if (result.error) {
-        this.changeMainLDialog({
-          active: true,
-          bntClose: true,
-          msg: result.message || "",
-          persistent: false,
-          title: "Houve um erro",
-        });
-      }
-    }
+    const id = this.getId(this.input.event.model);
+    const result = await presenceConfirmationService.event({
+      eventID: id,
+    });
+    this.changeLoading(false);
+    // = await component.onClick(this.action);
+
+    console.log(result);
+
+    // if (result.error) {
+    //   this.changeMainLDialog({
+    //     active: true,
+    //     bntClose: true,
+    //     msg: result.message || "",
+    //     persistent: false,
+    //     title: "Houve um erro",
+    //   });
+    // }
   }
 
   async getResults() {
-    const result = await this.action.execute(this.raffleModel);
-    if (result.error) {
+    const result = await raffleHelper.getRandomSubscriptions({
+      eventID: this.input.event.model,
+      number: this.input.number || 1,
+    });
+
+    console.log(result, "result");
+
+    if (result?.error) {
       this.changeMainLDialog({
         active: true,
         bntClose: true,
@@ -227,7 +232,7 @@ export default class RaffleView extends BaseComponent {
       return [];
     }
     const results: IResult[] = [];
-    result.responses?.forEach((item) => {
+    result?.responses?.forEach((item) => {
       results.push({
         ...item,
         visible: this.result.showResults,

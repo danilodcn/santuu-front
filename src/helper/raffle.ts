@@ -237,7 +237,39 @@ class RaffleHelper {
       height: height,
     };
   }
+
+  async getRandomSubscriptions(input: InputDTO) {
+    const res = await getRandomSubscriptionService.execute(input);
+
+    if (!Array.isArray(res) && res.error) {
+      console.log(res);
+      return {
+        error: true,
+        message: res.message || res.axiosError?.response?.data?.message,
+      };
+    } else if (Array.isArray(res)) {
+      console.log(res);
+      let out: ResponseOutput, name: string;
+      const responses: ResponseOutput[] = res
+        .filter((item) => item.subscriptionNumber)
+        .map((item) => {
+          name = item.subscriptionNumber.toString();
+          out = {
+            name,
+            item: name,
+            order: item.order,
+          };
+          return out;
+        });
+      return { error: false, responses };
+    }
+  }
 }
+
+type InputDTO = {
+  eventID: number;
+  number: number;
+};
 
 const raffleHelper = new RaffleHelper();
 

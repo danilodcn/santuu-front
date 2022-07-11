@@ -94,7 +94,7 @@ export default class EventCard extends BaseComponent {
         title = "Sucesso!";
         this.disableButtonConfirmation = true;
         message =
-          "Voce acaba de confirmar sua presença no evento! Aguarde o resultado do sorteio.";
+          "Você acaba de confirmar sua presença no evento! Aguarde o resultado do sorteio.";
       }
       this.changeLoading(false);
     } else {
