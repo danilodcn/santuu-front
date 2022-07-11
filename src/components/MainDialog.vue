@@ -100,7 +100,7 @@ export default class MainDialog extends Vue {
 }
 </style>
 <style lang="scss">
-.v-dialog {
-  overflow: visible !important;
+.v-dialog::-webkit-scrollbar {
+  display: none !important;
 }
 </style>

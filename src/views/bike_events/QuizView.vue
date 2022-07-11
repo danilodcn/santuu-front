@@ -1,21 +1,23 @@
 <template>
   <v-container class="content-container">
     <v-card class="pa-5 pa-md-15">
-      <v-card-title v-text="quiz.title" class="text-h4" />
+      <v-card-title v-text="`Inscrição no ${quiz.title}`" class="text-h4" />
       <v-spacer />
       <v-card-subtitle class="text-subtitle-1 text-justify">
-        <div v-html="quiz.description" />
+        <div v-html="quiz.description"></div>
       </v-card-subtitle>
       <quiz-form ref="form" :quiz="quiz" v-model="model"></quiz-form>
       <v-checkbox
+        class="accept px-3"
         label="Aceito receber por e-mail informações, ofertas e benefícios do Clube Santuu!"
         v-model="checkbox_email"
       />
       <v-checkbox
+        class="accept px-3"
         label="Aceito receber por celular informações, ofertas e benefícios do Clube Santuu!"
         v-model="checkbox_phone"
       />
-      <v-card-actions class="justify-end">
+      <v-card-actions class="justify-end mt-15">
         <v-btn @click="clearAll()" class="px-7">Limpar</v-btn>
         <v-btn @click="confirm()" class="primary px-7">Cadastrar</v-btn>
       </v-card-actions>
@@ -141,6 +143,9 @@ export default class QuizView extends VuePlus {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.accept::v-deep label {
+  font-size: 14px !important;
+}
 .content-container {
   color: $main-dark-color;
   margin: 30px auto 30px auto;

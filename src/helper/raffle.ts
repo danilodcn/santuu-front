@@ -1,6 +1,6 @@
-import { IEvent } from "@/types/events";
 import { eventService } from "@/api/bikeEvents";
 import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
+import { presenceConfirmationService } from "@/api/raffle/presenceConfirmation";
 
 enum RaffleTypes {
   BIKE_EVENT = "bike-event",
@@ -118,7 +118,7 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
             { itemText: "name" },
             { itemValue: "id" },
           ];
-          this.props = this.props.concat(props);
+          this.props = [...this.props, ...props];
         },
         async onClick() {
           return {};
@@ -132,7 +132,7 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
           { cols: "12" },
           { align: "center" },
           { justify: "center" },
-          { class: "my-3" },
+          { class: "my-2 py-0" },
         ],
         async getProps() {
           return;
@@ -144,11 +144,18 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
             .find((item) => item);
 
           if (id) {
-            // TODO fazer requisição para liberar o evento
-            console.log("Enviar requisição para liberar o evento", id);
+            const response = await presenceConfirmationService.event({
+              eventID: id,
+            });
+            if (!response.hasActivePresenceConfirmation) {
+              return { error: true, message: "Erro ao executar ação!" };
+            } else {
+              this.text = "Liberado";
+              return { error: false, message: "Tudo certo!" };
+            }
+          } else {
+            return { error: true, message: "Selecione um evento!" };
           }
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          return { error: true, message: "Erro inesperado!" };
         },
       },
     ],
@@ -160,9 +167,46 @@ const RAFFLE_ACTIONS: IRaffleTypeAction[] = [
     memberName: "número",
     verboseMemberName: "números",
 
-    async execute(input: object) {
-      console.log(input);
-      return {};
+    async execute(input: any) {
+      input.min = Number(input.min);
+      input.max = Number(input.max);
+      input.number = Number(input.number);
+
+      if (!input.number)
+        return {
+          error: true,
+          message: `O número de ${this.verboseMemberName} é obrigatório!`,
+        };
+
+      if (input.min >= input.max)
+        return {
+          error: true,
+          message: "Insira os valores de entrada corretamente",
+        };
+
+      const array = [];
+      for (let i = input.min; i < input.max + 1; i++) {
+        array.push(i);
+      }
+
+      array.sort(() => {
+        return Math.round(Math.random()) - 0.5;
+      });
+      let out, name;
+      const responses = array.slice(0, input.number).map((item, i) => {
+        name = item.toString();
+        out = {
+          name,
+          item: name,
+          order: i,
+        };
+        return out;
+      });
+
+      return {
+        error: false,
+        responses,
+      };
     },
   },
 ];
@@ -173,9 +217,14 @@ class RaffleHelper {
     this.raffleTypes = RAFFLE_ACTIONS.map((item) => item.type);
   }
 
-  getAction(type: string) {
+  async getAction(type: string) {
     const action = RAFFLE_ACTIONS.find((item) => item.type.type === type);
     if (!action) throw new Error(`Action type ${type} not fount on array`);
+
+    const components = action.additionalComponents || [];
+    for (const component of components) {
+      await component.getProps();
+    }
     return action;
   }
 
@@ -188,8 +237,46 @@ class RaffleHelper {
       height: height,
     };
   }
+
+  async getRandomSubscriptions(input: InputDTO) {
+    const res = await getRandomSubscriptionService.execute(input);
+
+    if (!Array.isArray(res) && res.error) {
+      console.log(res);
+      return {
+        error: true,
+        message: res.message || res.axiosError?.response?.data?.message,
+      };
+    } else if (Array.isArray(res)) {
+      console.log(res);
+      let out: ResponseOutput, name: string;
+      const responses: ResponseOutput[] = res
+        .filter((item) => item.subscriptionNumber)
+        .map((item) => {
+          name = item.subscriptionNumber.toString();
+          out = {
+            name,
+            item: name,
+            order: item.order,
+          };
+          return out;
+        });
+      return { error: false, responses };
+    }
+  }
 }
+
+type InputDTO = {
+  eventID: number;
+  number: number;
+};
 
 const raffleHelper = new RaffleHelper();
 
-export { raffleHelper, RaffleHelper, IRaffleType, IRaffleTypeAction };
+export {
+  raffleHelper,
+  RaffleHelper,
+  IRaffleType,
+  IRaffleTypeAction,
+  IAdditionalComponent,
+};

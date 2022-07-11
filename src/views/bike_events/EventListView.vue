@@ -1,20 +1,26 @@
 <template>
   <v-container class="content-container mt-10 mt-md-3 px-10">
     <v-row>
-      <v-btn fab small text @click="$router.go(-1)">
-        <v-icon color="primary"> mdi-arrow-left-thick </v-icon>
-      </v-btn>
       <h4 class="title-content">{{ title }}</h4>
     </v-row>
-    <v-row>
-      <template v-for="(event, i) in events">
-        <v-col cols="12" sm="6" md="4" v-if="event" :key="`event-${i}`">
-          <event-card :data="event" />
-        </v-col>
-      </template>
-      <h4 class="no-event" v-if="events.length < 1">
-        Nenhum evento disponível
-      </h4>
+    <div class="events">
+      <v-row>
+        <template v-for="(event, i) in events">
+          <v-col cols="12" sm="6" md="4" v-if="event" :key="`event-${i}`">
+            <event-card :data="event" />
+          </v-col>
+        </template>
+        <h4 class="no-event" v-if="events.length < 1">
+          Nenhum evento disponível
+        </h4>
+      </v-row>
+    </div>
+    <v-divider class="mt-10"></v-divider>
+    <v-row justify="space-between" class="mt-10 mx-4">
+      <v-btn text @click="$router.push({ path: '/bike-events/' })"
+        >Voltar</v-btn
+      >
+      <v-btn text class="button" disabled>Avançar</v-btn>
     </v-row>
   </v-container>
 </template>
@@ -41,8 +47,12 @@ export default class Available extends Vue {
 
   async getEvents() {
     let events = await eventService.getEvent({ type: this.type });
-    events = events.map((e: IEvent) => {
-      return { ...e, url: e.poster };
+    events = events.map((e: any) => {
+      return {
+        ...e,
+        url: e.poster,
+        hasActivePresenceConfirmation: e.has_active_presence_confirmation,
+      };
     });
 
     this.events = events;
@@ -63,6 +73,12 @@ export default class Available extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.events {
+  min-height: 400px;
+}
+.button {
+  color: $main-dark-color !important;
+}
 .no-event {
   font-weight: 200;
   color: $main-dark-color;
@@ -82,7 +98,6 @@ export default class Available extends Vue {
 }
 @media (min-width: 960px) {
   .title-content {
-    font-weight: 800 !important;
     font-size: 1.5em;
   }
 }

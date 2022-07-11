@@ -104,24 +104,35 @@
       <v-divider class="mt-15"></v-divider>
       <meta property="og:image" :content="bike_event.poster" />
       <v-card-actions class="back-forward">
-        <v-row justify="end" class="mx-5">
-          <span v-if="bike_event.status == '3' || bike_event.status == '4'">
-            Evento indisponível!
-          </span>
-          <v-btn
-            v-else-if="!bike_event.registered"
-            class="button primary"
-            :to="`/bike-events/quiz/?quiz=${quizID}`"
-            v-text="'Quero me inscrever'"
-          />
-          <span v-else>Você já está cadastrado</span>
-          <v-icon
-            v-if="bike_event.registered"
-            color="primary"
-            size="16"
-            class="pl-5"
-            >mdi-check-circle</v-icon
-          >
+        <v-row justify="space-between" class="mx-5">
+          <v-col cols="2" class="d-none d-sm-flex">
+            <v-btn
+              text
+              @click="
+                $router.push({ path: '/bike-events/events?type=my_events' })
+              "
+              >Voltar</v-btn
+            >
+          </v-col>
+          <v-col cols="12" sm="6" class="register-message">
+            <span v-if="bike_event.status == '3' || bike_event.status == '4'">
+              Evento finalizado!
+            </span>
+            <v-btn
+              v-else-if="!bike_event.registered"
+              class="button primary"
+              :to="`/bike-events/quiz/?quiz=${quizID}`"
+              v-text="'Quero me inscrever'"
+            />
+            <span v-else>Você já está cadastrado</span>
+            <v-icon
+              v-if="bike_event.registered"
+              color="primary"
+              size="16"
+              class="pl-5"
+              >mdi-check-circle</v-icon
+            >
+          </v-col>
         </v-row>
       </v-card-actions>
     </v-card>
@@ -231,6 +242,9 @@ export default class Available extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.register-message {
+  text-align: end;
+}
 .back-forward span {
   color: $main-dark-color;
 }

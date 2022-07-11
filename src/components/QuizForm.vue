@@ -1,6 +1,10 @@
 <template>
   <v-form elevation="0" ref="form">
-    <v-col v-for="(question, i) in questions" :key="i">
+    <v-col
+      v-for="(question, i) in questions"
+      :key="i"
+      :class="{ grouped: question.group }"
+    >
       <span class="text-subtitle-1">{{ question.title }}</span>
       <v-spacer />
       <span class="mx-0 px-0 text-body-2 question-description">{{
@@ -11,6 +15,7 @@
         :is="question.component"
         v-bind="question.props"
         v-model="value[i]"
+        v-mask="question.mask"
       />
     </v-col>
   </v-form>
@@ -63,6 +68,10 @@ export default class QuizForm extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.grouped {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 .question-description {
   color: #a7a7a7 !important;
 }

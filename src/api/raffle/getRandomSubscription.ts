@@ -11,13 +11,16 @@ class GetRandomSubscriptionService extends APIAuthBase {
   > {
     const url = `/api/bike-event/random-user-in-event/?event_id=${eventID}&number=${number}`;
     const response: any[] = await this.request({ url, method: "GET" });
-
-    return response.map((item) => {
-      return {
-        ...item,
-        subscriptionNumber: item.subscription_number,
-      };
-    });
+    if (Array.isArray(response)) {
+      return response.map((item) => {
+        return {
+          ...item,
+          subscriptionNumber: item.subscription_number,
+        };
+      });
+    } else {
+      return response;
+    }
   }
 }
 
