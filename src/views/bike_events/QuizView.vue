@@ -1,7 +1,7 @@
 <template>
   <v-container class="content-container">
     <v-card class="pa-5 pa-md-15">
-      <v-card-title v-text="quiz.title" class="text-h4" />
+      <v-card-title v-text="`Inscrição no ${quiz.title}`" class="text-h4" />
       <v-spacer />
       <v-card-subtitle class="text-subtitle-1 text-justify">
         <div v-html="quiz.description"></div>

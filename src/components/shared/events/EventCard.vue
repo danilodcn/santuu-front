@@ -62,6 +62,7 @@ interface ICardData {
   id: number;
   url: string;
   name: string;
+  initial_date: string;
   final_date: string;
   has_raffle: boolean;
   hasActivePresenceConfirmation: boolean;
@@ -75,7 +76,7 @@ export default class EventCard extends BaseComponent {
   disableButtonConfirmation = false;
 
   get date(): string {
-    return formatDate(this.data.final_date);
+    return formatDate(this.data.initial_date);
   }
 
   async handlePresenceConfirmation() {
