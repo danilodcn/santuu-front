@@ -26,8 +26,8 @@
               <v-btn
                 v-if="bike_event.registered"
                 class="button-download"
-                :href="`http://127.0.0.1:8000/api/bike-event/certificate-events/download/event-id=${event_id}`"
-                v-text="'Baixar certificado'"
+                :href="`https://app.clubesantuu.com.br/api/bike-event/certificate-events/download/event-id=${event_id}`"
+                v-text="'Baixar inscrição'"
                 absolute="true"
                 right="true"
                 color="#d6da2c"
