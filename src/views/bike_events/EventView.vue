@@ -11,17 +11,17 @@
               <twitter-button
                 class="pa-0 share-button--circle share-button--outline"
                 btnText
-                :description="`Vamos para o ${bike_event.name}`"
+                :description="`Vamos para o ${bike_event.name}?`"
               />
               <whats-app-button
                 class="pa-0 share-button--circle share-button--outline"
                 btnText
-                :description="`Vamos para o ${bike_event.name}`"
+                :description="`Vamos para o ${bike_event.name}?`"
               />
               <facebook-button
                 class="pa-0 share-button--circle share-button--outline"
                 btnText
-                :description="`Vamos para o ${bike_event.name}`"
+                :description="`Vamos para o ${bike_event.name}?`"
               />
               <v-btn
                 v-if="bike_event.registered"
