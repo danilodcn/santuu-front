@@ -67,7 +67,7 @@
           />
         </v-row>
         <v-row align="center" justify="center">
-          <v-btn color="primary" outlined @click="handleResult()"
+          <v-btn color="primary" outlined @click="handleResult(true)"
             >Sortear</v-btn
           >
         </v-row>
@@ -75,52 +75,67 @@
     </v-container>
 
     <v-divider class="my-3" />
-
     <v-container fluid v-if="result.show" class="mt-4 py-10">
-      <v-row align="center" justify="center" class="text-h5">
-        <span class="main-color">{{ result.resultText }}</span>
-      </v-row>
-      <v-col cols="12" sm="10" md="8" class="mx-auto">
-        <v-row align="center" justify="center" class="text-h5 my-6">
-          <button
-            color="primary"
-            class="text-h6 mx-2 my-1 result"
-            v-for="(item, i) in result.results"
-            @click="item.visible = true"
-            :class="{ 'bnt-inactive': !item.visible }"
-            :key="`result-button-${i}`"
-          >
-            <span v-text="item.visible ? item.name : `${i + 1}º`" />
-          </button>
+      <v-col>
+        <v-row align="center" justify="center" class="text-h5">
+          <span class="main-color">Resultados</span>
         </v-row>
+        <v-col sm="6" align-self="center" justify="center" class="mx-auto">
+          <v-row
+            align="center"
+            justify="space-between"
+            class="text-h5 my-6"
+            v-for="(item, i) in result.results"
+            :key="`row-${i}`"
+          >
+            <span class="main-color mr-auto">#{{ item.round }}</span>
+            <v-col align-self="auto">
+              <v-row align="center" justify="end" class="mr-auto">
+                <button
+                  color="primary"
+                  class="text-h6 mx-2 my-1 result"
+                  v-for="(winner, j) in item.winners"
+                  @click="winner.visible = true"
+                  :class="{ 'bnt-inactive': !winner.visible }"
+                  :key="`result-button-${j}`"
+                >
+                  <span
+                    v-text="
+                      winner.visible
+                        ? winner.subscriptionNumber
+                        : `${winner.count}º`
+                    "
+                  />
+                </button>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-col>
       </v-col>
-
-      <v-row align="center" justify="center">
-        <v-btn color="primary" class="mx-2" @click="() => {}"
-          >Enviar por email</v-btn
-        >
-        <v-btn color="primary" class="mx-2" @click="() => {}"
-          >Salvar resultado</v-btn
-        >
-      </v-row>
     </v-container>
   </v-card>
 </template>
 
 <script lang="ts">
 import { BaseComponent } from "@/utils/component";
-import { IRaffleType, IRaffleTypeAction, raffleHelper } from "@/helper/raffle";
+import { raffleHelper } from "@/helper/raffle";
 import { Component, Watch } from "vue-property-decorator";
 import { VBtn, VAutocomplete } from "vuetify/lib";
 import { eventService } from "@/api/bikeEvents";
 import { presenceConfirmationService } from "@/api/raffle/presenceConfirmation";
-import { getRandomSubscriptionService } from "@/api/raffle/getRandomSubscription";
+
+type Winner = {
+  order: number;
+  subscriptionNumber: number;
+  visible: boolean;
+  count: number;
+};
 
 type IResult = {
   name: string;
   item: any;
-  order: number;
-  visible: boolean;
+  winners: Winner[];
+  round: number;
 };
 
 type IInput = {
@@ -136,8 +151,6 @@ type IInput = {
   components: { VBtn, VAutocomplete },
 })
 export default class RaffleView extends BaseComponent {
-  raffleType: IRaffleType | null = null;
-  action = {} as IRaffleTypeAction;
   raffleModel = {
     number: undefined,
     min: undefined,
@@ -153,7 +166,7 @@ export default class RaffleView extends BaseComponent {
   result = {
     results: [] as IResult[],
     show: false,
-    showResults: true,
+    showResults: false,
     resultText: "",
   };
 
@@ -161,25 +174,13 @@ export default class RaffleView extends BaseComponent {
     return raffleHelper.imgProps;
   }
 
-  get types() {
-    return raffleHelper.raffleTypes;
-  }
-
-  get hasAction(): boolean {
-    return Boolean(this.action);
-  }
   async created() {
-    console.log("ao criar");
-
     this.input.event.items = await eventService.getEvent({});
   }
-  @Watch("raffleType")
-  async onTypeChange(value: IRaffleType) {
-    if (value && value.type) {
-      this.changeLoading(true);
-      this.action = await raffleHelper.getAction(value.type);
-      this.changeLoading(false);
-    }
+
+  @Watch("input.event.model")
+  onEventChange(val: any) {
+    this.handleResult(false);
   }
 
   getId(event: any | number): number {
@@ -191,35 +192,30 @@ export default class RaffleView extends BaseComponent {
 
   async handleClick() {
     this.changeLoading(true);
-    console.log(this.input.event.model);
-
     const id = this.getId(this.input.event.model);
     const result = await presenceConfirmationService.event({
       eventID: id,
     });
     this.changeLoading(false);
-    // = await component.onClick(this.action);
 
-    console.log(result);
-
-    // if (result.error) {
-    //   this.changeMainLDialog({
-    //     active: true,
-    //     bntClose: true,
-    //     msg: result.message || "",
-    //     persistent: false,
-    //     title: "Houve um erro",
-    //   });
-    // }
+    if (!result.hasActivePresenceConfirmation) {
+      this.changeMainLDialog({
+        active: true,
+        bntClose: true,
+        msg: "Houve um erro ao realizar a ação",
+        persistent: false,
+        title: "Houve um erro",
+      });
+      console.log(result);
+    }
   }
 
-  async getResults() {
-    const result = await raffleHelper.getRandomSubscriptions({
+  async getResults(generateRaffle: boolean) {
+    const result = await raffleHelper.getRaffleSubscriptions({
       eventID: this.input.event.model,
       number: this.input.number || 1,
+      generateRaffle,
     });
-
-    console.log(result, "result");
 
     if (result?.error) {
       this.changeMainLDialog({
@@ -229,30 +225,38 @@ export default class RaffleView extends BaseComponent {
         persistent: false,
         title: "Houve um erro",
       });
-      return [];
+      return { error: true };
     }
     const results: IResult[] = [];
+    let i = 0;
     result?.responses?.forEach((item) => {
+      const winners: Winner[] = item.winners.map((winner) => {
+        i++;
+        return {
+          ...winner,
+          visible: !this.result.showResults,
+          count: i,
+        };
+      });
+
       results.push({
         ...item,
-        visible: this.result.showResults,
+        winners,
       });
     });
-    return results;
+    return { error: false, results };
   }
 
-  async handleResult() {
+  async handleResult(generateRaffle = false) {
     this.changeLoading(true);
-    this.result.results = await this.getResults();
-    this.result.show = Boolean(this.result.results.length > 0);
-    this.result.resultText =
-      this.result.results.length < 2
-        ? this.action.resultText
-        : this.action.verboseResultText;
+    const results = await this.getResults(generateRaffle);
+    console.log(results, "results");
+    if (!results.error) {
+      this.result.results = results.results || [];
+      this.result.show = Boolean(results?.results?.length);
+      this.result.resultText = "Resultado";
+    }
 
-    this.result.results.forEach((item) => {
-      item.visible = !this.result.showResults;
-    });
     this.changeLoading(false);
   }
 }
