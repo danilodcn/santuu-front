@@ -17,7 +17,7 @@ export interface IAssociateBike {
   brand: string;
   category: string;
   model: string;
-  price: string;
+  price: string | number;
 }
 
 export interface IProposalBid {
