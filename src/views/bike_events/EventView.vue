@@ -11,23 +11,23 @@
               <twitter-button
                 class="pa-0 share-button--circle share-button--outline"
                 btnText
-                :description="`Vamos para o ${bike_event.name}`"
+                :description="`Vamos para o ${bike_event.name}?`"
               />
               <whats-app-button
                 class="pa-0 share-button--circle share-button--outline"
                 btnText
-                :description="`Vamos para o ${bike_event.name}`"
+                :description="`Vamos para o ${bike_event.name}?`"
               />
               <facebook-button
                 class="pa-0 share-button--circle share-button--outline"
                 btnText
-                :description="`Vamos para o ${bike_event.name}`"
+                :description="`Vamos para o ${bike_event.name}?`"
               />
               <v-btn
                 v-if="bike_event.registered"
                 class="button-download"
-                :href="`http://127.0.0.1:8000/api/bike-event/certificate-events/download/event-id=${event_id}`"
-                v-text="'Baixar certificado'"
+                :href="`https://app.clubesantuu.com.br/api/bike-event/certificate-events/download/event-id=${event_id}`"
+                v-text="'Baixar inscrição'"
                 absolute="true"
                 right="true"
                 color="#d6da2c"
@@ -111,7 +111,6 @@
         </v-col>
       </v-row>
       <v-divider class="mt-15"></v-divider>
-      <meta property="og:image" :content="bike_event.poster" />
       <v-card-actions class="back-forward">
         <v-row justify="space-between" class="mx-5">
           <v-col cols="2" class="d-none d-sm-flex">
@@ -158,7 +157,7 @@ import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { Mutation } from "vuex-class";
 import { IDialog, MutationTypes } from "@/store";
 import { EventsService } from "@/api/bikeEvents";
-import { formatDateDetail, setSocialProperties } from "@/utils/utils";
+import { formatDateDetail } from "@/utils/utils";
 import { IQuiz } from "@/types/quiz";
 import { IEvent } from "@/types/events";
 
@@ -227,13 +226,6 @@ export default class Available extends Vue {
     response[0].initial_date = formatDateDetail(response[0].initial_date);
     response[0].final_date = formatDateDetail(response[0].final_date);
     this.bike_event = response[0];
-
-    setSocialProperties(
-      window.location.href,
-      this.bike_event.name,
-      this.bike_event.description,
-      this.bike_event.poster
-    );
 
     this.changeLoading(false);
   }

@@ -11,6 +11,12 @@ const routes: Array<RouteConfig> = [
   },
 
   {
+    path: "/certificates",
+    name: "certificates",
+    component: () => import("@/views/CertificateView.vue"),
+  },
+
+  {
     path: "/simulation/proposal-values/:proposal_id/",
     name: "proposal-values",
     component: () => import("../views/simulation/ProposalValues.vue"),
