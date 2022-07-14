@@ -4,6 +4,10 @@ type Winner = {
   id: number;
   order: number;
   subscriptionNumber: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
 };
 
 type ResponseOutput = {

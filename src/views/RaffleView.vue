@@ -95,7 +95,7 @@
                   color="primary"
                   class="text-h6 mx-2 my-1 result"
                   v-for="(winner, j) in item.winners"
-                  @click="winner.visible = true"
+                  @click="showWinnerDetail(winner)"
                   :class="{ 'bnt-inactive': !winner.visible }"
                   :key="`result-button-${j}`"
                 >
@@ -129,6 +129,10 @@ type Winner = {
   subscriptionNumber: number;
   visible: boolean;
   count: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
 };
 
 type IResult = {
@@ -258,6 +262,19 @@ export default class RaffleView extends BaseComponent {
     }
 
     this.changeLoading(false);
+  }
+
+  showWinnerDetail(winner: Winner) {
+    const message = `email: ${winner.email}`;
+
+    this.changeMainLDialog({
+      active: true,
+      bntClose: true,
+      msg: message,
+      persistent: false,
+      title: winner.fullName,
+      ident: true,
+    });
   }
 }
 </script>

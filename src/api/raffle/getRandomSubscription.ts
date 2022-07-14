@@ -19,11 +19,18 @@ class GetRandomSubscriptionService extends APIAuthBase {
         if (!item.winners) {
           winners = [];
         } else {
+          let win: Winner;
           winners = item?.winners?.map((winner: any) => {
-            return {
+            win = {
               ...winner,
               subscriptionNumber: winner.subscription_number,
+              email: winner?.winner?.user?.email,
+              firstName: winner?.winner?.user?.first_name,
+              lastName: winner?.winner?.user?.last_name,
+              fullName: winner?.winner?.user?.full_name,
             };
+
+            return win;
           });
         }
         return {
@@ -54,6 +61,10 @@ type Winner = {
   id: number;
   order: number;
   subscriptionNumber: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
 };
 
 type Output = {
