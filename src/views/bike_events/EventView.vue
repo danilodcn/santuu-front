@@ -29,6 +29,7 @@
                 :href="`https://app.clubesantuu.com.br/api/bike-event/certificate-events/download/event-id=${event_id}`"
                 v-text="'Baixar inscrição'"
                 absolute="true"
+                target="_blank"
                 right="true"
                 color="#d6da2c"
               />
