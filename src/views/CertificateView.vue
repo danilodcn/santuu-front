@@ -5,50 +5,63 @@
         <v-col cols="12"><h5>Meus Certificados</h5></v-col>
       </v-row>
       <v-card-text>
-        <v-row>
-          <v-card class="col-4">
-            <v-card-title> #{{ proposalId }} </v-card-title>
-            <v-card-text>
-              <v-img
-                class="mb-6 rounded-tl-xl rounded-br-xl"
-                :aspect-ratio="16 / 9"
-                height="160"
-                src="https://img.blogdoanderson.com/2019/04/WhatsApp-Image-2019-04-10-at-09.56.00.jpg"
-              ></v-img>
-              <p class="detail">
-                <strong> Marca: </strong>
-                {{ bike.brand }}
-              </p>
-              <p class="detail">
-                <strong> Modelo: </strong>
-                {{ bike.model }}
-              </p>
-              <p class="detail">
-                <strong> Preço: </strong>
-                R$ {{ formatPrice(Number(bike.price)) }}
-                <InfoDialog text="Valor final pago pelo seguro">
-                  <v-icon size="13">mdi-information</v-icon>
-                </InfoDialog>
-              </p>
-              <p class="detail">
-                <strong> Preço de Renovação: </strong>
-                R$ {{ formatPrice(Number(bike.price) / 2) }}
-                <InfoDialog text="Valor considerado da bike para renovação">
-                  <v-icon size="13">mdi-information</v-icon>
-                </InfoDialog>
-              </p>
-            </v-card-text>
-            <v-card-actions>
-              <v-row class="justify-space-between">
-                <v-col>
-                  <v-btn text color="primary" @click="1"> Renovar </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn text color="primary" @click="1"> Visualizar </v-btn>
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-card>
+        <v-row justify="center">
+          <template v-for="(certificate, i) in certificates">
+            <v-card
+              class="col-md-4 col-11 mx-15 my-5"
+              :key="`certificate-${i}`"
+            >
+              <v-card-title> #{{ certificate.id }} </v-card-title>
+              <v-card-text>
+                <v-img
+                  class="mb-6 rounded-tl-xl rounded-br-xl"
+                  :aspect-ratio="16 / 9"
+                  height="160"
+                  :src="certificate.proposal_images[0]"
+                ></v-img>
+                <p class="detail">
+                  <strong> Marca: </strong>
+                  {{ certificate.associate_bikes[0].brand }}
+                </p>
+                <p class="detail">
+                  <strong> Modelo: </strong>
+                  {{ certificate.associate_bikes[0].model }}
+                </p>
+                <p class="detail">
+                  <strong> Preço: </strong>
+                  R$
+                  {{
+                    formatPrice(Number(certificate.associate_bikes[0].price))
+                  }}
+                  <InfoDialog text="Valor final pago pelo seguro">
+                    <v-icon size="13">mdi-information</v-icon>
+                  </InfoDialog>
+                </p>
+                <p class="detail">
+                  <strong> Preço de Renovação: </strong>
+                  R$
+                  {{
+                    formatPrice(
+                      Number(certificate.associate_bikes[0].price) / 2
+                    )
+                  }}
+                  <InfoDialog text="Valor considerado da bike para renovação">
+                    <v-icon size="13">mdi-information</v-icon>
+                  </InfoDialog>
+                </p>
+              </v-card-text>
+              <v-card-actions>
+                <v-row class="justify-space-between">
+                  <v-col>
+                    <v-btn text color="primary" @click="1"> Renovar </v-btn>
+                  </v-col>
+                  <v-col>
+                    <v-btn text color="primary" @click="1"> Visualizar </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-actions>
+            </v-card>
+          </template>
         </v-row>
       </v-card-text>
       <v-divider class="mt-15"></v-divider>
@@ -69,11 +82,17 @@ import { MutationTypes, IDialog } from "@/store";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { IAssociateBike } from "@/types/proposal";
 import { CertificateService } from "@/api/certificate";
-import { formatPrice } from "@/utils/utils";
+import { formatPrice, orderImage } from "@/utils/utils";
 
 type CallFunctionLoading = (loading: boolean) => void;
 
 const certificateService = new CertificateService();
+
+interface ICertificate {
+  proposal_images: [""];
+  id: number;
+  associate_bikes: IAssociateBike[];
+}
 
 @Component({
   components: {
@@ -82,22 +101,18 @@ const certificateService = new CertificateService();
 })
 export default class CertificatesView extends Vue {
   formatPrice = formatPrice;
-  proposalId = 0;
-  bike: IAssociateBike = {
-    id: -1,
-    brand: "Carregando",
-    category: "Carregando",
-    model: "Carregando",
-    price: 0,
-  };
+  orderImage = orderImage;
 
+  certificates: ICertificate[] = [];
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
 
   async getCertificate() {
     this.changeLoading(true);
     const response = await certificateService.getCertificate();
-    this.proposalId = response[0].id;
-    this.bike = response[0].associate_bikes[0];
+    this.certificates = response;
+    this.certificates?.map((certificate: any) => {
+      this.orderImage(certificate.proposal_images);
+    });
     this.changeLoading(false);
   }
 
