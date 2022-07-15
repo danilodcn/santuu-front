@@ -14,7 +14,7 @@
           <v-stepper-content step="1">
             <v-form ref="form">
               <v-row>
-                <v-col cols="4">
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
@@ -32,7 +32,7 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
@@ -44,7 +44,7 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
@@ -56,12 +56,13 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
                     label="E-mail"
                     name="email"
+                    @change="form.emailConfirmation = ''"
                     v-model="form.email"
                     :rules="emailRule"
                     clearable
@@ -69,7 +70,7 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
@@ -86,7 +87,7 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
@@ -99,7 +100,8 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="4">
+                {{ form.rg | VMask("##.##..##") }}
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
@@ -111,7 +113,7 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="12" md="4">
                   <v-text-field
                     color="grey"
                     filled
@@ -123,6 +125,31 @@
                     hide-spin-buttons
                   >
                   </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    class="input-info"
+                    :rules="obrigatory"
+                    color="grey"
+                    v-model="form.pep"
+                    attach
+                    filled
+                    label="Exposto(a) politicamente?"
+                    :items="[
+                      { exposed: 'Sim', value: 1 },
+                      { exposed: 'Não', value: 0 },
+                    ]"
+                    item-text="exposed"
+                    item-value="value"
+                    persistent-hint
+                  >
+                  </v-select>
+                  <info-dialog
+                    text="É considerada um PEP ou Pessoa Exposta Politicamente, aquela que desempenha ou desempenhou nos últimos cinco anos anteriores, no Brasil ou em países, territórios e dependências estrangeiros, cargos, empregos ou funções públicas relevantes."
+                    class="info-button"
+                  >
+                    <v-icon size="18">mdi-information</v-icon>
+                  </info-dialog>
                 </v-col>
               </v-row>
               <v-row justify="end" class="ma-0">
@@ -196,6 +223,7 @@ export default class CertificatesView extends Vue {
     phone: "",
     rg: "",
     birth_date: "",
+    pep: "",
   };
 
   emailRule = [
@@ -221,6 +249,10 @@ export default class CertificatesView extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.input-info {
+  width: 90%;
+  float: left;
+}
 .title-content {
   font-weight: 500;
   color: $main-dark-color;
@@ -267,5 +299,14 @@ export default class CertificatesView extends Vue {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
   }
+}
+</style>
+<style>
+.info-button {
+  margin-top: 20px;
+  margin-left: 5px;
+  min-width: 0px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 </style>
