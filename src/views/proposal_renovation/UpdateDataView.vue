@@ -61,11 +61,9 @@
                     color="grey"
                     filled
                     label="E-mail"
+                    name="email"
                     v-model="form.email"
-                    ref="email"
-                    @input="
-                      validateFields($refs.email, $refs.emailConfirmation)
-                    "
+                    @input="validateForm()"
                     :rules="
                       emailRule.concat([
                         (v) =>
@@ -83,11 +81,9 @@
                     color="grey"
                     filled
                     label="Confirmação de e-mail"
+                    name="emailConfirmation"
                     v-model="form.emailConfirmation"
-                    ref="emailConfirmation"
-                    @input="
-                      validateFields($refs.emailConfirmation, $refs.email)
-                    "
+                    @input="validateForm()"
                     :rules="
                       emailRule.concat([
                         (v) => v == form.email || 'Os emails devem coincidir',
@@ -220,20 +216,8 @@ export default class CertificatesView extends Vue {
 
   obrigatory = [(v: string) => !!v || "Campo obrigatório"];
 
-  async validateFields(element: HTMLElement, secondaryElement: HTMLElement) {
-    element.focus();
-    await this.wait();
-    secondaryElement.focus();
-    await this.wait();
-    secondaryElement.blur();
-    await this.wait();
-    element.focus();
-  }
-
-  async wait() {
-    setTimeout(() => {
-      return;
-    }, 100);
+  validateForm() {
+    (this.$refs.form as Vue & { validate: () => boolean }).validate();
   }
 
   e6 = 1;
