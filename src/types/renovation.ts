@@ -1,4 +1,3 @@
-import { IProgram } from "@/types/program";
 export interface IPlan {
   name: string;
   amount: number;
@@ -32,7 +31,16 @@ export interface IProposalBid {
   gross_amount: number;
   minimal_amount: number;
 }
-
+export interface IProgram {
+  id: number;
+  name: string;
+  flexible_coverage_enabled: boolean;
+  flexible_deductible_enabled: boolean;
+  image_program: string;
+  minimal_premium: number;
+  iof_tax_rate: number;
+  type: number;
+}
 export interface IProposalRenovation {
   id: number;
   created_at: string;
@@ -48,4 +56,5 @@ export interface IProposalRenovation {
   deductible_enabled: boolean;
   number_of_installments: number;
   voucher: string;
+  minimal_premium_reached: number;
 }
