@@ -11,9 +11,14 @@ const routes: Array<RouteConfig> = [
   },
 
   {
-    path: "/certificates",
+    path: "/renovation/certificates",
     name: "certificates",
-    component: () => import("@/views/CertificateView.vue"),
+    component: () => import("@/views/proposal_renovation/CertificateView.vue"),
+  },
+  {
+    path: "/renovation/update-data",
+    name: "update-data",
+    component: () => import("@/views/proposal_renovation/UpdateDataView.vue"),
   },
 
   {

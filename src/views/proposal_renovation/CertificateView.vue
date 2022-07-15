@@ -181,9 +181,6 @@ export default class CertificatesView extends Vue {
 .detail strong {
   margin-right: 5px;
 }
-h5 {
-  color: #444;
-}
 .title {
   margin: auto 0px;
 }
