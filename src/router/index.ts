@@ -59,7 +59,7 @@ const routes: Array<RouteConfig> = [
   },
   // RENOVAÇÃO
   {
-    path: "/renovation/renewal-summary", //Resumo da renovação
+    path: "/renovation/renewal-summary/:proposal_id/", //Resumo da renovação
     name: "renewal-summary",
     component: () =>
       import("../views/proposal_renovation/RenovationBidsView.vue"),
