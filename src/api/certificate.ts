@@ -3,7 +3,7 @@ import { AuthProvider } from "@/api/auth.provider";
 
 class CertificateService extends APIAuthBase {
   async getCertificate() {
-    const url = `api/get_certificates/`;
+    const url = `api/insurance/get_certificates/`;
     return await this.request({ url, method: "GET" });
   }
 }

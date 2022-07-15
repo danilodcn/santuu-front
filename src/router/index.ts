@@ -26,6 +26,7 @@ const routes: Array<RouteConfig> = [
     name: "bike-info",
     component: () => import("../views/simulation/BikeInfo.vue"),
   },
+  //
   {
     path: "/bike-events/", //Página Inicial
     name: "event-index",
@@ -50,6 +51,13 @@ const routes: Array<RouteConfig> = [
     path: "/bike-events/event",
     name: "event",
     component: () => import("../views/bike_events/EventView.vue"),
+  },
+  // RENOVAÇÃO
+  {
+    path: "/renovation/renewal-summary", //Resumo da renovação
+    name: "renewal-summary",
+    component: () =>
+      import("../views/proposal_renovation/RenovationBidsView.vue"),
   },
 ];
 
