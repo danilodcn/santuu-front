@@ -63,14 +63,7 @@
                     label="E-mail"
                     name="email"
                     v-model="form.email"
-                    @input="validateForm()"
-                    :rules="
-                      emailRule.concat([
-                        (v) =>
-                          v == form.emailConfirmation ||
-                          'Os emails devem coincidir',
-                      ])
-                    "
+                    :rules="emailRule"
                     clearable
                     hide-spin-buttons
                   >
@@ -83,7 +76,6 @@
                     label="Confirmação de e-mail"
                     name="emailConfirmation"
                     v-model="form.emailConfirmation"
-                    @input="validateForm()"
                     :rules="
                       emailRule.concat([
                         (v) => v == form.email || 'Os emails devem coincidir',
