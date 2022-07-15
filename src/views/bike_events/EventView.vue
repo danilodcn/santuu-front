@@ -337,6 +337,7 @@ iframe {
 .button-download {
   margin-right: 17px;
 }
+
 @media (min-width: 960px) {
   .title-content {
     font-weight: 800 !important;
