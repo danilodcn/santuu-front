@@ -6,7 +6,7 @@
   >
     <v-card>
       <v-card-actions>
-        <v-card-title class="text-h5 lighten">
+        <v-card-title class="text-h5 lighten title">
           {{ dialog.title }}
         </v-card-title>
         <v-spacer></v-spacer>
@@ -95,6 +95,11 @@ export default class MainDialog extends Vue {
 #dialog {
   text-align: justify;
 }
+
+.title {
+  word-break: keep-all;
+}
+
 .ident {
   text-indent: 10px;
 }

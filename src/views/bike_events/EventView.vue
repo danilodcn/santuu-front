@@ -26,12 +26,11 @@
               <v-btn
                 v-if="bike_event.registered"
                 class="button-download"
-                :href="`https://app.clubesantuu.com.br/api/bike-event/certificate-events/download/event-id=${event_id}`"
+                @click="downloadCertificate"
                 v-text="'Baixar inscrição'"
-                absolute="true"
-                target="_blank"
-                right="true"
-                color="#d6da2c"
+                absolute
+                right
+                color="primary"
               />
             </v-col>
           </v-card-title>
@@ -161,6 +160,7 @@ import { EventsService } from "@/api/bikeEvents";
 import { formatDateDetail } from "@/utils/utils";
 import { IQuiz } from "@/types/quiz";
 import { IEvent } from "@/types/events";
+import { downloadEventCertificateService } from "@/api/downloadEventCertificate";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -238,6 +238,25 @@ export default class Available extends Vue {
 
   created() {
     this.getEvents(this.event_id as string);
+  }
+
+  async downloadCertificate() {
+    let eventID: number | null;
+    try {
+      eventID = Number(this.event_id);
+      this.changeLoading(true);
+      await downloadEventCertificateService.execute({ eventID });
+    } catch {
+      eventID = null;
+      this.changeMainDialog({
+        active: true,
+        bntClose: true,
+        msg: "Erro inesperado ao executar ação",
+        persistent: false,
+        title: "Erro!",
+      });
+    }
+    this.changeLoading(false);
   }
 }
 </script>
@@ -318,6 +337,7 @@ iframe {
 .button-download {
   margin-right: 17px;
 }
+
 @media (min-width: 960px) {
   .title-content {
     font-weight: 800 !important;
