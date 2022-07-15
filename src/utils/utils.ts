@@ -25,6 +25,49 @@ export function formatDateDetail(grossDate: string) {
   return formatted;
 }
 
+const imagesIdentifier = [
+  "invoice",
+  "entireBike",
+  "bicycleFrame",
+  "handlebars",
+  "crankset",
+  "saddle",
+  "frontWheel",
+  "rearwheel",
+  "derailleurs",
+  "serialNumber",
+  "ladoDireitoBike",
+  "ladoEsquerdoBike",
+];
+
+const imagePriority = {
+  ladoDireitoBike: 0,
+  ladoEsquerdoBike: 1,
+  entireBike: 2,
+  bicycleFrame: 3,
+  frontWheel: 4,
+  rearwheel: 5,
+  saddle: 6,
+  handlebars: 7,
+  crankset: 8,
+  derailleurs: 9,
+  serialNumber: 10,
+  invoice: 11,
+};
+
+export function orderImage(images: any) {
+  return images.sort((a: any, b: any) => {
+    return (
+      imagePriority[
+        imagesIdentifier[b.identifier] as keyof typeof imagePriority
+      ] -
+      imagePriority[
+        imagesIdentifier[a.identifier] as keyof typeof imagePriority
+      ]
+    );
+  });
+}
+
 type CallFunctionDialog = (payload: IDialog) => void;
 type TermsParams = {
   message: string;
