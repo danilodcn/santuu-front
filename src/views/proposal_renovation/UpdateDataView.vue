@@ -12,12 +12,138 @@
           </v-stepper-step>
 
           <v-stepper-content step="1">
-            <v-card color="grey lighten-1" class="mb-12" height="200px">
-              cpf, primeiro nome, sobrenome, e-mail, confirmação de e-mail,
-              telefone, rg, data de nascimento, pessoa exposta politicamente?
-            </v-card>
-            <v-btn color="primary" @click="e6 = 2"> Continue </v-btn>
-            <v-btn text> Cancel </v-btn>
+            <v-form ref="form">
+              <v-row>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="CPF"
+                    v-mask="'###.###.###-##'"
+                    :rules="
+                      obrigatory.concat([
+                        (v) => isValidCPF(v) || 'CPF inválido',
+                      ])
+                    "
+                    v-model="form.cpf"
+                    clearable
+                    hide-spin-buttons
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="Primeiro Nome"
+                    :rules="obrigatory"
+                    v-model="form.first_name"
+                    clearable
+                    hide-spin-buttons
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="Sobrenome"
+                    :rules="obrigatory"
+                    v-model="form.last_name"
+                    clearable
+                    hide-spin-buttons
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="E-mail"
+                    v-model="form.email"
+                    ref="email"
+                    @input="
+                      validateFields($refs.email, $refs.emailConfirmation)
+                    "
+                    :rules="
+                      emailRule.concat([
+                        (v) =>
+                          v == form.emailConfirmation ||
+                          'Os emails devem coincidir',
+                      ])
+                    "
+                    clearable
+                    hide-spin-buttons
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="Confirmação de e-mail"
+                    v-model="form.emailConfirmation"
+                    ref="emailConfirmation"
+                    @input="
+                      validateFields($refs.emailConfirmation, $refs.email)
+                    "
+                    :rules="
+                      emailRule.concat([
+                        (v) => v == form.email || 'Os emails devem coincidir',
+                      ])
+                    "
+                    clearable
+                    hide-spin-buttons
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="Telefone"
+                    :rules="obrigatory"
+                    v-model="form.phone"
+                    v-mask="'(##) #####-####'"
+                    clearable
+                    hide-spin-buttons
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="RG"
+                    :rules="obrigatory"
+                    v-model="form.rg"
+                    clearable
+                    hide-spin-buttons
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    color="grey"
+                    filled
+                    label="Data de Nascimento"
+                    :rules="obrigatory"
+                    v-model="form.birth_date"
+                    v-mask="'##/##/####'"
+                    clearable
+                    hide-spin-buttons
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+              <v-row justify="end" class="ma-0">
+                <v-btn text class="mx-5"> Cancel </v-btn>
+                <v-btn color="primary" class="mx-5" @click="e6 = 2">
+                  Continue
+                </v-btn>
+              </v-row>
+            </v-form>
           </v-stepper-content>
 
           <v-stepper-step :complete="e6 > 2" step="2">
@@ -64,6 +190,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { Mutation } from "vuex-class";
 import { MutationTypes, IDialog } from "@/store";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
+import { isValidCPF } from "@/utils/utils";
 
 @Component({
   components: {
@@ -71,6 +198,44 @@ import InfoDialog from "@/components/shared/InfoDialog.vue";
   },
 })
 export default class CertificatesView extends Vue {
+  isValidCPF = isValidCPF;
+  form = {
+    cpf: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    emailConfirmation: "",
+    phone: "",
+    rg: "",
+    birth_date: "",
+  };
+
+  emailRule = [
+    (v: string) => !!v || "Campo obrigatório",
+    (v: string) =>
+      // eslint-disable-next-line
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+      "Formato inválido",
+  ];
+
+  obrigatory = [(v: string) => !!v || "Campo obrigatório"];
+
+  async validateFields(element: HTMLElement, secondaryElement: HTMLElement) {
+    element.focus();
+    await this.wait();
+    secondaryElement.focus();
+    await this.wait();
+    secondaryElement.blur();
+    await this.wait();
+    element.focus();
+  }
+
+  async wait() {
+    setTimeout(() => {
+      return;
+    }, 100);
+  }
+
   e6 = 1;
   created() {
     return 1;
