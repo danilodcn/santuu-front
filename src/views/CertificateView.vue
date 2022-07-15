@@ -2,22 +2,38 @@
   <v-container fluid>
     <v-card class="box-content">
       <v-row class="title">
-        <v-col cols="12"><h5>Meus Certificados</h5></v-col>
+        <v-col cols="12"
+          ><h3 class="title-content">Meus Certificados</h3></v-col
+        >
       </v-row>
       <v-card-text>
-        <v-row justify="center">
+        <v-row class="justify-center justify-md-start">
           <template v-for="(certificate, i) in certificates">
             <v-card
-              class="col-md-4 col-11 mx-15 my-5"
+              class="col-md-4 col-11 mx-0 mx-md-15 my-5"
               :key="`certificate-${i}`"
             >
-              <v-card-title> #{{ certificate.id }} </v-card-title>
+              <v-card-title>
+                #{{ certificate.id }}
+                <v-btn
+                  class="view-button rounded-0 rounded-br-xl elevation-0"
+                  text
+                  color="primary"
+                  @click="
+                    $router.push({
+                      path: `/simulation/proposal-values/${certificate.id}`,
+                    })
+                  "
+                >
+                  Visualizar
+                </v-btn>
+              </v-card-title>
               <v-card-text>
                 <v-img
                   class="mb-6 rounded-tl-xl rounded-br-xl"
                   :aspect-ratio="16 / 9"
                   height="160"
-                  :src="certificate.proposal_images[0]"
+                  :src="certificate.proposal_images[0].file"
                 ></v-img>
                 <p class="detail">
                   <strong> Marca: </strong>
@@ -38,7 +54,7 @@
                   </InfoDialog>
                 </p>
                 <p class="detail">
-                  <strong> Preço de Renovação: </strong>
+                  <strong class="renewal-price"> Preço de Renovação: </strong>
                   R$
                   {{
                     formatPrice(
@@ -51,14 +67,14 @@
                 </p>
               </v-card-text>
               <v-card-actions>
-                <v-row class="justify-space-between">
-                  <v-col>
-                    <v-btn text color="primary" @click="1"> Renovar </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn text color="primary" @click="1"> Visualizar </v-btn>
-                  </v-col>
-                </v-row>
+                <v-btn
+                  v-if="canRenewal(certificate.proposal_duration)"
+                  class="renewal-button rounded-tl-lg rounded-br-lg"
+                  elevation="0"
+                  @click="1"
+                >
+                  Renovar
+                </v-btn>
               </v-card-actions>
             </v-card>
           </template>
@@ -89,8 +105,12 @@ type CallFunctionLoading = (loading: boolean) => void;
 const certificateService = new CertificateService();
 
 interface ICertificate {
-  proposal_images: [""];
+  proposal_images: {
+    file: string;
+    identifier: number;
+  }[];
   id: number;
+  proposal_duration: string;
   associate_bikes: IAssociateBike[];
 }
 
@@ -113,7 +133,18 @@ export default class CertificatesView extends Vue {
     this.certificates?.map((certificate: any) => {
       this.orderImage(certificate.proposal_images);
     });
+    console.log(this.certificates[0].proposal_images);
     this.changeLoading(false);
+  }
+
+  getDaysRemaining(date: string) {
+    return (
+      (new Date(date).getTime() - new Date().getTime()) / (1000 * 3600 * 24)
+    );
+  }
+
+  canRenewal(date: string) {
+    return Math.abs(this.getDaysRemaining(date)) < 500;
   }
 
   created() {
@@ -124,6 +155,24 @@ export default class CertificatesView extends Vue {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.renewal-price {
+  font-size: 12px;
+}
+.renewal-button {
+  width: 100%;
+  background-color: $main-color !important;
+  color: white;
+  border-radius: 0px;
+}
+.view-button {
+  margin-left: auto;
+  margin-right: 0px;
+}
+.title-content {
+  font-weight: 500;
+  color: $main-dark-color;
+  margin: 0px auto 0px 12px;
+}
 .detail {
   height: 25px;
   margin-top: 0px;
@@ -166,6 +215,12 @@ h5 {
     margin-right: auto;
     margin-top: 50px;
     padding: 50px 30px;
+  }
+  .title-content {
+    margin: 0px auto 0px 55px;
+  }
+  .renewal-price {
+    font-size: 14px;
   }
 }
 @media (min-width: 1300px) {
