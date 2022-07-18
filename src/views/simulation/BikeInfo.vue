@@ -238,12 +238,13 @@
                     :rules="
                       [
                         (v) =>
-                          datePast(v) ||
+                          datePast(form.acquisitionDate) ||
                           form.hasNote != false ||
                           'Deve estar no passado',
                       ].concat(obrigatoryNoNote)
                     "
-                    v-model="form.acquisitionDate"
+                    v-model="dateFormatted"
+                    @blur="form.acquisitionDate = toYYYYMMDD(dateFormatted)"
                     label="Data de Aquisição:"
                     prepend-inner-icon="mdi-calendar"
                     readonly
@@ -403,7 +404,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { VuePlus } from "@/utils/utils";
+import { VuePlus, datePast, toDDMMYYYY, toYYYYMMDD } from "@/utils/utils";
 import { Mutation } from "vuex-class";
 import { VueRecaptcha } from "vue-recaptcha";
 import { IBrand, ICategory, IModel, IStore } from "@/types/bike";
@@ -468,20 +469,19 @@ export default class BikeInfo extends VuePlus {
   todayDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
   formIsValid = false;
 
+  datePast = datePast;
+  toDDMMYYYY = toDDMMYYYY;
+  toYYYYMMDD = toYYYYMMDD;
+
+  get dateFormatted() {
+    return toDDMMYYYY(this.form.acquisitionDate);
+  }
+
   obrigatory = [];
   obrigatoryNote = [];
   obrigatoryNoNote = [];
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
-
-  // Date input starts
-  datePast(value: string) {
-    const date = new Date(value);
-    date.setDate(date.getDate() + 1);
-
-    return date < this.todayDate;
-  }
-  // Date input ends
 
   //Currency input
   price = "0,00";
