@@ -33,7 +33,15 @@ export interface IVoucher {
   id: number;
   discount_percentage: string;
 }
-
+export interface IInstallments {
+  id: number;
+  payment_date: string;
+  amount: number;
+  tax_value: number;
+  week: number;
+  sequence: number;
+  bordereau: number;
+}
 export interface IProposal {
   id: number;
   created_at: string;
@@ -49,4 +57,5 @@ export interface IProposal {
   deductible_enabled: boolean;
   voucher: IVoucher;
   number_of_installments: number;
+  installment: IInstallments[];
 }

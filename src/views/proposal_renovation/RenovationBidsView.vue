@@ -1,6 +1,10 @@
 <template>
   <v-container fluid>
     <proposal-values :proposal_id="proposal_id" title="Resumo do Certificado">
+      <v-row class="back-foward" justify="space-between">
+        <v-btn color="white" disabled elevation="0">Voltar</v-btn>
+        <v-btn color="white" elevation="0"> Avançar </v-btn>
+      </v-row>
     </proposal-values>
   </v-container>
 </template>

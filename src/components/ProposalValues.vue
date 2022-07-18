@@ -166,6 +166,9 @@
           </template>
         </tbody>
       </v-simple-table>
+      <DetailBox :table="tableInstallments" :key="keyResume" class="pb-0">
+        Próximas Parcelas
+      </DetailBox>
       <v-row class="prices" justify="center">
         <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
           <PriceBox
@@ -355,6 +358,26 @@ const tableBike = {
   columnsNumber: 4,
 };
 
+const titlesInstallments: IDetailedInfo[] = [
+  {
+    value: "Data de Pagamento",
+    description: "",
+  },
+  {
+    value: "Valor",
+    description: "",
+  },
+];
+const itemsInstallments: ITableRow[] = [
+  {
+    values: [],
+  },
+];
+const tableInstallments = {
+  titles: titlesInstallments,
+  rows: itemsInstallments,
+};
+
 const titlesCoverage: IDetailedInfo[] = [];
 
 var itemsCoverage: ITableRow[] = [];
@@ -380,6 +403,7 @@ export default class ProposalValues extends Vue {
   tableResume = tableResume;
   tableBike = tableBike;
   tableCoverage = tableCoverage;
+  tableInstallments = tableInstallments;
   proposal = {} as IProposal;
   keyResume = 0;
 
@@ -405,7 +429,6 @@ export default class ProposalValues extends Vue {
   async getProposal(id: number) {
     this.changeLoading(true);
     const response = await proposalService.getProposal(id);
-
     this.proposal = response;
     this.setValues();
     this.$store.commit(
@@ -473,6 +496,22 @@ export default class ProposalValues extends Vue {
     ];
 
     tableBike.rows[0].values = bike;
+
+    this.proposal.installment.forEach(function (installment) {
+      const installmentObj = [
+        {
+          value: installment.payment_date,
+          description: "",
+        },
+        {
+          value: installment.amount,
+          description: "",
+        },
+      ];
+      tableInstallments.rows.push({
+        values: installmentObj,
+      });
+    });
 
     // Ordenar
     this.proposal.proposal_coverages.sort((a, b) => a.order - b.order);
