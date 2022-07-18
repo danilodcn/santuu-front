@@ -11,6 +11,25 @@ export function formatDate(date: string) {
   return newDate.toLocaleString();
 }
 
+export function toDDMMYYYY(grossDate: string | undefined): string {
+  if (!grossDate) {
+    return "";
+  }
+
+  const date = new Date(grossDate);
+
+  const day = Number(date.getDate().toString().padStart(2, "0")) + 1;
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
+export function toYYYYMMDD(date: string): string {
+  const [month, day, year] = date.split("/");
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+}
+
 export function formatDateDetail(grossDate: string) {
   const date = new Date(grossDate);
 
@@ -148,4 +167,14 @@ export function isValidCPF(cpf: string) {
   if (resto != parseInt(cpf.substring(10, 11))) return false;
 
   return true;
+}
+
+const todayDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+
+export function datePast(value: string) {
+  const date = new Date(value);
+  date.setDate(date.getDate() + 1);
+  console.log(date);
+  console.log(todayDate);
+  return date < todayDate;
 }
