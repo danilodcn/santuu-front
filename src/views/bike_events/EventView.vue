@@ -217,8 +217,6 @@ export default class Available extends Vue {
       id: bike_event,
     });
 
-    console.log(response);
-
     if (response.error) {
       this.fail(response);
       return;

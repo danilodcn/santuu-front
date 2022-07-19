@@ -44,19 +44,19 @@ export function formatDateDetail(grossDate: string) {
   return formatted;
 }
 
-const imagesIdentifier = [
-  "invoice",
-  "entireBike",
-  "bicycleFrame",
-  "handlebars",
-  "crankset",
-  "saddle",
-  "frontWheel",
-  "rearwheel",
-  "derailleurs",
-  "serialNumber",
-  "ladoDireitoBike",
-  "ladoEsquerdoBike",
+export const imagesIdentifier = [
+  ["invoice", "Nota fiscal"],
+  ["entireBike", "Bike Inteira"],
+  ["bicycleFrame", "Quadro"],
+  ["handlebars", "Guidão"],
+  ["crankset", "Pedivela"],
+  ["saddle", "Selim"],
+  ["frontWheel", "Roda Diantera"],
+  ["rearwheel", "Roda Traseira"],
+  ["derailleurs", "Câmbio"],
+  ["serialNumber", "Núm. Série no quadro da bike"],
+  ["ladoDireitoBike", "Lado direito da bike"],
+  ["ladoEsquerdoBike", "Lado esquerdo da bike"],
 ];
 
 const imagePriority = {
@@ -78,10 +78,10 @@ export function orderImage(images: any) {
   return images.sort((a: any, b: any) => {
     return (
       imagePriority[
-        imagesIdentifier[b.identifier] as keyof typeof imagePriority
+        imagesIdentifier[b.identifier][0] as keyof typeof imagePriority
       ] -
       imagePriority[
-        imagesIdentifier[a.identifier] as keyof typeof imagePriority
+        imagesIdentifier[a.identifier][0] as keyof typeof imagePriority
       ]
     );
   });
@@ -174,7 +174,5 @@ const todayDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
 export function datePast(value: string) {
   const date = new Date(value);
   date.setDate(date.getDate() + 1);
-  console.log(date);
-  console.log(todayDate);
   return date < todayDate;
 }

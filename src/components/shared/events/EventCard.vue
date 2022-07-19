@@ -90,7 +90,6 @@ export default class EventCard extends BaseComponent {
       if (response.error) {
         message = response.axiosError?.response?.data?.message;
         title = "Erro!";
-        console.log(response);
       } else {
         title = "Sucesso!";
         this.disableButtonConfirmation = true;

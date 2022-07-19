@@ -312,18 +312,38 @@
             </v-row>
           </v-stepper-content>
 
-          <v-stepper-step :complete="step > 3" step="3">
+          <v-stepper-step
+            :complete="step > 3"
+            step="3"
+            v-if="images.length < numberImages"
+          >
             Você deve enviar as seguintes fotos para continuar com a renovação
+            <small>
+              Abaixo as imagens que estão faltando na sua antiga proposta
+            </small>
           </v-stepper-step>
 
           <v-stepper-content step="3">
-            <v-card
-              color="grey lighten-1"
-              class="mb-12"
-              height="200px"
-            ></v-card>
-            <v-btn color="primary" @click="1"> Continue </v-btn>
-            <v-btn text> Cancel </v-btn>
+            <v-row>
+              <template v-for="(item, i) in imagesIdentifier">
+                <v-col cols="4" offset="4" :key="i">
+                  <v-card
+                    v-if="!images.find((element) => element.identifier == i)"
+                  >
+                    {{ item[1] }}
+                    <v-img
+                      :src="`http://127.0.0.1:8000/static/assets/prev-images/prev-${item[0]}.svg`"
+                    ></v-img>
+                  </v-card>
+                </v-col>
+              </template>
+            </v-row>
+            <v-row justify="end" class="ma-0">
+              <v-btn text class="mx-2 mx-md-5" @click="step--"> Voltar </v-btn>
+              <v-btn color="primary" class="mx-2 mx-md-5" @click="1">
+                Avançar
+              </v-btn>
+            </v-row>
           </v-stepper-content>
         </v-stepper>
       </v-card-text>
@@ -343,12 +363,20 @@ import { Component, Vue } from "vue-property-decorator";
 import { Mutation } from "vuex-class";
 import { MutationTypes, IDialog } from "@/store";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
-import { isValidCPF, datePast, toDDMMYYYY, toYYYYMMDD } from "@/utils/utils";
+import {
+  isValidCPF,
+  datePast,
+  toDDMMYYYY,
+  toYYYYMMDD,
+  imagesIdentifier,
+} from "@/utils/utils";
 import { AddressService } from "@/api/addressByCep";
 import { UserDataService } from "@/api/userData";
+import { ProposalService } from "@/api/proposal";
 
 const addressService = new AddressService();
 const userDataService = new UserDataService();
+const proposalService = new ProposalService();
 
 @Component({
   components: {
@@ -359,7 +387,11 @@ export default class CertificatesView extends Vue {
   menu = false;
   update = false;
   updateAddress = false;
-  proposal_id = this.$route.params.proposal_id;
+  proposal_id = Number(this.$route.params.proposal_id);
+  imagesIdentifier = imagesIdentifier;
+
+  numberImages = imagesIdentifier.length;
+  images: any = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
 
   step = 1;
 
@@ -439,8 +471,12 @@ export default class CertificatesView extends Vue {
     }
   }
 
-  handleImages() {
-    return;
+  async handleImages() {
+    const response = await proposalService.getProposalImages(this.proposal_id);
+    this.images = response;
+    if (this.images.length < this.numberImages) {
+      this.step++;
+    }
   }
 
   async newCep() {
