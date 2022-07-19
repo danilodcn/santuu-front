@@ -172,7 +172,7 @@
         :key="keyResume"
         class="pb-0"
       >
-        Próximas Parcelas
+        Parcelas
       </DetailBox>
       <v-row class="prices" justify="center">
         <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
@@ -502,6 +502,9 @@ export default class ProposalValues extends Vue {
 
     tableBike.rows[0].values = bike;
     // Criando tabela das parcelas
+
+    this.proposal.installment.sort((a, b) => a.payment_date - b.payment_date);
+
     this.proposal.installment.forEach(function (installment) {
       const installmentObj = [
         {
