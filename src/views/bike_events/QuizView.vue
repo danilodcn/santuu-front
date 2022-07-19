@@ -101,7 +101,6 @@ export default class QuizView extends VuePlus {
     );
 
     let response = await answerQuestion.handle(data);
-    console.log(response);
 
     if (response.error) {
       this.fail(response);

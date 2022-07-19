@@ -133,7 +133,6 @@ export default class CertificatesView extends Vue {
     if (response.error) {
       this.fail(response);
       this.changeLoading(false);
-      console.log(response);
       return;
     }
     this.certificates = response;
@@ -159,7 +158,6 @@ export default class CertificatesView extends Vue {
     if (response.error) {
       this.fail(response);
       this.changeLoading(false);
-      console.log(response);
       return;
     }
     this.changeLoading(false);

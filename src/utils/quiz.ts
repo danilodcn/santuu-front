@@ -61,7 +61,6 @@ class QuizHelper {
 
       if (type) {
         const props = [...type.props];
-        console.log(props, question.placeholder);
         let title = question.title;
 
         if (!insideGroup && question.group) {
@@ -119,7 +118,6 @@ class QuizHelper {
       }
       res.answers.push({ question, answer });
     });
-    console.log(res);
     return res;
   }
 }

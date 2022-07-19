@@ -210,7 +210,6 @@ export default class RaffleView extends BaseComponent {
         persistent: false,
         title: "Houve um erro",
       });
-      console.log(result);
     }
   }
 
@@ -254,7 +253,6 @@ export default class RaffleView extends BaseComponent {
   async handleResult(generateRaffle = false) {
     this.changeLoading(true);
     const results = await this.getResults(generateRaffle);
-    console.log(results, "results");
     if (!results.error) {
       this.result.results = results.results || [];
       this.result.show = Boolean(results?.results?.length);

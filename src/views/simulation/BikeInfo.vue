@@ -624,7 +624,6 @@ export default class BikeInfo extends VuePlus {
     ) {
       return;
     }
-    console.log("Fresq");
     if (this.form.recaptchaToken != "") {
       this.changeLoading(true);
 
