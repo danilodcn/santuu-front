@@ -166,7 +166,7 @@
           </template>
         </tbody>
       </v-simple-table>
-      <DetailBox :table="tableInstallments" :key="keyResume" class="pb-0">
+      <DetailBox :table="tableInstallments" :key="keyResume + 1" class="pb-0">
         Próximas Parcelas
       </DetailBox>
       <v-row class="prices" justify="center">
@@ -292,6 +292,7 @@ import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { MutationTypes, IDialog } from "@/store";
 import { CoverageService } from "@/api/coverage";
+import { install } from "vuetify/es5/install";
 
 const coverageService = new CoverageService();
 const proposalService = new ProposalService();
@@ -444,8 +445,7 @@ export default class ProposalValues extends Vue {
 
   setValues() {
     // Criando tabela de resumo da proposta
-    const numberInstallments =
-      this.proposal.proposal_bids[0].number_of_installments;
+    const numberInstallments = this.proposal.number_of_installments;
 
     const installments =
       numberInstallments == null
@@ -548,7 +548,24 @@ export default class ProposalValues extends Vue {
         values: coverageObj,
       });
     });
+
+    for (let i = 0; i < this.proposal.number_of_installments; i++) {
+      const installmentRow = [
+        {
+          value: `Data`,
+          description: "Parcela",
+        },
+        {
+          value: `Valor`,
+          description: "Valor",
+        },
+      ];
+      tableInstallments.rows.push({
+        values: installmentRow,
+      });
+    }
   }
+
   async updateCoverage(coverage_id: number, enabled: boolean) {
     const updates = [
       {

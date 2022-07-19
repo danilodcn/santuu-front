@@ -11,17 +11,6 @@ const routes: Array<RouteConfig> = [
   },
 
   {
-    path: "/renovation/certificates",
-    name: "certificates",
-    component: () => import("@/views/proposal_renovation/CertificateView.vue"),
-  },
-  {
-    path: "/renovation/update-data/:proposal_id/",
-    name: "update-data",
-    component: () => import("@/views/proposal_renovation/UpdateDataView.vue"),
-  },
-
-  {
     path: "/simulation/proposal-values/:proposal_id/",
     name: "proposal-values",
     component: () => import("../views/simulation/ProposalValues.vue"),
@@ -57,12 +46,22 @@ const routes: Array<RouteConfig> = [
     name: "event",
     component: () => import("../views/bike_events/EventView.vue"),
   },
+
   // RENOVAÇÃO
   {
     path: "/renovation/renewal-summary/:proposal_id/", //Resumo da renovação
     name: "renewal-summary",
-    component: () =>
-      import("../views/proposal_renovation/RenovationBidsView.vue"),
+    component: () => import("@/views/proposal_renovation/RenovationView.vue"),
+  },
+  {
+    path: "/renovation/certificates",
+    name: "certificates",
+    component: () => import("@/views/proposal_renovation/CertificateView.vue"),
+  },
+  {
+    path: "/renovation/update-data/:proposal_id/",
+    name: "update-data",
+    component: () => import("@/views/proposal_renovation/UpdateDataView.vue"),
   },
 ];
 

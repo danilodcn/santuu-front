@@ -68,10 +68,10 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn
-                  v-if="canRenewal(certificate.proposal_duration)"
+                  v-if="canRenew(certificate.proposal_duration)"
                   class="renewal-button rounded-tl-lg rounded-br-lg"
                   elevation="0"
-                  @click="1"
+                  @click="renew(certificate.id)"
                 >
                   Renovar
                 </v-btn>
@@ -98,10 +98,13 @@ import { MutationTypes, IDialog } from "@/store";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { IAssociateBike } from "@/types/proposal";
 import { CertificateService } from "@/api/certificate";
+import { RenewalService } from "@/api/renewal";
 import { formatPrice, orderImage } from "@/utils/utils";
 
 type CallFunctionLoading = (loading: boolean) => void;
+type CallFunctionDialog = (payload: IDialog) => void;
 
+const renewalService = new RenewalService();
 const certificateService = new CertificateService();
 
 interface ICertificate {
@@ -125,15 +128,21 @@ export default class CertificatesView extends Vue {
 
   certificates: ICertificate[] = [];
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
   async getCertificate() {
     this.changeLoading(true);
     const response = await certificateService.getCertificate();
+    if (response.error) {
+      this.fail(response);
+      this.changeLoading(false);
+      console.log(response);
+      return;
+    }
     this.certificates = response;
     this.certificates?.map((certificate: any) => {
       this.orderImage(certificate.proposal_images);
     });
-    console.log(this.certificates[0].proposal_images);
     this.changeLoading(false);
   }
 
@@ -143,8 +152,35 @@ export default class CertificatesView extends Vue {
     );
   }
 
-  canRenewal(date: string) {
+  canRenew(date: string) {
     return Math.abs(this.getDaysRemaining(date)) < 500;
+  }
+
+  async renew(id: number) {
+    this.changeLoading(true);
+    const response = await renewalService.renew(id);
+    if (response.error) {
+      this.fail(response);
+      this.changeLoading(false);
+      console.log(response);
+      return;
+    }
+    this.changeLoading(false);
+    this.$router.push({ path: `/renovation/renewal-summary/${response.id}/` });
+  }
+
+  fail(response: any) {
+    this.changeLoading(false);
+    this.changeMainDialog({
+      msg:
+        response.axiosError.response.data.error ||
+        response.axiosError.response.data.detail,
+      title: "Erro",
+      persistent: true,
+      active: true,
+      bntClose: true,
+      ident: false,
+    });
   }
 
   created() {
