@@ -46,6 +46,8 @@
           >
             <td>
               <v-switch
+                v-if="proposal.deductible_enabled"
+                readonly="true"
                 id="switchDeductible"
                 v-model="proposal.deductible_enabled"
                 @change="onDeductibleEnabledChange()"
@@ -80,7 +82,9 @@
                 @click="handleSwitch($event.target)"
               >
                 <v-switch
+                  v-if="proposal.proposal_coverages"
                   class="coverage"
+                  readonly="true"
                   :disabled="$store.state.proposal_coverages[i].is_fixed"
                   :input-value="$store.state.proposal_coverages[i].enabled"
                   @click.native.capture="changeStatus($event, i)"
@@ -109,6 +113,8 @@
             <td>
               <v-switch
                 id="switchDeductible"
+                readonly="true"
+                v-if="proposal.deductible_enabled"
                 v-model="proposal.deductible_enabled"
                 @change="onDeductibleEnabledChange()"
               ></v-switch>
@@ -143,7 +149,9 @@
                   @click="handleSwitch($event.target)"
                 >
                   <v-switch
+                    v-if="proposal.proposal_coverages"
                     class="coverage"
+                    readonly="true"
                     :disabled="$store.state.proposal_coverages[i].is_fixed"
                     :input-value="$store.state.proposal_coverages[i].enabled"
                     @click.native.capture="changeStatus($event, i)"
@@ -166,8 +174,13 @@
           </template>
         </tbody>
       </v-simple-table>
-      <DetailBox :table="tableInstallments" :key="keyResume + 1" class="pb-0">
-        Próximas Parcelas
+      <DetailBox
+        v-if="proposal.installment"
+        :table="tableInstallments"
+        :key="keyResume + 1"
+        class="pb-0"
+      >
+        Parcelas
       </DetailBox>
       <v-row class="prices" justify="center">
         <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
@@ -496,22 +509,27 @@ export default class ProposalValues extends Vue {
     ];
 
     tableBike.rows[0].values = bike;
+    // Criando tabela das parcelas
 
-    this.proposal.installment.forEach(function (installment) {
-      const installmentObj = [
-        {
-          value: installment.payment_date,
-          description: "",
-        },
-        {
-          value: installment.amount,
-          description: "",
-        },
-      ];
-      tableInstallments.rows.push({
-        values: installmentObj,
+    if (this.proposal.installment) {
+      this.proposal.installment.sort((a, b) => a.payment_date - b.payment_date);
+
+      this.proposal.installment.forEach(function (installment) {
+        const installmentObj = [
+          {
+            value: installment.payment_date,
+            description: "",
+          },
+          {
+            value: installment.amount,
+            description: "",
+          },
+        ];
+        tableInstallments.rows.push({
+          values: installmentObj,
+        });
       });
-    });
+    }
 
     // Ordenar
     this.proposal.proposal_coverages.sort((a, b) => a.order - b.order);
