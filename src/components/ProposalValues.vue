@@ -166,7 +166,12 @@
           </template>
         </tbody>
       </v-simple-table>
-      <DetailBox :table="tableInstallments" :key="keyResume" class="pb-0">
+      <DetailBox
+        v-if="tableInstallments.rows"
+        :table="tableInstallments"
+        :key="keyResume"
+        class="pb-0"
+      >
         Próximas Parcelas
       </DetailBox>
       <v-row class="prices" justify="center">
@@ -496,7 +501,7 @@ export default class ProposalValues extends Vue {
     ];
 
     tableBike.rows[0].values = bike;
-
+    // Criando tabela das parcelas
     this.proposal.installment.forEach(function (installment) {
       const installmentObj = [
         {
