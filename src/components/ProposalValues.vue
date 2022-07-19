@@ -175,13 +175,28 @@
         </tbody>
       </v-simple-table>
       <DetailBox
-        v-if="proposal.installment"
+        v-if="proposal.installment.length"
         :table="tableInstallments"
         :key="keyResume"
         class="pb-0"
       >
         Parcelas
       </DetailBox>
+      <v-divider></v-divider>
+      <v-row class="back-foward" justify="space-between">
+        <v-btn v-if="back_lick" :href="back_lick" color="white" elevation="0"
+          >Voltar</v-btn
+        >
+        <v-btn
+          v-if="next_link"
+          :href="next_link"
+          color="white"
+          elevation="0"
+          class="success-santuu"
+        >
+          Avançar
+        </v-btn>
+      </v-row>
       <v-row class="prices" justify="center">
         <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
           <PriceBox
@@ -425,6 +440,8 @@ export default class ProposalValues extends Vue {
 
   @Prop() title!: string;
   @Prop() proposal_id!: string;
+  @Prop() next_link!: string;
+  @Prop() back_lick!: string;
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLDialog!: CallFunctionDialog;
 
