@@ -19,11 +19,8 @@
                   class="view-button rounded-0 rounded-br-xl elevation-0"
                   text
                   color="primary"
-                  @click="
-                    $router.push({
-                      path: `/simulation/proposal-values/${certificate.id}`,
-                    })
-                  "
+                  target="_blank"
+                  :href="`/renovation/summary-certificate/${certificate.id}`"
                 >
                   Visualizar
                 </v-btn>
