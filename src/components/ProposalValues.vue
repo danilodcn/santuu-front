@@ -177,7 +177,7 @@
       <DetailBox
         v-if="proposal.installment"
         :table="tableInstallments"
-        :key="keyResume + 1"
+        :key="keyResume"
         class="pb-0"
       >
         Parcelas
@@ -306,7 +306,6 @@ import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { MutationTypes, IDialog } from "@/store";
 import { CoverageService } from "@/api/coverage";
 import { install } from "vuetify/es5/install";
-
 const coverageService = new CoverageService();
 const proposalService = new ProposalService();
 
@@ -458,7 +457,8 @@ export default class ProposalValues extends Vue {
 
   setValues() {
     // Criando tabela de resumo da proposta
-    const numberInstallments = this.proposal.number_of_installments;
+    const numberInstallments =
+      this.proposal.proposal_bids[0].number_of_installments;
 
     const installments =
       numberInstallments == null
@@ -512,10 +512,11 @@ export default class ProposalValues extends Vue {
     // Criando tabela das parcelas
 
     if (this.proposal.installment) {
-      this.proposal.installment.sort((a, b) => a.payment_date - b.payment_date);
+      this.proposal.installment.sort((a, b) => a.payment_date - b.payment_date); //Ordenando
 
       this.proposal.installment.forEach(function (installment) {
         const installmentObj = [
+          //Fazendo umm "loop" pra adicionar o valores a variável
           {
             value: installment.payment_date,
             description: "",
@@ -525,6 +526,7 @@ export default class ProposalValues extends Vue {
             description: "",
           },
         ];
+        //Fazendo um push na tabela
         tableInstallments.rows.push({
           values: installmentObj,
         });
@@ -566,24 +568,7 @@ export default class ProposalValues extends Vue {
         values: coverageObj,
       });
     });
-
-    for (let i = 0; i < this.proposal.number_of_installments; i++) {
-      const installmentRow = [
-        {
-          value: `Data`,
-          description: "Parcela",
-        },
-        {
-          value: `Valor`,
-          description: "Valor",
-        },
-      ];
-      tableInstallments.rows.push({
-        values: installmentRow,
-      });
-    }
   }
-
   async updateCoverage(coverage_id: number, enabled: boolean) {
     const updates = [
       {
