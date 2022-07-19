@@ -46,6 +46,8 @@
           >
             <td>
               <v-switch
+                v-if="proposal.deductible_enabled"
+                readonly="true"
                 id="switchDeductible"
                 v-model="proposal.deductible_enabled"
                 @change="onDeductibleEnabledChange()"
@@ -80,7 +82,9 @@
                 @click="handleSwitch($event.target)"
               >
                 <v-switch
+                  v-if="proposal.proposal_coverages"
                   class="coverage"
+                  readonly="true"
                   :disabled="$store.state.proposal_coverages[i].is_fixed"
                   :input-value="$store.state.proposal_coverages[i].enabled"
                   @click.native.capture="changeStatus($event, i)"
@@ -109,6 +113,8 @@
             <td>
               <v-switch
                 id="switchDeductible"
+                readonly="true"
+                v-if="proposal.deductible_enabled"
                 v-model="proposal.deductible_enabled"
                 @change="onDeductibleEnabledChange()"
               ></v-switch>
@@ -143,7 +149,9 @@
                   @click="handleSwitch($event.target)"
                 >
                   <v-switch
+                    v-if="proposal.proposal_coverages"
                     class="coverage"
+                    readonly="true"
                     :disabled="$store.state.proposal_coverages[i].is_fixed"
                     :input-value="$store.state.proposal_coverages[i].enabled"
                     @click.native.capture="changeStatus($event, i)"
