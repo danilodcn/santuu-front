@@ -161,7 +161,7 @@ export default class CertificatesView extends Vue {
       return;
     }
     this.changeLoading(false);
-    this.$router.push({ path: `/renovation/renewal-summary/${response.id}/` });
+    this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
   }
 
   fail(response: any) {
