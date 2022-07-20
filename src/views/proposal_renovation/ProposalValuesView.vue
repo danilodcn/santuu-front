@@ -5,6 +5,7 @@
       title="Valores da Proposta"
       back_lick="/renovation/certificates"
       :next_link="`/renovation/update-data/${proposal_id}`"
+      alert_coverage="(Por padrão é utilizada as coberturas do antigo seguro)"
     >
     </proposal-values>
   </v-container>
