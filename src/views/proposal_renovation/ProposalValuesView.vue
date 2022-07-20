@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import ProposalValues from "@/components/ProposalValues.vue";
-import { Vue, Component } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 
 @Component({ components: { ProposalValues } })

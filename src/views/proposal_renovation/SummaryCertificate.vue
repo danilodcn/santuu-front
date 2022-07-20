@@ -10,13 +10,8 @@
 </template>
 
 <script lang="ts">
-import {
-  IProposalRenovation,
-  ICoverage,
-  IAssociateData,
-} from "@/types/renovation";
 import ProposalValues from "@/components/ProposalValues.vue";
-import { Vue, Component } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 
 @Component({ components: { ProposalValues } })
