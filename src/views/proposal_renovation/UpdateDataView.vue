@@ -324,23 +324,59 @@
           </v-stepper-step>
 
           <v-stepper-content step="3">
-            <v-row>
-              <template v-for="(item, i) in imagesIdentifier">
-                <v-col cols="4" offset="4" :key="i">
-                  <v-card
+            <v-form ref="formImages">
+              <v-row class="mt-5 justify-start">
+                <template v-for="(item, i) in imagesIdentifier">
+                  <v-col
+                    cols="6"
+                    md="3"
+                    :key="i"
+                    class="image-card"
                     v-if="!images.find((element) => element.identifier == i)"
+                    @click="openInput(i)"
                   >
-                    {{ item[1] }}
-                    <v-img
-                      :src="`http://127.0.0.1:8000/static/assets/prev-images/prev-${item[0]}.svg`"
-                    ></v-img>
-                  </v-card>
-                </v-col>
-              </template>
-            </v-row>
+                    <v-card>
+                      <v-system-bar
+                        color="primary"
+                        class="image-bar text-center"
+                      >
+                        <p class="images-title ma-0 py-10">
+                          {{ item[1] }}
+                        </p>
+                      </v-system-bar>
+                      <v-img
+                        class="mt-5 mb-3 image"
+                        contain
+                        :src="`http://127.0.0.1:8000/static/assets/prev-images/prev-${
+                          imagesSrcName[item[0]]
+                        }.svg`"
+                        :ref="`image-preview-${i}`"
+                      ></v-img>
+                      <v-card-actions class="justify-center">
+                        <v-btn
+                          text
+                          color="primary"
+                          class="text-caption text-md-body-2"
+                        >
+                          Tirar foto
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                    <input
+                      type="file"
+                      v-show="false"
+                      :name="`image-${i}`"
+                      :ref="`image-${i}`"
+                      accept="image/*"
+                      :change="updateImage(i)"
+                    />
+                  </v-col>
+                </template>
+              </v-row>
+            </v-form>
             <v-row justify="end" class="ma-0">
               <v-btn text class="mx-2 mx-md-5" @click="step--"> Voltar </v-btn>
-              <v-btn color="primary" class="mx-2 mx-md-5" @click="1">
+              <v-btn color="primary" class="mx-2 mx-md-5" @click="next()">
                 Avançar
               </v-btn>
             </v-row>
@@ -369,6 +405,7 @@ import {
   toDDMMYYYY,
   toYYYYMMDD,
   imagesIdentifier,
+  imagesSrcName,
 } from "@/utils/utils";
 import { BaseComponent } from "@/utils/component";
 import { AddressService } from "@/api/addressByCep";
@@ -390,6 +427,7 @@ export default class CertificatesView extends BaseComponent {
   updateAddress = false;
   proposal_id = Number(this.$route.params.proposal_id);
   imagesIdentifier = imagesIdentifier;
+  imagesSrcName = imagesSrcName;
 
   numberImages = imagesIdentifier.length;
   images: any = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
@@ -480,6 +518,23 @@ export default class CertificatesView extends BaseComponent {
     }
   }
 
+  openInput(identifier: number) {
+    const element = (
+      this.$refs[`image-${identifier}`] as HTMLInputElement[]
+    )[0];
+    if (element) {
+      element.click();
+    }
+  }
+
+  updateImage(identifier: number) {
+    console.log(this.$refs[`image-${identifier}`], `image-${identifier}`);
+  }
+
+  next() {
+    this.$refs.formImages;
+  }
+
   async newCep() {
     const response = await addressService.getAddress(this.formAddress.zipcode);
     this.formAddress.street = response.logradouro;
@@ -496,6 +551,8 @@ export default class CertificatesView extends BaseComponent {
   }
 
   created() {
+    this.step = 2;
+    this.handleImages();
     this.getData();
   }
 }
@@ -503,6 +560,22 @@ export default class CertificatesView extends BaseComponent {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+.image-card {
+  cursor: pointer;
+}
+.image-bar {
+  line-height: 18px;
+  height: 40px !important;
+}
+.image {
+  margin: auto;
+  width: 80px;
+}
+.images-title {
+  color: #fff;
+  width: 100%;
+  font-size: 0.9em;
+}
 .update-button {
   margin-left: 10% !important;
   color: $main-dark-color;
@@ -538,6 +611,15 @@ export default class CertificatesView extends BaseComponent {
   color: $main-dark-color !important;
 }
 @media (min-width: 1160px) {
+  .image-bar {
+    line-height: 20px;
+  }
+  .images-title {
+    font-size: 1em;
+  }
+  .image {
+    width: 120px;
+  }
   .update-button {
     margin-left: 70% !important;
     color: $main-dark-color;
