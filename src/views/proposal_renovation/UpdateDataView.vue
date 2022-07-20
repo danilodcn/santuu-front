@@ -370,6 +370,7 @@ import {
   toYYYYMMDD,
   imagesIdentifier,
 } from "@/utils/utils";
+import { BaseComponent } from "@/utils/component";
 import { AddressService } from "@/api/addressByCep";
 import { UserDataService } from "@/api/userData";
 import { ProposalService } from "@/api/proposal";
@@ -383,7 +384,7 @@ const proposalService = new ProposalService();
     InfoDialog,
   },
 })
-export default class CertificatesView extends Vue {
+export default class CertificatesView extends BaseComponent {
   menu = false;
   update = false;
   updateAddress = false;
