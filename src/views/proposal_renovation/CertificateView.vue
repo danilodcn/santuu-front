@@ -191,7 +191,7 @@ export default class CertificatesView extends Vue {
 }
 .renewal-button {
   width: 100%;
-  background-color: $main-color !important;
+  background-color: $main-dark-color !important;
   color: white;
   border-radius: 0px;
 }
