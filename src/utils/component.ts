@@ -7,7 +7,7 @@ type CallFunctionDialog = (payload: IDialog) => void;
 
 class BaseComponent extends Vue {
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
-  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLDialog!: CallFunctionDialog;
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 }
 
 export { BaseComponent };

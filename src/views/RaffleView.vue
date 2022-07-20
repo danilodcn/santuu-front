@@ -203,7 +203,7 @@ export default class RaffleView extends BaseComponent {
     this.changeLoading(false);
 
     if (!result.hasActivePresenceConfirmation) {
-      this.changeMainLDialog({
+      this.changeMainDialog({
         active: true,
         bntClose: true,
         msg: "Houve um erro ao realizar a ação",
@@ -221,7 +221,7 @@ export default class RaffleView extends BaseComponent {
     });
 
     if (result?.error) {
-      this.changeMainLDialog({
+      this.changeMainDialog({
         active: true,
         bntClose: true,
         msg: result.message || "",
@@ -265,7 +265,7 @@ export default class RaffleView extends BaseComponent {
   showWinnerDetail(winner: Winner) {
     const message = `email: ${winner.email}`;
 
-    this.changeMainLDialog({
+    this.changeMainDialog({
       active: true,
       bntClose: true,
       msg: message,

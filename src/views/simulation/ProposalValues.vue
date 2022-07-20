@@ -400,7 +400,7 @@ export default class ProposalValues extends Vue {
   alertMessage = "Alerta!";
 
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
-  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainLDialog!: CallFunctionDialog;
+  @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
   get hasDiscount(): boolean {
     return this.proposal.voucher != undefined;
@@ -551,7 +551,7 @@ export default class ProposalValues extends Vue {
 
   handleSwitch(target: HTMLInputElement) {
     if (target.getAttribute("disabled")) {
-      this.changeMainLDialog({
+      this.changeMainDialog({
         active: true,
         bntClose: true,
         msg: "Esta cobertura é básica e não pode ser desativada.",
@@ -579,7 +579,7 @@ export default class ProposalValues extends Vue {
     ) {
       event.stopPropagation();
 
-      this.changeMainLDialog({
+      this.changeMainDialog({
         active: true,
         bntClose: true,
         msg: "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",

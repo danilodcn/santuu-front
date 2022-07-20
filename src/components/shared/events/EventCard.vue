@@ -102,7 +102,7 @@ export default class EventCard extends BaseComponent {
       title = "Sorteio ainda não liberado";
     }
 
-    this.changeMainLDialog({
+    this.changeMainDialog({
       active: true,
       bntClose: true,
       msg: message,
