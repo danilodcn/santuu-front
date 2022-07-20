@@ -46,7 +46,7 @@ export function formatDateDetail(grossDate: string) {
 
 export const imagesIdentifier = [
   ["invoice", "Nota fiscal"],
-  ["entireBike", "Bike Inteira"],
+  // ["entireBike", "Bike Inteira"],
   ["bicycleFrame", "Quadro"],
   ["handlebars", "Guidão"],
   ["crankset", "Pedivela"],
@@ -59,10 +59,25 @@ export const imagesIdentifier = [
   ["ladoEsquerdoBike", "Lado esquerdo da bike"],
 ];
 
+export const imagesSrcName = {
+  invoice: "invoice",
+  // entireBike: "entireBike",
+  bicycleFrame: "bike-frame",
+  handlebars: "handlebar",
+  crankset: "crank",
+  saddle: "saddle",
+  frontWheel: "wheel",
+  rearwheel: "wheel",
+  derailleurs: "crankset",
+  serialNumber: "serial-number",
+  ladoDireitoBike: "bike",
+  ladoEsquerdoBike: "bike-left",
+};
+
 const imagePriority = {
   ladoDireitoBike: 0,
   ladoEsquerdoBike: 1,
-  entireBike: 2,
+  // entireBike: 2,
   bicycleFrame: 3,
   frontWheel: 4,
   rearwheel: 5,
