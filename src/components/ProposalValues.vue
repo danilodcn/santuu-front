@@ -175,7 +175,9 @@
         </tbody>
       </v-simple-table>
       <DetailBox
-        v-if="proposal.installment.length"
+        v-if="
+          proposal.installment.length && proposal.installment[0].amount > 0.0
+        "
         :table="tableInstallments"
         :key="keyResume"
         class="pb-0"
