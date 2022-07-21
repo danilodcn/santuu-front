@@ -1,18 +1,13 @@
-import { APIAuthBase } from "./auth";
-import { AuthProvider } from "@/api/auth.provider";
+import { APIBase } from "./index";
 
 interface IUpdate {
   proposal_id: number;
   enabled: boolean;
 }
 
-class ProposalService extends APIAuthBase {
+export class ProposalService extends APIBase {
   async getProposal(proposal_id: number) {
     const url = `dashboard/proposal/proposal/${proposal_id}/`;
-    return await this.request({ url, method: "GET" });
-  }
-  async getProposalImages(proposal_id: number) {
-    const url = `api/insurance-v2/proposal-images/${proposal_id}/`;
     return await this.request({ url, method: "GET" });
   }
   async updateDeductibleEnabled(update: IUpdate) {
@@ -24,8 +19,3 @@ class ProposalService extends APIAuthBase {
     return await this.request({ url, method: "PUT", data: dataJson });
   }
 }
-
-const authProvider = new AuthProvider();
-const proposalService = new ProposalService(authProvider);
-
-export { ProposalService, proposalService };

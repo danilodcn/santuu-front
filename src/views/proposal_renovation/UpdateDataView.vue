@@ -315,7 +315,7 @@
           <v-stepper-step
             :complete="step > 3"
             step="3"
-            v-if="images.length < numberImages"
+            v-if="missingImages.length > 0"
           >
             Você deve enviar as seguintes fotos para continuar com a renovação
             <small>
@@ -326,13 +326,12 @@
           <v-stepper-content step="3">
             <v-form ref="formImages">
               <v-row class="mt-5 justify-start">
-                <template v-for="(item, i) in imagesIdentifier">
+                <template v-for="(item, i) in missingImages">
                   <v-col
                     cols="6"
                     md="3"
                     :key="i"
                     class="image-card"
-                    v-if="!images.find((element) => element.identifier == i)"
                     @click="openInput(i)"
                   >
                     <v-card>
@@ -341,16 +340,20 @@
                         class="image-bar text-center"
                       >
                         <p class="images-title ma-0 py-10">
-                          {{ item[1] }}
+                          {{
+                            getImageConfig(item.image_type).showName ||
+                            getImageConfig(item.image_type).typeName
+                          }}
                         </p>
                       </v-system-bar>
                       <v-img
-                        class="mt-5 mb-3 image"
+                        class="mt-3 mb-0 image"
                         contain
                         :src="`http://127.0.0.1:8000/static/assets/prev-images/prev-${
-                          imagesSrcName[item[0]]
+                          getImageConfig(item.image_type).srcImageName
                         }.svg`"
                         :ref="`image-preview-${i}`"
+                        width="100"
                       ></v-img>
                       <v-card-actions class="justify-center">
                         <v-btn
@@ -368,7 +371,7 @@
                       :name="`image-${i}`"
                       :ref="`image-${i}`"
                       accept="image/*"
-                      :change="updateImage(i)"
+                      @change="updateImage(i)"
                     />
                   </v-col>
                 </template>
@@ -404,17 +407,27 @@ import {
   datePast,
   toDDMMYYYY,
   toYYYYMMDD,
-  imagesIdentifier,
-  imagesSrcName,
+  imagesConfig,
 } from "@/utils/utils";
 import { BaseComponent } from "@/utils/component";
 import { AddressService } from "@/api/addressByCep";
 import { UserDataService } from "@/api/userData";
-import { ProposalService } from "@/api/proposal";
+import { ProposalImagesService } from "@/api/proposalImages";
 
 const addressService = new AddressService();
 const userDataService = new UserDataService();
-const proposalService = new ProposalService();
+const proposalImagesService = new ProposalImagesService();
+
+interface IProgramImage {
+  id: number;
+  image_type_name: string;
+  image_type: number;
+  is_seller_upload: boolean;
+  is_associate_upload: boolean;
+  is_new_bike: boolean;
+  is_used_bike: boolean;
+  program: number;
+}
 
 @Component({
   components: {
@@ -426,11 +439,8 @@ export default class CertificatesView extends BaseComponent {
   update = false;
   updateAddress = false;
   proposal_id = Number(this.$route.params.proposal_id);
-  imagesIdentifier = imagesIdentifier;
-  imagesSrcName = imagesSrcName;
-
-  numberImages = imagesIdentifier.length;
-  images: any = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+  imagesConfig = imagesConfig;
+  missingImages = [] as IProgramImage[];
 
   step = 1;
 
@@ -511,11 +521,20 @@ export default class CertificatesView extends BaseComponent {
   }
 
   async handleImages() {
-    const response = await proposalService.getProposalImages(this.proposal_id);
-    this.images = response;
-    if (this.images.length < this.numberImages) {
+    const response = await proposalImagesService.getMissingImages(
+      this.proposal_id
+    );
+    this.missingImages = response;
+    if (this.missingImages.length > 0) {
       this.step++;
     }
+  }
+
+  getImageConfig(identifier: number) {
+    const imageConfig = imagesConfig.find(
+      (element) => element.identifier == identifier
+    );
+    return imageConfig;
   }
 
   openInput(identifier: number) {
@@ -528,7 +547,32 @@ export default class CertificatesView extends BaseComponent {
   }
 
   updateImage(identifier: number) {
-    console.log(this.$refs[`image-${identifier}`], `image-${identifier}`);
+    const imagePreviewElement = (
+      this.$refs[`image-preview-${identifier}`] as HTMLImageElement[]
+    )[0];
+    const imageInput = (
+      this.$refs[`image-${identifier}`] as HTMLInputElement[]
+    )[0];
+
+    const file = imageInput.files?.item(0);
+    const reader = new FileReader();
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+
+    // console.log([
+    //   this.$refs[`image-preview-${identifier}`],
+    //   (this.$refs[`image-preview-${identifier}`] as HTMLElement[])[0],
+    //   (this.$refs[`image-preview-${identifier}`] as Element[])[0],
+    // ]);
+    // (
+    //   this.$refs[`image-preview-${identifier}`] as HTMLElement[]
+    // )[0].style.width = "100%";
+
+    reader.onload = function (e) {
+      imagePreviewElement.src = e.target?.result as string;
+    };
   }
 
   next() {
