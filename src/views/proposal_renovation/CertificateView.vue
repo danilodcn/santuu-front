@@ -30,22 +30,20 @@
                   class="mb-6 rounded-tl-xl rounded-br-xl"
                   :aspect-ratio="16 / 9"
                   height="160"
-                  :src="certificate.proposal_images[0].file"
+                  :src="certificate.data.image"
                 ></v-img>
                 <p class="detail">
                   <strong> Marca: </strong>
-                  {{ certificate.associate_bikes[0].brand }}
+                  {{ certificate.data.brand }}
                 </p>
                 <p class="detail">
                   <strong> Modelo: </strong>
-                  {{ certificate.associate_bikes[0].model }}
+                  {{ certificate.data.model }}
                 </p>
                 <p class="detail">
                   <strong> Preço: </strong>
                   R$
-                  {{
-                    formatPrice(Number(certificate.associate_bikes[0].price))
-                  }}
+                  {{ certificate.data.price }}
                   <InfoDialog text="Valor final pago pelo seguro">
                     <v-icon size="13">mdi-information</v-icon>
                   </InfoDialog>
@@ -53,11 +51,7 @@
                 <p class="detail">
                   <strong class="renewal-price"> Preço de Renovação: </strong>
                   R$
-                  {{
-                    formatPrice(
-                      Number(certificate.associate_bikes[0].price) / 2
-                    )
-                  }}
+                  {{ certificate.data.price }}
                   <InfoDialog text="Valor considerado da bike para renovação">
                     <v-icon size="13">mdi-information</v-icon>
                   </InfoDialog>
@@ -112,6 +106,14 @@ interface ICertificate {
   id: number;
   proposal_duration: string;
   associate_bikes: IAssociateBike[];
+  data: ICertificateData;
+}
+
+interface ICertificateData {
+  image: string;
+  brand: string;
+  model: string;
+  price: string | number;
 }
 
 @Component({
@@ -124,6 +126,7 @@ export default class CertificatesView extends Vue {
   orderImage = orderImage;
 
   certificates: ICertificate[] = [];
+
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
@@ -140,6 +143,7 @@ export default class CertificatesView extends Vue {
       this.orderImage(certificate.proposal_images);
     });
     this.changeLoading(false);
+    this.buildCertificateData();
   }
 
   getDaysRemaining(date: string) {
@@ -176,6 +180,20 @@ export default class CertificatesView extends Vue {
       bntClose: true,
       ident: false,
     });
+  }
+
+  buildCertificateData() {
+    for (const item of this.certificates) {
+      let price = item.associate_bikes[0]?.price || "-";
+
+      const data: ICertificateData = {
+        image: item.proposal_images[0]?.file || "",
+        brand: item.associate_bikes[0]?.brand || "",
+        model: item.associate_bikes[0]?.model || "",
+        price: price == "-" ? price : formatPrice(Number(price)),
+      };
+      item.data = data;
+    }
   }
 
   created() {

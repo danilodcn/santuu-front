@@ -28,7 +28,7 @@
       >
       <DetailBox :table="tableBike" class="pb-0">Bike</DetailBox>
       <h3>
-        Coberturas
+        Coberturas {{ alert_coverage }}
         <InfoDialog
           text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
         >
@@ -175,7 +175,9 @@
         </tbody>
       </v-simple-table>
       <DetailBox
-        v-if="proposal.installment.length"
+        v-if="
+          proposal.installment.length && proposal.installment[0].amount > 0.0
+        "
         :table="tableInstallments"
         :key="keyResume"
         class="pb-0"
@@ -438,6 +440,7 @@ export default class ProposalValues extends Vue {
   alertEnabled = false;
   alertMessage = "Alerta!";
 
+  @Prop() alert_coverage!: string;
   @Prop() title!: string;
   @Prop() proposal_id!: string;
   @Prop() next_link!: string;
