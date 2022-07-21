@@ -412,11 +412,13 @@ import {
 import { BaseComponent } from "@/utils/component";
 import { AddressService } from "@/api/addressByCep";
 import { UserDataService } from "@/api/userData";
+import { ProposalService } from "@/api/proposal";
 import { ProposalImagesService } from "@/api/proposalImages";
 
 const addressService = new AddressService();
 const userDataService = new UserDataService();
 const proposalImagesService = new ProposalImagesService();
+const proposalService = new ProposalService();
 
 interface IProgramImage {
   id: number;
@@ -586,9 +588,9 @@ export default class CertificatesView extends BaseComponent {
     this.formAddress.state = response.uf;
     this.formAddress.city = response.localidade;
   }
-
   async getData() {
-    const response = await userDataService.getUserData();
+    const proposal = await proposalService.getProposal(this.proposal_id);
+    const response = await userDataService.getUserData(proposal.associate.id);
     this.form = response[0];
     this.form.emailConfirmation = this.form.email;
     this.formAddress = response[0].address;
