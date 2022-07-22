@@ -1,5 +1,4 @@
 import { APIAuthBase } from "./auth";
-import { AuthProvider } from "@/api/auth.provider";
 
 interface IUpdate {
   proposal_id: number;
@@ -7,11 +6,16 @@ interface IUpdate {
 }
 
 class ProposalService extends APIAuthBase {
-  async getProposal(proposal_id: number) {
+  async getSimpleProposal(proposal_id: number | string) {
+    const url = `dashboard/proposal/get-proposal/${proposal_id}/`;
+    return await this.request({ url, method: "GET" });
+  }
+
+  async getProposal(proposal_id: number | string) {
     const url = `dashboard/proposal/proposal/${proposal_id}/`;
     return await this.request({ url, method: "GET" });
   }
-  async getProposalImages(proposal_id: number) {
+  async getProposalImages(proposal_id: number | string) {
     const url = `api/insurance-v2/proposal-images/${proposal_id}/`;
     return await this.request({ url, method: "GET" });
   }
@@ -25,7 +29,6 @@ class ProposalService extends APIAuthBase {
   }
 }
 
-const authProvider = new AuthProvider();
-const proposalService = new ProposalService(authProvider);
+const proposalService = new ProposalService();
 
 export { ProposalService, proposalService };
