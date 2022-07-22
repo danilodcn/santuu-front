@@ -10,11 +10,14 @@
     >
     </v-alert>
     <v-card class="box-content">
-      <v-row class="mt-10 mr-10">
-        <v-col cols="9">
-          <v-divider class="ma-5 ma-md-10"></v-divider>
+      <v-row class="mt-10 mr-10" align="center" justify="center">
+        <v-col cols="6" sm="4" md="3" class="text-center" v-if="page_title">
+          <h3 class="pa-0 text-center">{{ page_title }}</h3>
         </v-col>
-        <v-col cols="3">
+        <v-col class="text-center">
+          <v-divider></v-divider>
+        </v-col>
+        <v-col cols="3" sm="4" class="text-center">
           <img
             class="mr-4"
             id="logo"
@@ -47,7 +50,7 @@
             <td>
               <v-switch
                 v-if="proposal.deductible_enabled"
-                readonly="true"
+                readonly
                 id="switchDeductible"
                 v-model="proposal.deductible_enabled"
                 @change="onDeductibleEnabledChange()"
@@ -443,6 +446,7 @@ export default class ProposalValues extends Vue {
   @Prop() alert_coverage!: string;
   @Prop() title!: string;
   @Prop() proposal_id!: string;
+  @Prop({ default: "" }) page_title!: string;
   @Prop() next_link!: string;
   @Prop() back_lick!: string;
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
