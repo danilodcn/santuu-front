@@ -1,7 +1,9 @@
 <template>
   <v-card>
-    <v-card-title class="main-color">Efetuar pagamento</v-card-title>
-    <v-form>
+    <v-card-title class="main-color">
+      <span class="mt-5 mx-4"> Efetuar pagamento </span>
+    </v-card-title>
+    <v-form ref="form">
       <v-row align="center" class="ma-4">
         <v-col cols="4">
           <v-text-field
@@ -55,8 +57,8 @@
               type="month"
               locale="pt-br"
               @input="menu = false"
-              :min="form.date.min"
-              :max="form.date.max"
+              :min="date.min"
+              :max="date.max"
             ></v-date-picker>
           </v-menu>
         </v-col>
@@ -86,36 +88,30 @@
           ></v-select>
         </v-col>
         <v-col class="mb-4" align="center">
-          <v-btn color="primary">Confirmar pagamento</v-btn>
+          <v-btn color="primary" @click="paymentSubmit()"
+            >Confirmar pagamento</v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
-    <pre>
-      {{ form }}
-      </pre
-    >
-    <pre>
-      {{ model }}
-      </pre
-    >
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 import { getCardType, getNumberOfDigitsInSecurityCode } from "@/utils/payment";
 import { required } from "@/utils/rules";
 import { paymentService } from "@/api/payment";
 
-interface IInstallments {
-  name: string;
-  number: string | number;
+interface IInstallment {
+  text: string;
+  value: number;
 }
 
-interface IFormData {
-  date: { min?: string; max?: string };
-  installments: { items?: IInstallments[] };
+interface IFormDate {
+  min?: string;
+  max?: string;
 }
 
 interface IFormModel {
@@ -134,15 +130,18 @@ type Proposal = {
 @Component
 export default class EventCard extends BaseComponent {
   @Prop() proposal!: Proposal;
+  @Prop() linkNext!: string;
+
   menu = false;
   rules = { required };
   model = {} as IFormModel;
-  installments = [] as any[];
+  installments: IInstallment[] = [];
   securityCodeMask = "###";
-  form: IFormData = {
-    installments: {},
-    date: {},
-  };
+  date: IFormDate = {};
+
+  formIsValid() {
+    return (this.$refs.form as Vue & { validate: () => any })?.validate();
+  }
 
   allowedMonths(val: any) {
     return true;
@@ -153,8 +152,8 @@ export default class EventCard extends BaseComponent {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
-    this.form.date.min = `${year}-${month}`;
-    this.form.date.max = `${year + 10}-${month}`;
+    this.date.min = `${year}-${month}`;
+    this.date.max = `${year + 10}-${month}`;
 
     this.$watch(() => this.model, this.onModelChange);
     console.log(this.proposal, "Aqui");
@@ -178,7 +177,63 @@ export default class EventCard extends BaseComponent {
     this.installments = await paymentService.getPaymentOptions(
       this.proposal.id
     );
-    console.log(this.installments, "Aqui");
+  }
+
+  async paymentSubmit() {
+    const isValid = this.formIsValid();
+    if (isValid) {
+      const cardNumber = this.model.cardNumber.replaceAll(".", "");
+      let scheme = getCardType(cardNumber);
+      if (scheme == "") {
+        this.changeMainDialog({
+          active: true,
+          bntClose: true,
+          msg: "Bandeira do cartão não reconhecida",
+          persistent: false,
+          title: "Erro!",
+          ident: false,
+        });
+        return;
+      }
+      const installment = this.installments?.find(
+        (item) => item.text == this.model.installments
+      );
+      const numberOfInstallments = Number(installment?.value);
+      const typeInstallment = installment?.text || "";
+
+      if (typeInstallment.trim() == "Débito  1x".trim()) {
+        if (scheme.trim() == "VISA".trim()) {
+          scheme = "VISA_ELECTRON";
+        }
+        if (scheme.trim() == "MASTERCARD".trim()) {
+          scheme = "MAESTRO";
+        }
+      }
+      this.changeLoading(true);
+      const response = await paymentService.handlePayment({
+        ...this.model,
+        cardNumber,
+        scheme,
+        amount: this.proposal.insurance_premium,
+        proposalID: this.proposal.id,
+        numberOfInstallments,
+        typeInstallment,
+      });
+      this.changeLoading(false);
+      if (response.error) {
+        const message = response?.axiosError?.response?.data?.message;
+        this.changeMainDialog({
+          active: true,
+          bntClose: true,
+          msg: message || "Houve um erro interno. Tente novamente mais tarde.",
+          persistent: false,
+          title: "Erro!",
+          ident: false,
+        });
+      } else {
+        document.location.href = this.linkNext;
+      }
+    }
   }
 
   @Watch("model.securityCode")

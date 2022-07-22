@@ -7,7 +7,11 @@
     >
     </proposal-values>
     <v-container>
-      <payment-form v-model="paymentModel" :proposal="proposal"></payment-form>
+      <payment-form
+        v-model="paymentModel"
+        :proposal="proposal"
+        :linkNext="`/web/associate/proposal/payment/sucess?proposal=${proposal_id}&email_check=true&cell_check=true`"
+      ></payment-form>
     </v-container>
   </v-container>
 </template>
@@ -15,7 +19,7 @@
 <script lang="ts">
 import ProposalValues from "@/components/ProposalValues.vue";
 import PaymentForm from "@/components/PaymentFom.vue";
-import { Component, Vue } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 import { proposalService } from "@/api/proposal";
 
