@@ -723,8 +723,6 @@ export default class CertificatesView extends BaseComponent {
   }
 
   created() {
-    this.step = 2;
-    this.handleImages();
     this.getData();
   }
 }
