@@ -1,6 +1,6 @@
 import { APIBase } from "./index";
 
-export class AddressService extends APIBase {
+export class AddressByCepService extends APIBase {
   constructor() {
     super({ baseURL: "https://viacep.com.br" });
   }

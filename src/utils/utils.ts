@@ -44,60 +44,101 @@ export function formatDateDetail(grossDate: string) {
   return formatted;
 }
 
-export const imagesIdentifier = [
-  ["invoice", "Nota fiscal"],
-  // ["entireBike", "Bike Inteira"],
-  ["bicycleFrame", "Quadro"],
-  ["handlebars", "Guidão"],
-  ["crankset", "Pedivela"],
-  ["saddle", "Selim"],
-  ["frontWheel", "Roda Diantera"],
-  ["rearwheel", "Roda Traseira"],
-  ["derailleurs", "Câmbio"],
-  ["serialNumber", "Núm. Série no quadro da bike"],
-  ["ladoDireitoBike", "Lado direito da bike"],
-  ["ladoEsquerdoBike", "Lado esquerdo da bike"],
+export const imagesConfig = [
+  {
+    name: "invoice",
+    showName: "Nota fiscal",
+    srcImageName: "invoice",
+    identifier: 0,
+    showPriority: 11,
+  },
+  // {
+  //   name: "entireBike",
+  //   typeName: "Bike Inteira",
+  //   srcImageName: "entire-bike",
+  //   identifier: 13,
+  //   showPriority: 2,
+  // },
+  {
+    name: "bicycleFrame",
+    typeName: "Quadro",
+    srcImageName: "bike-frame",
+    identifier: 2,
+    showPriority: 3,
+  },
+  {
+    name: "handlebars",
+    typeName: "Guidão",
+    srcImageName: "handlebar",
+    identifier: 3,
+    showPriority: 7,
+  },
+  {
+    name: "crankset",
+    typeName: "Pedivela",
+    srcImageName: "crank",
+    identifier: 4,
+    showPriority: 8,
+  },
+  {
+    name: "saddle",
+    typeName: "Selim",
+    srcImageName: "saddle",
+    identifier: 5,
+    showPriority: 6,
+  },
+  {
+    name: "frontWheel",
+    typeName: "Roda Diantera",
+    srcImageName: "wheel",
+    identifier: 6,
+    showPriority: 4,
+  },
+  {
+    name: "rearwheel",
+    typeName: "Roda Traseira",
+    srcImageName: "wheel",
+    identifier: 7,
+    showPriority: 5,
+  },
+  {
+    name: "derailleurs",
+    typeName: "Câmbio",
+    srcImageName: "crankset",
+    identifier: 8,
+    showPriority: 9,
+  },
+  {
+    name: "serialNumber",
+    showName: "Nº de Série - No quadro da bike",
+    typeName: "Número de Série",
+    srcImageName: "serial-number",
+    identifier: 9,
+    showPriority: 10,
+  },
+  {
+    name: "ladoDireitoBike",
+    typeName: "Lado direito da Bike",
+    srcImageName: "bike",
+    identifier: 10,
+    showPriority: 0,
+  },
+  {
+    name: "ladoEsquerdoBike",
+    typeName: "Lado esquerdo da Bike",
+    srcImageName: "bike",
+    identifier: 11,
+    showPriority: 1,
+  },
 ];
-
-export const imagesSrcName = {
-  invoice: "invoice",
-  // entireBike: "entireBike",
-  bicycleFrame: "bike-frame",
-  handlebars: "handlebar",
-  crankset: "crank",
-  saddle: "saddle",
-  frontWheel: "wheel",
-  rearwheel: "wheel",
-  derailleurs: "crankset",
-  serialNumber: "serial-number",
-  ladoDireitoBike: "bike",
-  ladoEsquerdoBike: "bike-left",
-};
-
-const imagePriority = {
-  ladoDireitoBike: 0,
-  ladoEsquerdoBike: 1,
-  // entireBike: 2,
-  bicycleFrame: 3,
-  frontWheel: 4,
-  rearwheel: 5,
-  saddle: 6,
-  handlebars: 7,
-  crankset: 8,
-  derailleurs: 9,
-  serialNumber: 10,
-  invoice: 11,
-};
 
 export function orderImage(images: any) {
   return images.sort((a: any, b: any) => {
     return (
-      imagePriority[
-        imagesIdentifier[b.identifier][0] as keyof typeof imagePriority
-      ] -
-      imagePriority[
-        imagesIdentifier[a.identifier][0] as keyof typeof imagePriority
-      ]
+      (imagesConfig.find((element) => element.identifier == a.identifier)
+        ?.showPriority || 99) -
+      (imagesConfig.find((element) => element.identifier == b.identifier)
+        ?.showPriority || 0)
     );
   });
 }

@@ -34,6 +34,7 @@ class EventsService extends APIAuthBase {
       method: "POST",
       data: data,
       headers: {
+        ...this.config.headers,
         "Content-Type": "multipart/form-data",
       },
     });

@@ -21,11 +21,13 @@ import ProposalValues from "@/components/ProposalValues.vue";
 import PaymentForm from "@/components/PaymentFom.vue";
 import { Component } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
-import { proposalService } from "@/api/proposal";
+import { ProposalService } from "@/api/proposal";
 
 type Proposal = {
   insurance_premium: number;
 };
+
+const proposalService = new ProposalService();
 
 @Component({ components: { ProposalValues, PaymentForm } })
 export default class Available extends BaseComponent {

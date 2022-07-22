@@ -1,14 +1,14 @@
 import { APIAuthBase } from "./auth";
 import { AuthProvider } from "@/api/auth.provider";
-import { IUserData } from "@/types/user";
+import { IAddress } from "@/types/address";
 
-class UserDataService extends APIAuthBase {
-  async getUserData(userId: number) {
-    const url = `/account/user-data/${userId}`;
+class AddressService extends APIAuthBase {
+  async getAddress(userId: number) {
+    const url = `/api/address/${userId}`;
     return await this.request({ url, method: "GET" });
   }
-  async updateUserData(userId: number, form: IUserData) {
-    const url = `/account/user-data/${userId}/`;
+  async updateAddress(userId: number, form: IAddress) {
+    const url = `/api/address/${userId}/`;
     const data = form;
     const dataJson = JSON.stringify(data);
     return await this.request({
@@ -24,6 +24,6 @@ class UserDataService extends APIAuthBase {
 }
 
 const authProvider = new AuthProvider();
-const userDataService = new UserDataService(authProvider);
+const addressService = new AddressService(authProvider);
 
-export { UserDataService, userDataService };
+export { AddressService, addressService };

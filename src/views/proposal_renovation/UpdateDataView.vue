@@ -70,7 +70,7 @@
                     filled
                     label="E-mail"
                     name="email"
-                    @change="form.emailConfirmation = ''"
+                    @change="emailConfirmation = ''"
                     v-model="form.email"
                     validate-on-blur
                     :rules="emailRule"
@@ -85,7 +85,7 @@
                     filled
                     label="Confirmação de e-mail"
                     name="emailConfirmation"
-                    v-model="form.emailConfirmation"
+                    v-model="emailConfirmation"
                     validate-on-blur
                     :rules="
                       emailRule.concat([
@@ -315,7 +315,7 @@
           <v-stepper-step
             :complete="step > 3"
             step="3"
-            v-if="images.length < numberImages"
+            v-if="missingImages.length > 0"
           >
             Você deve enviar as seguintes fotos para continuar com a renovação
             <small>
@@ -324,59 +324,74 @@
           </v-stepper-step>
 
           <v-stepper-content step="3">
-            <v-form ref="formImages">
-              <v-row class="mt-5 justify-start">
-                <template v-for="(item, i) in imagesIdentifier">
-                  <v-col
-                    cols="6"
-                    md="3"
-                    :key="i"
-                    class="image-card"
-                    v-if="!images.find((element) => element.identifier == i)"
-                    @click="openInput(i)"
-                  >
-                    <v-card>
-                      <v-system-bar
+            <v-row class="mt-5 justify-start mb-14">
+              <template v-for="item in missingImages">
+                <v-col
+                  cols="6"
+                  md="3"
+                  class="image-card mx-4 .rounded-lg"
+                  :ref="`image-card-${item.image_type}`"
+                  @click="openInput(item.image_type)"
+                  :key="item.image_type"
+                >
+                  <v-card>
+                    <v-system-bar color="primary" class="image-bar text-center">
+                      <p class="images-title ma-0 py-10">
+                        {{
+                          getImageConfig(item.image_type).showName ||
+                          getImageConfig(item.image_type).typeName
+                        }}
+                      </p>
+                    </v-system-bar>
+                    <v-img
+                      class="mt-3 mb-0 image"
+                      contain
+                      :src="`http://127.0.0.1:8000/static/assets/prev-images/prev-${
+                        getImageConfig(item.image_type).srcImageName
+                      }.svg`"
+                      :ref="`image-preview-${item.image_type}`"
+                      width="100"
+                    ></v-img>
+                    <v-card-actions class="justify-center">
+                      <v-btn
+                        text
                         color="primary"
-                        class="image-bar text-center"
+                        class="text-caption text-md-body-2"
                       >
-                        <p class="images-title ma-0 py-10">
-                          {{ item[1] }}
-                        </p>
-                      </v-system-bar>
-                      <v-img
-                        class="mt-5 mb-3 image"
-                        contain
-                        :src="`http://127.0.0.1:8000/static/assets/prev-images/prev-${
-                          imagesSrcName[item[0]]
-                        }.svg`"
-                        :ref="`image-preview-${i}`"
-                      ></v-img>
-                      <v-card-actions class="justify-center">
-                        <v-btn
-                          text
-                          color="primary"
-                          class="text-caption text-md-body-2"
-                        >
-                          Tirar foto
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
+                        Tirar foto
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                  <v-form v-show="false" :ref="`formImage-${item.image_type}`">
                     <input
                       type="file"
                       v-show="false"
-                      :name="`image-${i}`"
-                      :ref="`image-${i}`"
+                      name="file"
+                      :ref="`image-${item.image_type}`"
                       accept="image/*"
-                      :change="updateImage(i)"
+                      @change="updateImage(item.image_type)"
                     />
-                  </v-col>
-                </template>
-              </v-row>
-            </v-form>
+                    <input
+                      type="hidden"
+                      name="identifier"
+                      :value="`${item.image_type}`"
+                    />
+                    <input
+                      type="hidden"
+                      name="insurance_proposal"
+                      :value="`${proposal_id}`"
+                    />
+                  </v-form>
+                </v-col>
+              </template>
+            </v-row>
             <v-row justify="end" class="ma-0">
               <v-btn text class="mx-2 mx-md-5" @click="step--"> Voltar </v-btn>
-              <v-btn color="primary" class="mx-2 mx-md-5" @click="next()">
+              <v-btn
+                color="primary"
+                class="mx-2 mx-md-5"
+                @click="sendAllImages()"
+              >
                 Avançar
               </v-btn>
             </v-row>
@@ -404,17 +419,33 @@ import {
   datePast,
   toDDMMYYYY,
   toYYYYMMDD,
-  imagesIdentifier,
-  imagesSrcName,
+  imagesConfig,
 } from "@/utils/utils";
 import { BaseComponent } from "@/utils/component";
-import { AddressService } from "@/api/addressByCep";
+import { IUserData } from "@/types/user";
+import { AddressByCepService } from "@/api/addressByCep";
+import { AddressService } from "@/api/address";
 import { UserDataService } from "@/api/userData";
 import { ProposalService } from "@/api/proposal";
+import { ProposalImagesService } from "@/api/proposalImages";
+import { IAddress } from "@/types/address";
 
-const addressService = new AddressService();
+const addressByCepService = new AddressByCepService();
 const userDataService = new UserDataService();
+const proposalImagesService = new ProposalImagesService();
 const proposalService = new ProposalService();
+const addressService = new AddressService();
+
+interface IProgramImage {
+  id: number;
+  image_type_name: string;
+  image_type: number;
+  is_seller_upload: boolean;
+  is_associate_upload: boolean;
+  is_new_bike: boolean;
+  is_used_bike: boolean;
+  program: number;
+}
 
 @Component({
   components: {
@@ -426,11 +457,10 @@ export default class CertificatesView extends BaseComponent {
   update = false;
   updateAddress = false;
   proposal_id = Number(this.$route.params.proposal_id);
-  imagesIdentifier = imagesIdentifier;
-  imagesSrcName = imagesSrcName;
-
-  numberImages = imagesIdentifier.length;
-  images: any = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+  userId?: number;
+  addressId?: number;
+  imagesConfig = imagesConfig;
+  missingImages = [] as IProgramImage[];
 
   step = 1;
 
@@ -443,17 +473,19 @@ export default class CertificatesView extends BaseComponent {
     return toDDMMYYYY(this.form.birth_date);
   }
 
+  emailConfirmation = "";
+
   form = {
     cpf: "",
     first_name: "",
     last_name: "",
     email: "",
-    emailConfirmation: "",
     phone: "",
     rg: "",
     birth_date: "",
-    share_pep_information: "",
-  };
+    share_pep_information: false,
+    address: {} as IAddress,
+  } as IUserData;
 
   formAddress = {
     zipcode: "",
@@ -463,7 +495,7 @@ export default class CertificatesView extends BaseComponent {
     street: "",
     number: "",
     complement: "",
-  };
+  } as IAddress;
 
   emailRule = [
     (v: string) => !!v || "Campo obrigatório",
@@ -498,24 +530,73 @@ export default class CertificatesView extends BaseComponent {
     return (form as Vue & { validate: () => boolean }).validate();
   }
 
-  associateData() {
-    if (this.validateForm(this.$refs.form)) {
+  async associateData() {
+    if (this.validateForm(this.$refs.form) && this.userId) {
+      this.changeLoading(true);
+      const response = await userDataService.updateUserData(
+        this.userId,
+        this.form
+      );
+      if (response.error) {
+        this.fail(response);
+        this.changeLoading(false);
+        return;
+      }
+
+      this.addressId = response.address.id;
+
+      this.changeLoading(false);
       this.step++;
     }
   }
 
-  associateAddress() {
-    if (this.validateForm(this.$refs.formAddress)) {
+  async associateAddress() {
+    if (this.validateForm(this.$refs.formAddress) && this.addressId) {
+      this.changeLoading(true);
+      const response = await addressService.updateAddress(
+        this.addressId,
+        this.formAddress
+      );
+
+      if (response.error) {
+        this.fail(response);
+        this.changeLoading(false);
+        return;
+      }
+
+      this.changeLoading(false);
       this.handleImages();
     }
   }
 
+  fail(response: any) {
+    this.changeMainDialog({
+      msg:
+        response.axiosError.response.data?.error ||
+        "Não foi possível continuar com sua renovação",
+      title: "Erro",
+      persistent: false,
+      active: true,
+      bntClose: true,
+    });
+    this.changeLoading(false);
+  }
+
   async handleImages() {
-    const response = await proposalService.getProposalImages(this.proposal_id);
-    this.images = response;
-    if (this.images.length < this.numberImages) {
+    const response = await proposalImagesService.getMissingImages(
+      this.proposal_id
+    );
+    this.missingImages = response;
+    if (this.missingImages.length > 0) {
       this.step++;
     }
+  }
+
+  getImageConfig(identifier: number) {
+    const imageConfig = imagesConfig.find(
+      (element) => element.identifier == identifier
+    );
+    return imageConfig;
   }
 
   openInput(identifier: number) {
@@ -528,31 +609,120 @@ export default class CertificatesView extends BaseComponent {
   }
 
   updateImage(identifier: number) {
-    console.log(this.$refs[`image-${identifier}`], `image-${identifier}`);
+    const imagePreviewElement = (
+      this.$refs[`image-preview-${identifier}`] as HTMLImageElement[]
+    )[0];
+    const imageInput = (
+      this.$refs[`image-${identifier}`] as HTMLInputElement[]
+    )[0];
+
+    const file = imageInput.files?.item(0);
+    const reader = new FileReader();
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+
+    const imagePreviewElementVue = (
+      this.$refs[`image-preview-${identifier}`] as Vue[]
+    )[0];
+
+    (imagePreviewElementVue.$el as HTMLImageElement).style.width = "100%";
+
+    (imagePreviewElementVue as any).contain = false;
+    (imagePreviewElementVue as any).aspectRatio = 1;
+
+    reader.onload = function (e) {
+      imagePreviewElement.src = e.target?.result as string;
+    };
   }
 
-  next() {
-    this.$refs.formImages;
+  sendAllImages() {
+    let isValid = true;
+    [...Array(13).keys()].forEach((element) => {
+      if (this.$refs[`formImage-${element}`] as Vue[]) {
+        console.log(this.$refs[`image-card-${element}`] as Vue[]);
+        if (
+          !(
+            (this.$refs[`formImage-${element}`] as Vue[])[0].$el
+              .firstChild as HTMLInputElement
+          ).files?.length
+        ) {
+          isValid = false;
+
+          (
+            this.$refs[`image-card-${element}`] as HTMLDivElement[]
+          )[0].style.border = "1px solid red";
+          (
+            this.$refs[`image-card-${element}`] as HTMLDivElement[]
+          )[0].style.borderRadius = "5px";
+        }
+      }
+    });
+
+    if (!isValid) {
+      this.changeMainDialog({
+        msg: "Você precisa preencher todas as imagens",
+        title: "Atenção",
+        persistent: false,
+        active: true,
+        bntClose: true,
+      });
+      return false;
+    }
+
+    [...Array(13).keys()].forEach((element) => {
+      if (this.$refs[`formImage-${element}`] as Vue[]) {
+        console.log(this.$refs[`image-card-${element}`] as Vue[]);
+        if (
+          (
+            (this.$refs[`formImage-${element}`] as Vue[])[0].$el
+              .firstChild as HTMLInputElement
+          ).files?.length
+        ) {
+          this.sendImage(
+            (this.$refs[`formImage-${element}`] as Vue[])[0]
+              .$el as HTMLFormElement
+          );
+        }
+      }
+    });
+  }
+
+  async sendImage(formImage: HTMLFormElement) {
+    this.changeLoading(true);
+    const response = await proposalImagesService.proposalImages(formImage);
+    if (response.error) {
+      this.fail(response);
+      this.changeLoading(false);
+      return;
+    }
+
+    this.changeLoading(true);
   }
 
   async newCep() {
-    const response = await addressService.getAddress(this.formAddress.zipcode);
+    const response = await addressByCepService.getAddress(
+      this.formAddress.zipcode
+    );
     this.formAddress.street = response.logradouro;
     this.formAddress.neighborhood = response.bairro;
     this.formAddress.state = response.uf;
     this.formAddress.city = response.localidade;
   }
-
   async getData() {
-    const response = await userDataService.getUserData();
-    this.form = response[0];
-    this.form.emailConfirmation = this.form.email;
-    this.formAddress = response[0].address;
+    const proposal = await proposalService.getProposal(this.proposal_id);
+    this.userId = proposal.associate.id;
+    if (this.userId) {
+      const response = await userDataService.getUserData(this.userId);
+      this.formAddress = response[0].address;
+      delete response[0].address;
+      this.form = response[0];
+      this.emailConfirmation = this.form.email;
+    }
   }
 
   created() {
-    this.step = 2;
-    this.handleImages();
     this.getData();
   }
 }
