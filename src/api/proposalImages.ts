@@ -6,6 +6,18 @@ class ProposalImagesService extends APIAuthBase {
     const url = `/api/insurance-v2/missing_images/${proposal_id}/`;
     return await this.request({ url, method: "GET" });
   }
+  async proposalImages(form: HTMLFormElement) {
+    const url = `/api/insurance-v2/proposal_images/`;
+    return await this.request({
+      url,
+      method: "POST",
+      data: new FormData(form),
+      headers: {
+        ...this.config.headers,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 }
 
 const authProvider = new AuthProvider();
