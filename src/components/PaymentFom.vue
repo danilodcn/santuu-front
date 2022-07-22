@@ -127,10 +127,16 @@ type Proposal = {
   insurance_premium: number;
 };
 
+type Terms = {
+  message: string;
+  accept?: boolean;
+};
+
 @Component
 export default class EventCard extends BaseComponent {
   @Prop() proposal!: Proposal;
   @Prop() linkNext!: string;
+  @Prop({ default: () => [] }) terms!: Terms[];
 
   menu = false;
   rules = { required };
@@ -180,6 +186,24 @@ export default class EventCard extends BaseComponent {
   }
 
   async paymentSubmit() {
+    const initialValue = true;
+    const acceptTerms = this.terms.map((item) => !!item.accept);
+    const acceptAll = acceptTerms.reduce((a: boolean, b: boolean) => {
+      return a && b;
+    }, initialValue);
+    console.log(acceptAll);
+    if (!acceptAll) {
+      this.changeMainDialog({
+        active: true,
+        bntClose: true,
+        msg: "É necessário aceitar os termos antes de efetuar o pagamento.",
+        persistent: false,
+        title: "Erro!",
+        ident: false,
+      });
+      console.log(this.terms);
+      return;
+    }
     const isValid = this.formIsValid();
     if (isValid) {
       const cardNumber = this.model.cardNumber.replaceAll(".", "");
