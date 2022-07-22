@@ -23,6 +23,8 @@ type Proposal = {
   insurance_premium: number;
 };
 
+const proposalService = new ProposalService();
+
 @Component({ components: { ProposalValues, PaymentForm } })
 export default class Available extends BaseComponent {
   proposal_id = this.$route.params.proposal_id;

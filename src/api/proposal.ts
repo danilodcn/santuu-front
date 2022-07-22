@@ -10,6 +10,12 @@ export class ProposalService extends APIBase {
     const url = `dashboard/proposal/proposal/${proposal_id}/`;
     return await this.request({ url, method: "GET" });
   }
+
+  async getSimpleProposal(proposal_id: number | string) {
+    const url = `dashboard/proposal/get-proposal/${proposal_id}/`;
+    return await this.request({ url, method: "GET" });
+  }
+
   async updateDeductibleEnabled(update: IUpdate) {
     const url = `dashboard/proposal/update_deductible_enabled/`;
     const data = {
