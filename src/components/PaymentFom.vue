@@ -103,6 +103,7 @@ import { BaseComponent } from "@/utils/component";
 import { getCardType, getNumberOfDigitsInSecurityCode } from "@/utils/payment";
 import { required } from "@/utils/rules";
 import { paymentService } from "@/api/payment";
+import { formatDateDetail } from "@/utils/utils";
 
 interface IInstallment {
   text: string;
@@ -125,6 +126,7 @@ interface IFormModel {
 type Proposal = {
   id: number;
   insurance_premium: number;
+  proposal_duration: string;
 };
 
 type Terms = {
@@ -144,6 +146,10 @@ export default class EventCard extends BaseComponent {
   installments: IInstallment[] = [];
   securityCodeMask = "###";
   date: IFormDate = {};
+
+  get dateFormatted() {
+    return formatDateDetail(this.proposal.proposal_duration);
+  }
 
   formIsValid() {
     return (this.$refs.form as Vue & { validate: () => any })?.validate();
@@ -233,6 +239,17 @@ export default class EventCard extends BaseComponent {
           scheme = "MAESTRO";
         }
       }
+      this.changeMainDialog({
+      active: true,
+      bntClose: true,
+      msg:
+        "A renovação terá vigência a partir do vencimento da antiga proposta: " +
+      this.dateFormatted +
+        " e não da data de pagamento.",
+      persistent: false,
+      title: "Aviso!",
+      ident: false,
+      });
       this.changeLoading(true);
       const response = await paymentService.handlePayment({
         ...this.model,
