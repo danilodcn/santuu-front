@@ -19,9 +19,10 @@ const routes: Array<RouteConfig> = [
       import("@/views/proposal_renovation/ProposalValuesView.vue"),
   },
   {
-    path: "/renovation/update-data/:proposal_id/",
-    name: "update-data",
-    component: () => import("@/views/proposal_renovation/UpdateDataView.vue"),
+    path: "/renovation/update-proposal/:proposal_id/",
+    name: "update-proposal",
+    component: () =>
+      import("@/views/proposal_renovation/UpdateProposalView.vue"),
   },
 ];
 

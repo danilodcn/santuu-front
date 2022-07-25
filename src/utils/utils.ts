@@ -232,3 +232,26 @@ export function datePast(value: string) {
   date.setDate(date.getDate() + 1);
   return date < todayDate;
 }
+
+export function validateForm(
+  form: Vue | Element | (Vue | Element)[] | undefined
+) {
+  return (form as Vue & { validate: () => boolean }).validate();
+}
+
+export function validateEmail(email: string) {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
+
+export function validateDate(date: string) {
+  const dateParts = date.split("/");
+  const dateObject = new Date(
+    +dateParts[2],
+    Number(dateParts[1]) - 1,
+    +dateParts[0]
+  );
+  const diff =
+    (new Date().getTime() - dateObject.getTime()) / (1000 * 3600 * 24 * 365);
+  return diff > 10 && diff < 110;
+}

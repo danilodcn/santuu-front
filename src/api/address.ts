@@ -3,8 +3,8 @@ import { AuthProvider } from "@/api/auth.provider";
 import { IAddress } from "@/types/address";
 
 class AddressService extends APIAuthBase {
-  async getAddress(userId: number) {
-    const url = `/api/address/${userId}`;
+  async getAddress(addressId: number) {
+    const url = `/api/address/${addressId}`;
     return await this.request({ url, method: "GET" });
   }
   async updateAddress(userId: number, form: IAddress) {

@@ -59,3 +59,13 @@ export interface IProposal {
   number_of_installments: number;
   installment: IInstallments[];
 }
+export interface IProgramImage {
+  id: number;
+  image_type_name: string;
+  image_type: number;
+  is_seller_upload: boolean;
+  is_associate_upload: boolean;
+  is_new_bike: boolean;
+  is_used_bike: boolean;
+  program: number;
+}
