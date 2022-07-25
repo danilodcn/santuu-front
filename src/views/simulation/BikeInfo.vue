@@ -18,7 +18,7 @@
       </v-row>
       <v-card-text class="px-0">
         <v-form class="px-3" ref="entireForm" v-model="formIsValid">
-          <v-container fluid class="content">
+          <v-container flex class="content">
             <div class="item">
               <v-select
                 :rules="[(v) => v != undefined || 'Campo obrigatório']"
@@ -72,7 +72,11 @@
               </info-dialog>
             </div>
 
-            <div class="item" v-show="form.hasNote != undefined">
+            <div
+              v-if="program_name != 'decathlon'"
+              class="item"
+              v-show="form.hasNote != undefined"
+            >
               <v-autocomplete
                 :rules="obrigatory"
                 color="grey"
@@ -86,6 +90,7 @@
               >
               </v-autocomplete>
               <info-dialog
+                v-if="program_name != 'decathlon'"
                 :text="'Marca do fabricante da bicicleta Marca do fabricante da bicicleta Marca do fabricante da bicicleta'"
                 class="info-button"
               >
@@ -93,7 +98,11 @@
               </info-dialog>
             </div>
 
-            <div class="item" v-show="form.hasNote != undefined">
+            <div
+              v-if="program_name != 'decathlon'"
+              class="item"
+              v-show="form.hasNote != undefined"
+            >
               <v-autocomplete
                 :rules="obrigatory"
                 color="grey"
@@ -108,6 +117,7 @@
               >
               </v-autocomplete>
               <info-dialog
+                v-if="program_name != 'decathlon'"
                 :text="`Categoria de acordo com o modelo da sua bicicleta.
                 Pode ser urbana, Mountain Bike (MTB), Estrada, etc.`"
                 class="info-button"
@@ -627,6 +637,15 @@ export default class BikeInfo extends VuePlus {
     if (this.form.recaptchaToken != "") {
       this.changeLoading(true);
 
+      const description = this.form.model?.description_1;
+      if (this.program_name == "decathlon") {
+        const item = this.formItems.model.filter(
+          (a) => a.description_1 == description
+        );
+        this.form.category = String(item[0].category);
+        this.form.brand = String(item[0].brand);
+      }
+
       var proposal_id: number;
       if (form.hasNote) {
         const data = simulationHelper.handle(this.form);
@@ -723,6 +742,15 @@ export default class BikeInfo extends VuePlus {
   onCategoryChange(val: number, oldVal: number) {
     if (val != oldVal) {
       this.getModels(this.form.brand || "", this.form.category || "");
+    }
+  }
+
+  @Watch("form.situation")
+  onSituationChange(val: string, oldVal: string) {
+    if (val != oldVal) {
+      if (this.program_name == "decathlon") {
+        this.getModels("598,595,338,51,361,553", "1,2,4,10,11,3"); // ids das marcas e categorias pra ser usar na jornada decathlon
+      }
     }
   }
 
