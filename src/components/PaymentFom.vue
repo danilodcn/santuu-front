@@ -240,15 +240,15 @@ export default class EventCard extends BaseComponent {
         }
       }
       this.changeMainDialog({
-      active: true,
-      bntClose: true,
-      msg:
-        "A renovação terá vigência a partir do vencimento da antiga proposta: " +
-      this.dateFormatted +
-        " e não da data de pagamento.",
-      persistent: false,
-      title: "Aviso!",
-      ident: false,
+        active: true,
+        bntClose: true,
+        msg:
+          "A renovação terá vigência a partir do vencimento da antiga proposta: " +
+          this.dateFormatted +
+          " e não da data de pagamento.",
+        persistent: false,
+        title: "Aviso!",
+        ident: false,
       });
       this.changeLoading(true);
       const response = await paymentService.handlePayment({
