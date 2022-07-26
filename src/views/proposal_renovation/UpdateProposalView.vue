@@ -201,7 +201,7 @@ export default class UpdateProposal extends BaseComponent {
   }
 
   next() {
-    this.$router.push({ path: "/bike-events/events?type=my_events" });
+    this.$router.push({ path: `/proposal/payment/${this.proposalId}` });
   }
 
   created() {

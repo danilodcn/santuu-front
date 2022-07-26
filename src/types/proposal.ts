@@ -35,7 +35,7 @@ export interface IVoucher {
 }
 export interface IInstallments {
   id: number;
-  payment_date: number;
+  payment_date: string;
   amount: number;
   tax_value: number;
   week: number;

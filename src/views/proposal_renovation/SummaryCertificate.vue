@@ -1,6 +1,10 @@
 <template>
   <v-container fluid>
-    <proposal-values :proposal_id="proposal_id" title="Resumo do Certificado">
+    <proposal-values
+      :proposal_id="proposal_id"
+      title="Resumo do Certificado"
+      type="certificate"
+    >
     </proposal-values>
   </v-container>
 </template>

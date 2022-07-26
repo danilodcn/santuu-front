@@ -3,9 +3,10 @@
     <proposal-values
       :proposal_id="proposal_id"
       title="Valores da Proposta"
-      back_lick="/renovation/certificates"
-      :next_link="`/renovation/update-data/${proposal_id}`"
+      back_link="/renovation/certificates"
+      :next_link="`/renovation/update-proposal/${proposal_id}`"
       alert_coverage="(Por padrão é utilizada as coberturas do antigo seguro)"
+      type="proposal_values"
     >
     </proposal-values>
   </v-container>

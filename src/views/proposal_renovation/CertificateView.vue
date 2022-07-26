@@ -64,7 +64,10 @@
                   elevation="0"
                   @click="renew(certificate.id)"
                 >
-                  Renovar
+                  <span v-if="certificate.already_renewed">
+                    Continuar renovação
+                  </span>
+                  <span v-else> Renovar </span>
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -107,6 +110,7 @@ interface ICertificate {
   proposal_duration: string;
   associate_bikes: IAssociateBike[];
   data: ICertificateData;
+  already_renewed: boolean;
 }
 
 interface ICertificateData {
@@ -133,16 +137,15 @@ export default class CertificatesView extends Vue {
   async getCertificate() {
     this.changeLoading(true);
     const response = await certificateService.getCertificate();
+    this.changeLoading(false);
     if (response.error) {
       this.fail(response);
-      this.changeLoading(false);
       return;
     }
     this.certificates = response;
     this.certificates?.map((certificate: any) => {
       this.orderImage(certificate.proposal_images);
     });
-    this.changeLoading(false);
     this.buildCertificateData();
   }
 
@@ -159,17 +162,17 @@ export default class CertificatesView extends Vue {
   async renew(id: number) {
     this.changeLoading(true);
     const response = await renewalService.renew(id);
-    if (response.error) {
-      this.fail(response);
-      this.changeLoading(false);
-      return;
-    }
     this.changeLoading(false);
+    if (response.already_renewed) {
+      this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
+      return;
+    } else if (response.error) {
+      this.fail(response);
+    }
     this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
   }
 
   fail(response: any) {
-    this.changeLoading(false);
     this.changeMainDialog({
       msg:
         response.axiosError.response.data.error ||

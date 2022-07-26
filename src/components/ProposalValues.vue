@@ -183,13 +183,13 @@
         "
         :table="tableInstallments"
         :key="keyResume"
-        class="pb-0"
+        class="pb-0 table-installments"
       >
         Parcelas
       </DetailBox>
       <v-divider></v-divider>
       <v-row class="back-foward" justify="space-between">
-        <v-btn v-if="back_lick" :href="back_lick" color="white" elevation="0"
+        <v-btn v-if="back_link" :href="back_link" color="white" elevation="0"
           >Voltar</v-btn
         >
         <v-btn
@@ -325,7 +325,7 @@ import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { MutationTypes, IDialog } from "@/store";
 import { CoverageService } from "@/api/coverage";
-import { install } from "vuetify/es5/install";
+import { toYYYYMMDD, toDDMMYYYY } from "@/utils/utils";
 const coverageService = new CoverageService();
 const proposalService = new ProposalService();
 
@@ -448,7 +448,8 @@ export default class ProposalValues extends Vue {
   @Prop() proposal_id!: string;
   @Prop({ default: "" }) page_title!: string;
   @Prop() next_link!: string;
-  @Prop() back_lick!: string;
+  @Prop() back_link!: string;
+  @Prop() type!: string;
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
@@ -536,17 +537,17 @@ export default class ProposalValues extends Vue {
     // Criando tabela das parcelas
 
     if (this.proposal.installment) {
-      this.proposal.installment.sort((a, b) => a.payment_date - b.payment_date); //Ordenando
+      // this.proposal.installment.sort((a, b) => a.payment_date - b.payment_date); //Ordenando
 
       this.proposal.installment.forEach(function (installment) {
         const installmentObj = [
           //Fazendo umm "loop" pra adicionar o valores a variável
           {
-            value: installment.payment_date,
+            value: toDDMMYYYY(installment.payment_date),
             description: "",
           },
           {
-            value: installment.amount,
+            value: `R$ ${installment.amount}`,
             description: "",
           },
         ];
@@ -647,7 +648,8 @@ export default class ProposalValues extends Vue {
     if (
       this.proposal.insurance_premium - value <
         this.proposal.program.minimal_premium &&
-      coverage.enabled
+      coverage.enabled &&
+      this.type == "proposal_values"
     ) {
       event.stopPropagation();
 
@@ -776,5 +778,17 @@ h3 {
   min-width: 0px !important;
   width: 20px !important;
   height: 20px !important;
+}
+.table-installments {
+  text-align: center !important;
+}
+.v-application--is-ltr
+  .v-data-table
+  > .v-data-table__wrapper
+  > table
+  > thead
+  > tr
+  > th {
+  text-align: center !important;
 }
 </style>
