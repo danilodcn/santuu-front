@@ -325,7 +325,7 @@ import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { MutationTypes, IDialog } from "@/store";
 import { CoverageService } from "@/api/coverage";
-import { toYYYYMMDD, toDDMMYYYY } from "@/utils/utils";
+import { toDDMMYYYY } from "@/utils/utils";
 const coverageService = new CoverageService();
 const proposalService = new ProposalService();
 
@@ -782,13 +782,7 @@ h3 {
 .table-installments {
   text-align: center !important;
 }
-.v-application--is-ltr
-  .v-data-table
-  > .v-data-table__wrapper
-  > table
-  > thead
-  > tr
-  > th {
+.v-application--is-ltr .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
   text-align: center !important;
 }
 </style>
