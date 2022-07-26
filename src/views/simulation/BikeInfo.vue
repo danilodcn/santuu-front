@@ -18,7 +18,7 @@
       </v-row>
       <v-card-text class="px-0">
         <v-form class="px-3" ref="entireForm" v-model="formIsValid">
-          <v-container flex class="content">
+          <v-container fluid class="content">
             <div class="item">
               <v-select
                 :rules="[(v) => v != undefined || 'Campo obrigatório']"
