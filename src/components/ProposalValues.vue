@@ -782,7 +782,13 @@ h3 {
 .table-installments {
   text-align: center !important;
 }
-.v-application--is-ltr .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+.v-application--is-ltr
+  .v-data-table
+  > .v-data-table__wrapper
+  > table
+  > thead
+  > tr
+  > th {
   text-align: center !important;
 }
 </style>
