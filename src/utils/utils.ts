@@ -126,7 +126,7 @@ export const imagesConfig = [
   {
     name: "ladoEsquerdoBike",
     typeName: "Lado esquerdo da Bike",
-    srcImageName: "bike",
+    srcImageName: "bike-left",
     identifier: 11,
     showPriority: 1,
   },
