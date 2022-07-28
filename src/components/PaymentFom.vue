@@ -1,7 +1,7 @@
 <template>
-  <v-card>
+  <v-container class="box-content">
     <v-card-title class="main-color">
-      <span class="mt-5 mx-4"> Efetuar pagamento </span>
+      <span class="mt-5 mx-4 pb-0"> Efetuar pagamento </span>
     </v-card-title>
     <v-form ref="form">
       <v-row align="center" class="ma-4">
@@ -94,7 +94,7 @@
         </v-col>
       </v-row>
     </v-form>
-  </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -291,5 +291,11 @@ export default class EventCard extends BaseComponent {
 @import "@/scss/main.scss";
 .main-color {
   color: $main-dark-color;
+}
+.box-content {
+  margin: auto;
+  margin-top: 10px;
+  max-width: 1080px;
+  padding: 20px;
 }
 </style>
