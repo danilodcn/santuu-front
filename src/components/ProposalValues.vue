@@ -266,12 +266,18 @@
           </InfoDialog>
         </PriceBox>
       </v-col>
-      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex" v-if="hasDiscount">
+      <v-col
+        md="2"
+        class="ma-0 pa-0 d-none d-md-flex"
+        v-if="discount.discount_renew_program"
+      >
         <PriceBox
           :good="true"
           :bold="false"
-          :price="-proposal.insurance_premium_discount"
-          >Desconto de {{ proposal.voucher.discount_percentage }}%
+          :price="
+            (discount.discount_renew_program * proposal.insurance_premium) / 100
+          "
+          >Desconto de {{ discount.discount_renew_program }}%
           <InfoDialog text="Valor a ser descontado do prêmio bruto total">
             <v-icon size="12">mdi-information</v-icon>
           </InfoDialog>
@@ -288,7 +294,14 @@
         </PriceBox>
       </v-col>
       <v-col md="2" class="ma-0 pa-0 d-flex">
-        <PriceBox :bold="true" :good="true" :price="proposal.insurance_premium">
+        <PriceBox
+          :bold="true"
+          :good="true"
+          :price="
+            proposal.insurance_premium -
+            (discount.discount_renew_program * proposal.insurance_premium) / 100
+          "
+        >
           Prêmio a pagar
           <InfoDialog text="Valor final a ser pago">
             <v-icon size="12">mdi-information</v-icon>
@@ -301,7 +314,10 @@
           :good="true"
           v-if="proposal.proposal_bids"
           :numberInstallments="proposal.number_of_installments"
-          :price="proposal.insurance_premium"
+          :price="
+            proposal.insurance_premium -
+            (discount.discount_renew_program * proposal.insurance_premium) / 100
+          "
           >Em até<InfoDialog text="Máximo número de parcelas">
             <v-icon size="12">mdi-information</v-icon>
           </InfoDialog></PriceBox
@@ -422,6 +438,10 @@ const tableCoverage = {
   type: "coverages",
 };
 
+type Discount = {
+  discount_renew_program: number;
+};
+
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
 
@@ -439,6 +459,7 @@ export default class ProposalValues extends Vue {
   tableInstallments = tableInstallments;
   proposal = {} as IProposal;
   keyResume = 0;
+  discount = {} as Discount;
 
   alertEnabled = false;
   alertMessage = "Alerta!";
@@ -468,6 +489,7 @@ export default class ProposalValues extends Vue {
     this.changeLoading(true);
     const response = await proposalService.getProposal(id);
     this.proposal = response;
+    this.discount = await proposalService.getDiscountProgram(this.proposal_id);
     this.setValues();
     this.$store.commit(
       MutationTypes.CHANGE_COVERAGES,
@@ -482,15 +504,24 @@ export default class ProposalValues extends Vue {
 
   setValues() {
     // Criando tabela de resumo da proposta
-    const numberInstallments =
-      this.proposal.proposal_bids[0].number_of_installments;
 
-    const installments =
-      numberInstallments == null
-        ? "Indefinido"
-        : `${numberInstallments} x de R$ ${formatPrice(
-            this.proposal.insurance_premium / numberInstallments
-          )}`;
+    if (this.proposal.proposal_bids.length) {
+      const numberInstallments =
+        this.proposal.proposal_bids[0].number_of_installments;
+
+      var installments =
+        numberInstallments == null
+          ? "Indefinido"
+          : `${numberInstallments} x de R$ ${formatPrice(
+              (this.proposal.insurance_premium -
+                (this.discount.discount_renew_program *
+                  this.proposal.insurance_premium) /
+                  100) /
+                numberInstallments
+            )}`;
+    } else {
+      installments = "Sem parcelamentos";
+    }
 
     const resume = [
       {
@@ -633,7 +664,6 @@ export default class ProposalValues extends Vue {
       });
     }
   }
-
   onDeductibleEnabledChange() {
     this.updateDeductibleEnabled(
       this.proposal.id,
