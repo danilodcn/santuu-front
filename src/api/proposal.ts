@@ -24,4 +24,9 @@ export class ProposalService extends APIBase {
     const dataJson = JSON.stringify(data);
     return await this.request({ url, method: "PUT", data: dataJson });
   }
+
+  async getDiscountRenew(proposal_id: number | string) {
+    const url = `dashboard/proposal/get-discount/${proposal_id}/`;
+    return await this.request({ url, method: "GET" });
+  }
 }
