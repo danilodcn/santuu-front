@@ -203,7 +203,9 @@ export default class UpdateProposal extends BaseComponent {
   next() {
     this.$router.push({ path: `/proposal/payment/${this.proposalId}` });
   }
-
+  back() {
+    this.$router.push({ path: `/proposal/proposal-values/${this.proposalId}` });
+  }
   created() {
     this.getData();
   }
