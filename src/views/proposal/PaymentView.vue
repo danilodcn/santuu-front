@@ -68,23 +68,23 @@ type Terms = {
 
 const titlesDescription: IDetailedInfo[] = [
   {
-    value: "Data e hora do Início",
+    value: "Data e hora do Início:",
     description: "",
   },
   {
-    value: "IOF",
+    value: "IOF:",
     description: "",
   },
   {
-    value: "Valor",
+    value: "Valor:",
     description: "",
   },
   {
-    value: "Desconto de Renovação",
+    value: "Desconto de Renovação:",
     description: "",
   },
   {
-    value: "Valor Total",
+    value: "Valor Total:",
     description: "",
   },
 ];
