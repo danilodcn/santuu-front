@@ -319,7 +319,7 @@ import DetailBox, {
   ITableRow,
 } from "@/components/shared/DetailBox.vue"; // @ is an alias to /src
 import PriceBox from "@/components/shared/PriceBox.vue";
-import { IProposal, ICoverage } from "@/types/proposal";
+import { IProposal } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
