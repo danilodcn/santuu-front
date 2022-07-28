@@ -29,4 +29,8 @@ export class ProposalService extends APIBase {
     const url = `dashboard/proposal/get-discount/${proposal_id}/`;
     return await this.request({ url, method: "GET" });
   }
+  async getDiscountProgram(proposal_id: number | string) {
+    const url = `dashboard/proposal/get-discount-program/${proposal_id}/`;
+    return await this.request({ url, method: "GET" });
+  }
 }
