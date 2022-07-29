@@ -64,10 +64,8 @@
                   elevation="0"
                   @click="renew(certificate.id)"
                 >
-                  <span v-if="certificate.already_renewed">
-                    Continuar renovação
-                  </span>
-                  <span v-else> Renovar </span>
+                  <span v-if="!certificate.already_renewed"> Renovar </span>
+                  <span v-else> Continuar renovação </span>
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -164,7 +162,7 @@ export default class CertificatesView extends Vue {
     const response = await renewalService.renew(id);
     this.changeLoading(false);
     if (response.already_renewed) {
-      this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
+      this.$router.push({ path: `/renovation/proposal-values/${id}` });
       return;
     } else if (response.error) {
       this.fail(response);
