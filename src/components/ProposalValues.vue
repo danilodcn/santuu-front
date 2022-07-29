@@ -203,7 +203,12 @@
         </v-btn>
       </v-row>
       <v-row class="prices" justify="center">
-        <v-col md="6" cols="12" v-if="hasVoucherDiscount || hasProgramDiscount" class="d-flex d-md-none">
+        <v-col
+          md="6"
+          cols="12"
+          v-if="hasVoucherDiscount || hasProgramDiscount"
+          class="d-flex d-md-none"
+        >
           <PriceBox
             :good="true"
             :bold="false"
@@ -216,14 +221,23 @@
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col md="6" cols="12" v-if="hasVoucherDiscount || hasProgramDiscount" class="d-flex d-md-none">
+        <v-col
+          md="6"
+          cols="12"
+          v-if="hasVoucherDiscount || hasProgramDiscount"
+          class="d-flex d-md-none"
+        >
           <PriceBox
             :good="true"
             :bold="false"
             :price="-proposal.insurance_premium_discount"
-            >Desconto de 
-              <span v-if="hasVoucherDiscount">{{ proposal.voucher.discount_percentage }}%</span>
-              <span v-else-if="hasProgramDiscount">{{ discount.discount_renew_program }}%</span>
+            >Desconto de
+            <span v-if="hasVoucherDiscount"
+              >{{ proposal.voucher.discount_percentage }}%</span
+            >
+            <span v-else-if="hasProgramDiscount"
+              >{{ discount.discount_renew_program }}%</span
+            >
             <InfoDialog text="Valor a ser descontado do prêmio bruto total">
               <v-icon size="12">mdi-information</v-icon>
             </InfoDialog>
@@ -255,7 +269,11 @@
       <v-divider></v-divider>
     </v-card>
     <v-bottom-navigation app class="d-flex d-none">
-      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex" v-if="hasVoucherDiscount || hasProgramDiscount">
+      <v-col
+        md="2"
+        class="ma-0 pa-0 d-none d-md-flex"
+        v-if="hasVoucherDiscount || hasProgramDiscount"
+      >
         <PriceBox
           :good="true"
           :bold="false"
@@ -574,8 +592,6 @@ export default class ProposalValues extends Vue {
     // Criando tabela das parcelas
 
     if (this.proposal.installment) {
-      // this.proposal.installment.sort((a, b) => a.payment_date - b.payment_date); //Ordenando
-
       this.proposal.installment.forEach(function (installment) {
         const installmentObj = [
           //Fazendo umm "loop" pra adicionar o valores a variável
