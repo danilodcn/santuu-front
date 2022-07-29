@@ -26,10 +26,10 @@
           />
         </v-col>
       </v-row>
-      <DetailBox :table="tableResume" :key="keyResume" class="pb-0">
+      <DetailBox :table="tableResume" :key="keyResume" class="pb-0 table-">
         {{ title }}</DetailBox
       >
-      <DetailBox :table="tableBike" class="pb-0">Bike</DetailBox>
+      <DetailBox :table="tableBike" class="pb-0 table-">Bike</DetailBox>
       <h3>
         Coberturas {{ alert_coverage }}
         <InfoDialog
@@ -183,7 +183,7 @@
         "
         :table="tableInstallments"
         :key="keyResume"
-        class="pb-0 table-installments"
+        class="pb-0 table-"
       >
         Parcelas
       </DetailBox>
@@ -801,6 +801,9 @@ h3 {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
   }
+}
+.table- {
+  text-align: center !important;
 }
 </style>
 <style>
