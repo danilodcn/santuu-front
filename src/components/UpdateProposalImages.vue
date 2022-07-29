@@ -18,8 +18,20 @@
               }}
             </p>
           </v-system-bar>
+          <v-row>
+            <v-progress-circular
+              class="mt-10 mb-6 col-12"
+              :rotate="360"
+              :size="50"
+              :width="10"
+              :value="10"
+              color="primary"
+              :ref="`loading-image-${item.image_type}`"
+              v-show="false"
+            ></v-progress-circular>
+          </v-row>
           <v-img
-            class="mt-3 mb-0 image"
+            class="mt-12 mb-0 image"
             contain
             :src="`http://127.0.0.1:8000/static/assets/prev-images/prev-${
               getImageConfig(item.image_type).srcImageName
@@ -107,8 +119,14 @@ export default class UpdateProposalImages extends BaseComponent {
     const imagePreviewElement = (
       this.$refs[`image-preview-${identifier}`] as HTMLImageElement[]
     )[0];
+    const loadingImageElement = (
+      this.$refs[`loading-image-${identifier}`] as Vue[]
+    )[0];
     const imageInput = (
       this.$refs[`image-${identifier}`] as HTMLInputElement[]
+    )[0];
+    const imagePreviewElementVue = (
+      this.$refs[`image-preview-${identifier}`] as Vue[]
     )[0];
 
     const file = imageInput.files?.item(0);
@@ -116,19 +134,26 @@ export default class UpdateProposalImages extends BaseComponent {
 
     if (file) {
       reader.readAsDataURL(file);
+    } else {
+      (loadingImageElement as any).value = `${0}`;
     }
 
-    const imagePreviewElementVue = (
-      this.$refs[`image-preview-${identifier}`] as Vue[]
-    )[0];
-
     (imagePreviewElementVue.$el as HTMLImageElement).style.width = "100%";
+    (imagePreviewElementVue.$el as HTMLImageElement).style.display = "none";
+    (loadingImageElement.$el as HTMLDivElement).style.display = "block";
 
     (imagePreviewElementVue as any).contain = false;
     (imagePreviewElementVue as any).aspectRatio = 1;
 
     reader.onload = function (e) {
+      (imagePreviewElementVue.$el as HTMLImageElement).style.display = "block";
+      (loadingImageElement.$el as HTMLDivElement).style.display = "none";
       imagePreviewElement.src = e.target?.result as string;
+    };
+    reader.onprogress = function (data) {
+      console.log(data.loaded);
+      const progress = Math.ceil((data.loaded / data.total) * 100);
+      (loadingImageElement as any).value = `${progress}`;
     };
   }
 
@@ -148,9 +173,10 @@ export default class UpdateProposalImages extends BaseComponent {
           (
             this.$refs[`image-card-${element}`] as HTMLDivElement[]
           )[0].style.border = "1px solid red";
+        } else {
           (
             this.$refs[`image-card-${element}`] as HTMLDivElement[]
-          )[0].style.borderRadius = "5px";
+          )[0].style.border = "none";
         }
       }
     });
@@ -239,6 +265,7 @@ export default class UpdateProposalImages extends BaseComponent {
 .image {
   margin: auto;
   width: 80px;
+  border-radius: 5px;
 }
 .images-title {
   color: #fff;
