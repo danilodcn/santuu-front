@@ -133,7 +133,7 @@ export default class Available extends BaseComponent {
       {
         value: formatDateDetail(this.proposal.proposal_duration),
         description:
-          "A renovação terá vigência a partir do termino da cobertura atual e não da data de pagamento.",
+          "A renovação terá vigência a partir do termino da cobertura atual e não a data de pagamento.",
       },
       {
         value: formatPrice(this.discount.new_iof),
