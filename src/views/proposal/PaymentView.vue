@@ -1,36 +1,34 @@
 <template>
-  <v-container class="box-content" fluid>
-    <v-container>
-      <v-card>
-        <DetailBox
-          :table="tableDescription"
-          :key="keyResume"
-          class="pb-0 table-Description"
-        >
-          Finalizar Renovação <br />
-          <br />
-          <h6>Segue um resumo da sua renovação:</h6>
-        </DetailBox>
-        <v-card-title class="main-color">
-          <span class="mt-5 mx-4 pb-0"> Termos </span>
-        </v-card-title>
-        <v-col class="mx-4 px-4 pb-0">
-          <v-checkbox
-            v-for="(item, i) in termsAndConditions"
-            :key="`selected-${i}`"
-            :label="item.message"
-            :value="item.accept"
-            v-model="item.accept"
-          />
-        </v-col>
-        <payment-form
-          v-model="paymentModel"
-          :proposal="proposal"
-          :terms="termsAndConditions"
-          :linkNext="`/web/associate/proposal/payment/sucess?proposal=${proposal_id}&email_check=true&cell_check=true`"
-        ></payment-form>
-      </v-card>
-    </v-container>
+  <v-container class="container">
+    <v-card class="box-content">
+      <DetailBox
+        :table="tableDescription"
+        :key="keyResume"
+        class="pb-0 table-Description"
+      >
+        Finalizar Renovação <br />
+        <br />
+        <h6>Segue um resumo da sua renovação:</h6>
+      </DetailBox>
+      <v-card-title class="main-color">
+        <span class="mt-5 mx-4 pb-0"> Termos </span>
+      </v-card-title>
+      <v-col class="mx-4 px-4 pb-0">
+        <v-checkbox
+          v-for="(item, i) in termsAndConditions"
+          :key="`selected-${i}`"
+          :label="item.message"
+          :value="item.accept"
+          v-model="item.accept"
+        />
+      </v-col>
+      <payment-form
+        v-model="paymentModel"
+        :proposal="proposal"
+        :terms="termsAndConditions"
+        :linkNext="`/web/associate/proposal/payment/sucess?proposal=${proposal_id}&email_check=true&cell_check=true`"
+      ></payment-form>
+    </v-card>
   </v-container>
 </template>
 
@@ -163,9 +161,12 @@ export default class Available extends BaseComponent {
 }
 </script>
 <style lang="scss" scoped>
+h6 {
+  font-weight: 100;
+}
 .box-content {
   margin: auto;
-  margin-top: 7px;
+  margin-top: 40px;
   max-width: 1080px;
   padding: 20px;
 }
@@ -177,8 +178,27 @@ export default class Available extends BaseComponent {
 .main-color {
   color: #c1c523;
 }
+@media (min-width: 768px) {
+  .box-content {
+    padding: 50px;
+  }
+  .content {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+@media (min-width: 960px) {
+  .content {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+  }
+}
 </style>
 <style lang="css">
+.table {
+  margin-left: 30px !important;
+  margin-right: 30px !important;
+}
 .table-Description:last-child {
   background-color: #c1c523 !important;
 }
