@@ -162,7 +162,7 @@ export default class CertificatesView extends Vue {
     const response = await renewalService.renew(id);
     this.changeLoading(false);
     if (response.already_renewed) {
-      this.$router.push({ path: `/renovation/proposal-values/${id}` });
+      this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
       return;
     } else if (response.error) {
       this.fail(response);
