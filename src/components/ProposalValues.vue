@@ -203,7 +203,7 @@
         </v-btn>
       </v-row>
       <v-row class="prices" justify="center">
-        <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
+        <v-col md="6" cols="12" v-if="hasVoucherDiscount || hasProgramDiscount" class="d-flex d-md-none">
           <PriceBox
             :good="true"
             :bold="false"
@@ -216,12 +216,14 @@
             </InfoDialog>
           </PriceBox>
         </v-col>
-        <v-col md="6" cols="12" v-if="hasDiscount" class="d-flex d-md-none">
+        <v-col md="6" cols="12" v-if="hasVoucherDiscount || hasProgramDiscount" class="d-flex d-md-none">
           <PriceBox
             :good="true"
             :bold="false"
             :price="-proposal.insurance_premium_discount"
-            >Desconto de {{ proposal.voucher.discount_percentage }}%
+            >Desconto de 
+              <span v-if="hasVoucherDiscount">{{ proposal.voucher.discount_percentage }}%</span>
+              <span v-else-if="hasProgramDiscount">{{ discount.discount_renew_program }}%</span>
             <InfoDialog text="Valor a ser descontado do prêmio bruto total">
               <v-icon size="12">mdi-information</v-icon>
             </InfoDialog>
@@ -253,7 +255,7 @@
       <v-divider></v-divider>
     </v-card>
     <v-bottom-navigation app class="d-flex d-none">
-      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex" v-if="hasDiscount">
+      <v-col md="2" class="ma-0 pa-0 d-none d-md-flex" v-if="hasVoucherDiscount || hasProgramDiscount">
         <PriceBox
           :good="true"
           :bold="false"
@@ -474,8 +476,12 @@ export default class ProposalValues extends Vue {
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
-  get hasDiscount(): boolean {
+  get hasVoucherDiscount(): boolean {
     return this.proposal.voucher != undefined;
+  }
+
+  get hasProgramDiscount(): boolean {
+    return this.discount != undefined;
   }
 
   formatPrice = formatPrice;
