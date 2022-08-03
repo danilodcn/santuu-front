@@ -149,12 +149,12 @@ export default class CertificatesView extends Vue {
 
   getDaysRemaining(date: string) {
     return (
-      (new Date(date).getTime() - new Date().getTime()) / (1000 * 3600 * 24)
+      (new Date().getTime() - new Date(date).getTime()) / (1000 * 3600 * 24)
     );
   }
 
   canRenew(date: string) {
-    return Math.abs(this.getDaysRemaining(date)) < 15;
+    return this.getDaysRemaining(date) < 15;
   }
 
   async renew(id: number) {
