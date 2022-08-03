@@ -20,7 +20,7 @@
     <v-container fluid class="pa-4">
       <v-container>
         <v-row align-content="center" justify="center" class="mx-auto">
-          <v-col cols="8" md="5">
+          <v-col cols="10" md="8">
             <v-autocomplete
               filled
               outlined
@@ -133,6 +133,7 @@ type Winner = {
   firstName: string;
   lastName: string;
   fullName: string;
+  cpf: string;
 };
 
 type IResult = {
@@ -179,7 +180,9 @@ export default class RaffleView extends BaseComponent {
   }
 
   async created() {
+    this.changeLoading(true);
     this.input.event.items = await eventService.getEvent({});
+    this.changeLoading(false);
   }
 
   @Watch("input.event.model")
@@ -263,7 +266,11 @@ export default class RaffleView extends BaseComponent {
   }
 
   showWinnerDetail(winner: Winner) {
-    const message = `email: ${winner.email}`;
+    const message = `
+      <strong>Inscrição:</strong> ${winner.subscriptionNumber} <br>
+      <strong>Email:</strong> ${winner.email} <br>
+      <strong>CPF:</strong> ${winner.cpf} <br>
+    `;
 
     this.changeMainDialog({
       active: true,
@@ -271,7 +278,7 @@ export default class RaffleView extends BaseComponent {
       msg: message,
       persistent: false,
       title: winner.fullName,
-      ident: true,
+      ident: false,
     });
   }
 }
@@ -292,10 +299,10 @@ export default class RaffleView extends BaseComponent {
 }
 
 button.result {
-  border-radius: 50%;
+  border-radius: 8%;
   border: 2px solid $main-dark-color;
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 50px;
 }
 
 #image-invert {

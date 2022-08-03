@@ -28,6 +28,7 @@ class GetRandomSubscriptionService extends APIAuthBase {
               firstName: winner?.winner?.user?.first_name,
               lastName: winner?.winner?.user?.last_name,
               fullName: winner?.winner?.user?.full_name,
+              cpf: winner?.winner?.user?.personal_info?.cpf,
             };
 
             return win;
@@ -65,6 +66,7 @@ type Winner = {
   firstName: string;
   lastName: string;
   fullName: string;
+  cpf: string;
 };
 
 type Output = {

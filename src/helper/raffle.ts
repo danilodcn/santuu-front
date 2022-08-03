@@ -8,6 +8,7 @@ type Winner = {
   firstName: string;
   lastName: string;
   fullName: string;
+  cpf: string;
 };
 
 type ResponseOutput = {
