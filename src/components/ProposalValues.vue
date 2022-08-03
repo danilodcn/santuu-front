@@ -31,7 +31,7 @@
       >
       <DetailBox :table="tableBike" class="pb-0 table-">Bike</DetailBox>
       <h3>
-        Coberturas {{ alert_coverage }}
+        Coberturas <span class="text-body-1"> {{ alert_coverage }} </span>
         <InfoDialog
           text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
         >
@@ -188,20 +188,6 @@
         Parcelas
       </DetailBox>
       <v-divider></v-divider>
-      <v-row class="back-foward" justify="space-between">
-        <v-btn v-if="back_link" :href="back_link" color="white" elevation="0"
-          >Voltar</v-btn
-        >
-        <v-btn
-          v-if="next_link"
-          :href="next_link"
-          color="white"
-          elevation="0"
-          class="success-santuu"
-        >
-          Avançar
-        </v-btn>
-      </v-row>
       <v-row class="prices" justify="center">
         <v-col
           md="6"
@@ -209,10 +195,7 @@
           v-if="hasVoucherDiscount || hasProgramDiscount"
           class="d-flex d-md-none"
         >
-          <PriceBox
-            :good="true"
-            :bold="false"
-            :price="proposal.gross_insurance_premium"
+          <PriceBox :good="true" :bold="false" :price="grossPrice"
             >Prêmio bruto total
             <InfoDialog
               text="Termo utilizado para definir o preço final em dinheiro que o segurado paga ao segurador, incluídos os encargos (IOF), para que este assuma um determinado conjunto de riscos, pagando-lhe uma indenização em caso de sinistro"
@@ -231,7 +214,7 @@
             :good="true"
             :bold="false"
             :price="-proposal.insurance_premium_discount"
-            >Desconto de
+            >Desconto de&nbsp;
             <span v-if="hasVoucherDiscount"
               >{{ proposal.voucher.discount_percentage }}%</span
             >
@@ -266,7 +249,21 @@
           >
         </v-col>
       </v-row>
-      <v-divider></v-divider>
+      <v-divider class="d-flex d-md-none"></v-divider>
+      <v-row class="back-foward" justify="space-between">
+        <v-btn v-if="back_link" :href="back_link" color="white" elevation="0"
+          >Voltar</v-btn
+        >
+        <v-btn
+          v-if="next_link"
+          :href="next_link"
+          color="white"
+          elevation="0"
+          class="success-santuu"
+        >
+          Avançar
+        </v-btn>
+      </v-row>
     </v-card>
     <v-bottom-navigation app class="d-flex d-none">
       <v-col
@@ -274,10 +271,7 @@
         class="ma-0 pa-0 d-none d-md-flex"
         v-if="hasVoucherDiscount || hasProgramDiscount"
       >
-        <PriceBox
-          :good="true"
-          :bold="false"
-          :price="proposal.gross_insurance_premium"
+        <PriceBox :good="true" :bold="false" :price="grossPrice"
           >Prêmio bruto total
           <InfoDialog
             text="Termo utilizado para definir o preço final em dinheiro que o segurado paga ao segurador, incluídos os encargos (IOF), para que este assuma um determinado conjunto de riscos, pagando-lhe uma indenização em caso de sinistro"
@@ -289,15 +283,19 @@
       <v-col
         md="2"
         class="ma-0 pa-0 d-none d-md-flex"
-        v-if="discount.discount_renew_program"
+        v-if="hasProgramDiscount && discount.discount_renew_program"
       >
         <PriceBox
           :good="true"
           :bold="false"
-          :price="
-            (discount.discount_renew_program * proposal.insurance_premium) / 100
-          "
-          >Desconto de {{ discount.discount_renew_program }}%
+          :price="-proposal.insurance_premium_discount"
+          >Desconto de&nbsp;
+          <span v-if="hasVoucherDiscount"
+            >{{ proposal.voucher.discount_percentage }}%</span
+          >
+          <span v-else-if="hasProgramDiscount"
+            >{{ discount.discount_renew_program }}%</span
+          >
           <InfoDialog text="Valor a ser descontado do prêmio bruto total">
             <v-icon size="12">mdi-information</v-icon>
           </InfoDialog>
@@ -314,14 +312,7 @@
         </PriceBox>
       </v-col>
       <v-col md="2" class="ma-0 pa-0 d-flex">
-        <PriceBox
-          :bold="true"
-          :good="true"
-          :price="
-            proposal.insurance_premium -
-            (discount.discount_renew_program * proposal.insurance_premium) / 100
-          "
-        >
+        <PriceBox :bold="true" :good="true" :price="finalPrice">
           Prêmio a pagar
           <InfoDialog text="Valor final a ser pago">
             <v-icon size="12">mdi-information</v-icon>
@@ -334,10 +325,7 @@
           :good="true"
           v-if="proposal.proposal_bids"
           :numberInstallments="proposal.number_of_installments"
-          :price="
-            proposal.insurance_premium -
-            (discount.discount_renew_program * proposal.insurance_premium) / 100
-          "
+          :price="finalPrice"
           >Em até<InfoDialog text="Máximo número de parcelas">
             <v-icon size="12">mdi-information</v-icon>
           </InfoDialog></PriceBox
@@ -355,7 +343,7 @@ import DetailBox, {
   ITableRow,
 } from "@/components/shared/DetailBox.vue"; // @ is an alias to /src
 import PriceBox from "@/components/shared/PriceBox.vue";
-import { IProposal } from "@/types/proposal";
+import { IProposal, PROPOSAL_OPTIONS } from "@/types/proposal";
 import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
@@ -494,12 +482,43 @@ export default class ProposalValues extends Vue {
   @Mutation(MutationTypes.TOGGLE_LOADING) changeLoading!: CallFunctionLoading;
   @Mutation(MutationTypes.TOGGLE_DIALOG) changeMainDialog!: CallFunctionDialog;
 
+  get grossPrice(): number {
+    if (this.hasProgramDiscount) {
+      return (
+        Number(this.proposal.insurance_premium) +
+        Number(this.proposal.insurance_premium_discount)
+      );
+    }
+    return this.proposal.gross_insurance_premium;
+  }
+
+  get finalPrice(): number {
+    let discount = 0;
+    let price = this.proposal.gross_insurance_premium;
+    if (this.hasProgramDiscount) {
+      // Já é aplicado desconto na duplicação da proposta
+      discount = 0;
+      price = this.proposal.insurance_premium;
+    } else if (this.hasVoucherDiscount) {
+      discount =
+        (this.discount.discount_renew_program *
+          this.proposal.gross_insurance_premium) /
+        100;
+      price = this.proposal.gross_insurance_premium;
+    }
+
+    return price - discount;
+  }
+
   get hasVoucherDiscount(): boolean {
     return this.proposal.voucher != undefined;
   }
 
   get hasProgramDiscount(): boolean {
-    return this.discount != undefined;
+    return (
+      this.discount != undefined &&
+      PROPOSAL_OPTIONS[this.proposal.proposal_type] == "Renovação"
+    );
   }
 
   formatPrice = formatPrice;

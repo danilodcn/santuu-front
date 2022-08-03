@@ -1,5 +1,11 @@
 import { IProgram } from "@/types/program";
 
+export const PROPOSAL_OPTIONS = [
+  "Endosso",
+  "Renovação",
+  "Seguro Novo",
+  "Voucher",
+];
 export interface ICoverage {
   id: number;
   name: string;
@@ -31,7 +37,7 @@ export interface IProposalBid {
 
 export interface IVoucher {
   id: number;
-  discount_percentage: string;
+  discount_percentage: number;
 }
 export interface IInstallments {
   id: number;
@@ -58,6 +64,9 @@ export interface IProposal {
   voucher: IVoucher;
   number_of_installments: number;
   installment: IInstallments[];
+  original_proposal: number;
+  already_renewed: boolean;
+  proposal_type: number;
 }
 export interface IProgramImage {
   id: number;
