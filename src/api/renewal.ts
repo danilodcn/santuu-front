@@ -6,6 +6,10 @@ class RenewalService extends APIAuthBase {
     const url = `api/insurance/create-renew/${proposal_id}/`;
     return await this.request({ url, method: "POST" });
   }
+  async getNextStep(proposal_id: number | string) {
+    const url = `api/insurance/get-next-step-renew/${proposal_id}/`;
+    return await this.request({ url, method: "POST" });
+  }
 }
 
 const authProvider = new AuthProvider();

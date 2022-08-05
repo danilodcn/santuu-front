@@ -102,6 +102,9 @@ import { getCardType, getNumberOfDigitsInSecurityCode } from "@/utils/payment";
 import { required } from "@/utils/rules";
 import { paymentService } from "@/api/payment";
 import { formatDateDetail } from "@/utils/utils";
+import { RenewalService } from "@/api/renewal";
+
+const renewalService = new RenewalService();
 
 interface IInstallment {
   text: string;
@@ -249,28 +252,45 @@ export default class EventCard extends BaseComponent {
         ident: false,
       });
       this.changeLoading(true);
-      const response = await paymentService.handlePayment({
-        ...this.model,
-        cardNumber,
-        scheme,
-        amount: this.proposal.insurance_premium,
-        proposalID: this.proposal.id,
-        numberOfInstallments,
-        typeInstallment,
-      });
+      const response_next_step = await renewalService.getNextStep(
+        this.proposal.id
+      );
       this.changeLoading(false);
-      if (response.error) {
-        const message = response?.axiosError?.response?.data?.message;
+      if (response_next_step.error) {
         this.changeMainDialog({
+          msg: "Erro!",
+          title: "Erro",
+          persistent: true,
           active: true,
           bntClose: true,
-          msg: message || "Houve um erro interno. Tente novamente mais tarde.",
-          persistent: false,
-          title: "Erro!",
           ident: false,
         });
       } else {
-        document.location.href = this.linkNext;
+        this.changeLoading(true);
+        const response = await paymentService.handlePayment({
+          ...this.model,
+          cardNumber,
+          scheme,
+          amount: this.proposal.insurance_premium,
+          proposalID: this.proposal.id,
+          numberOfInstallments,
+          typeInstallment,
+        });
+        this.changeLoading(false);
+        if (response.error) {
+          const message = response?.axiosError?.response?.data?.message;
+          this.changeMainDialog({
+            active: true,
+            bntClose: true,
+            msg:
+              message || "Houve um erro interno. Tente novamente mais tarde.",
+            persistent: false,
+            title: "Erro!",
+            ident: false,
+          });
+        } else {
+          document.location.href = this.linkNext;
+        }
       }
     }
   }

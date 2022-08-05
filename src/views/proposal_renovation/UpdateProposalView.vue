@@ -113,7 +113,9 @@ import { UserDataService } from "@/api/userData";
 import { ProposalService } from "@/api/proposal";
 import { ProposalImagesService } from "@/api/proposalImages";
 import { IProgramImage } from "@/types/proposal";
+import { RenewalService } from "@/api/renewal";
 
+const renewalService = new RenewalService();
 const proposalImagesService = new ProposalImagesService();
 const userDataService = new UserDataService();
 const proposalService = new ProposalService();
@@ -179,7 +181,7 @@ export default class UpdateProposal extends BaseComponent {
       if (this.missingImages.length > 0) {
         this.step++;
       } else {
-        this.next();
+        this.nextPage(this.proposalId);
       }
     }
   }
@@ -187,7 +189,7 @@ export default class UpdateProposal extends BaseComponent {
   async sendAllImages() {
     const success = await (this.$refs.updateImages as any).sendAllImages();
     if (success) {
-      this.next();
+      this.nextPage(this.proposalId);
     }
   }
 
@@ -200,8 +202,22 @@ export default class UpdateProposal extends BaseComponent {
     }
   }
 
-  next() {
-    this.$router.push({ path: `/proposal/payment/${this.proposalId}` });
+  async nextPage(id: number | string) {
+    this.changeLoading(true);
+    const response = await renewalService.getNextStep(id);
+    this.changeLoading(false);
+    if (response.error) {
+      this.changeMainDialog({
+        msg: "Erro!",
+        title: "Erro",
+        persistent: true,
+        active: true,
+        bntClose: true,
+        ident: false,
+      });
+    } else {
+      this.$router.push({ path: `/proposal/payment/${this.proposalId}` });
+    }
   }
   back() {
     this.$router.push({ path: `/proposal/proposal-values/${this.proposalId}` });

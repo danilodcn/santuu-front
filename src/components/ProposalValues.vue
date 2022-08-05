@@ -256,7 +256,7 @@
         >
         <v-btn
           v-if="next_link"
-          :href="next_link"
+          @click="nextPage(proposal_id)"
           color="white"
           elevation="0"
           class="success-santuu"
@@ -350,6 +350,9 @@ import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { MutationTypes, IDialog } from "@/store";
 import { CoverageService } from "@/api/coverage";
 import { toDDMMYYYY } from "@/utils/utils";
+import { RenewalService } from "@/api/renewal";
+
+const renewalService = new RenewalService();
 const coverageService = new CoverageService();
 const proposalService = new ProposalService();
 
@@ -755,6 +758,24 @@ export default class ProposalValues extends Vue {
 
   created() {
     this.getProposal(parseInt(this.proposal_id));
+  }
+
+  async nextPage(id: number | string) {
+    this.changeLoading(true);
+    const response = await renewalService.getNextStep(id);
+    this.changeLoading(false);
+    if (response.error) {
+      this.changeMainDialog({
+        msg: "Erro!",
+        title: "Erro",
+        persistent: true,
+        active: true,
+        bntClose: true,
+        ident: false,
+      });
+    } else {
+      this.$router.push({ path: `${this.next_link}` });
+    }
   }
 }
 </script>
