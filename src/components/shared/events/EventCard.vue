@@ -106,6 +106,7 @@ export default class EventCard extends BaseComponent {
       active: true,
       bntClose: true,
       msg: message,
+      ident: false,
       persistent: false,
       title,
     });
