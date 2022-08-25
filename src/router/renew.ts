@@ -14,7 +14,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/renovation/proposal-values/:proposal_id/",
-    name: "proposal-values",
+    name: "renew-proposal-values",
     component: () =>
       import("@/views/proposal_renovation/ProposalValuesView.vue"),
   },
