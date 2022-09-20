@@ -11,7 +11,7 @@ export interface ICoverage {
   name: string;
   deductible_text: string;
   legal_text: string;
-  amount: number;
+  net_premium: number;
   lmi: number;
   enabled: boolean;
   is_fixed: boolean;
