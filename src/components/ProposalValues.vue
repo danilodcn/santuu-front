@@ -656,10 +656,10 @@ export default class ProposalValues extends Vue {
             "Participação obrigatória: é a parcela dos prejuízos suportada pelo Segurado. A participação obrigatória é deduzida dos prejuízos apurados ou indenizáveis, conforme previsto em cada uma das coberturas contratadas, havendo ou não perda total.",
         },
         {
-          value: `<b>Prêmio Líquido:</b> ${coverage.amount} <br/> <b>LMI:</b> ${coverage.lmi}`,
+          value: `<b>Prêmio Líquido:</b> ${coverage.net_premium} <br/> <b>LMI:</b> ${coverage.lmi}`,
           description: "",
           data: {
-            premium: `<b>Prêmio Líquido:</b> ${coverage.amount}`,
+            premium: `<b>Prêmio Líquido:</b> ${coverage.net_premium}`,
             lmi: `<b>LMI:</b> ${coverage.lmi}`,
           },
         },
@@ -718,7 +718,7 @@ export default class ProposalValues extends Vue {
 
   changeStatus(event: Event, index: number) {
     const coverage = this.$store.state.proposal_coverages[index];
-    const value = coverage.amount;
+    const value = coverage.net_premium;
     if (
       this.proposal.insurance_premium - value <
         this.proposal.program.minimal_premium &&
