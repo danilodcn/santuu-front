@@ -2,7 +2,7 @@
   <v-row class="mt-5 justify-start mb-14">
     <template v-for="item in missingImages">
       <v-col
-        cols="6"
+        cols="8"
         md="3"
         class="image-card mx-4 .rounded-lg"
         :ref="`image-card-${item.image_type}`"
