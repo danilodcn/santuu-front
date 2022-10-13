@@ -2,6 +2,7 @@
   <v-container class="container">
     <v-card class="box-content">
       <DetailBox
+        :paymentChoice="paymentChoice"
         :table="tableDescription"
         :key="keyResume"
         class="pb-0 table-Description"
@@ -50,6 +51,7 @@ type Proposal = {
   insurance_premium_discount: number;
   insurance_premium: number;
   proposal_duration: string;
+  renewed_by_admin: boolean;
 };
 
 type Discount = {
@@ -116,6 +118,11 @@ export default class Available extends BaseComponent {
 
   acceptTerms: boolean[] = [];
 
+  get paymentChoice() {
+    this.setValues();
+    return this.$store.state.payment_choice;
+  }
+
   async getProposal() {
     this.proposal = await proposalService.getSimpleProposal(this.proposal_id);
     this.discount = await proposalService.getDiscountRenew(this.proposal_id);
@@ -142,10 +149,15 @@ export default class Available extends BaseComponent {
         description: "",
       },
       {
-        value: `${formatPrice(this.discount.discount)}(${
-          this.discount.discount_percent_renew
-        }%)`,
-        description: "",
+        value:
+          this.paymentChoice == "Crédito 1x"
+            ? `${formatPrice(this.discount.discount)}(${
+                this.discount.discount_percent_renew
+              }%)`
+            : formatPrice(0),
+        description: this.proposal.renewed_by_admin
+          ? "O desconto só é aplicado se o pagamento for à vista"
+          : "",
       },
       {
         value: formatPrice(this.discount.calculated_insurance_premium),

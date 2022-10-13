@@ -1,4 +1,5 @@
 import { IProgram } from "@/types/program";
+import { IModel } from "@/types/bike";
 
 export const PROPOSAL_OPTIONS = [
   "Endosso",
@@ -66,6 +67,7 @@ export interface IProposal {
   installment: IInstallments[];
   original_proposal: number;
   already_renewed: boolean;
+  model: IModel;
   proposal_type: number;
 }
 export interface IProgramImage {

@@ -83,6 +83,7 @@
             item-value="text"
             clearable
             hide-spin-buttons
+            @change="updateValues($event)"
           ></v-select>
         </v-col>
         <v-col class="mb-4" align="center">
@@ -103,6 +104,7 @@ import { required } from "@/utils/rules";
 import { paymentService } from "@/api/payment";
 import { formatDateDetail } from "@/utils/utils";
 import { RenewalService } from "@/api/renewal";
+import { MutationTypes } from "@/store";
 
 const renewalService = new RenewalService();
 
@@ -176,6 +178,10 @@ export default class EventCard extends BaseComponent {
   onModelChange(val: any) {
     console.log(val);
     this.$emit("input", val);
+  }
+
+  updateValues(target: any) {
+    this.$store.commit(MutationTypes.TOOGLE_PAYMENT_CHOICE, target);
   }
 
   async getPaymentOptions() {
