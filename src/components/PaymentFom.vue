@@ -140,6 +140,7 @@ type Terms = {
 @Component
 export default class EventCard extends BaseComponent {
   @Prop() proposal!: Proposal;
+  @Prop() amount!: number;
   @Prop() linkNext!: string;
   @Prop({ default: () => [] }) terms!: Terms[];
 
@@ -277,7 +278,7 @@ export default class EventCard extends BaseComponent {
           ...this.model,
           cardNumber,
           scheme,
-          amount: this.proposal.insurance_premium,
+          amount: this.amount,
           proposalID: this.proposal.id,
           numberOfInstallments,
           typeInstallment,

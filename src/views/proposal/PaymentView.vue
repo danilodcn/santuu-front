@@ -2,7 +2,6 @@
   <v-container class="container">
     <v-card class="box-content">
       <DetailBox
-        :paymentChoice="paymentChoice"
         :table="tableDescription"
         :key="keyResume"
         class="pb-0 table-Description"
@@ -26,6 +25,7 @@
       <payment-form
         v-model="paymentModel"
         :proposal="proposal"
+        :amount="amount"
         :terms="termsAndConditions"
         :linkNext="`/web/associate/proposal/payment/sucess?proposal=${proposal_id}&email_check=true&cell_check=true`"
       ></payment-form>
@@ -36,7 +36,7 @@
 <script lang="ts">
 import ProposalValues from "@/components/ProposalValues.vue";
 import PaymentForm from "@/components/PaymentFom.vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 import { ProposalService } from "@/api/proposal";
 import DetailBox, {
@@ -68,7 +68,7 @@ type Terms = {
 
 const titlesDescription: IDetailedInfo[] = [
   {
-    value: "Data e hora do Início:",
+    value: "Data e hora do início:",
     description: "",
   },
   {
@@ -80,11 +80,11 @@ const titlesDescription: IDetailedInfo[] = [
     description: "",
   },
   {
-    value: "Desconto de Renovação:",
+    value: "Desconto de renovação:",
     description: "",
   },
   {
-    value: "Valor Total:",
+    value: "Valor a ser pago:",
     description: "",
   },
 ];
@@ -105,6 +105,7 @@ export default class Available extends BaseComponent {
   proposal_id = this.$route.params.proposal_id;
   paymentModel = {};
   proposal = {} as Proposal;
+  amount = 0;
   keyResume = 0;
   tableDescription = tableDescription;
   discount = {} as Discount;
@@ -119,13 +120,35 @@ export default class Available extends BaseComponent {
   acceptTerms: boolean[] = [];
 
   get paymentChoice() {
-    this.setValues();
     return this.$store.state.payment_choice;
+  }
+
+  @Watch("paymentChoice")
+  onPaymentChoiceChange() {
+    if (
+      !(this.paymentChoice == "Crédito 1x" || !this.paymentChoice) &&
+      this.proposal.renewed_by_admin
+    ) {
+      this.amount = Number(
+        (
+          Number(this.proposal.insurance_premium) +
+          Number(this.discount.discount)
+        ).toFixed(2)
+      );
+    }
+    this.setValues();
   }
 
   async getProposal() {
     this.proposal = await proposalService.getSimpleProposal(this.proposal_id);
     this.discount = await proposalService.getDiscountRenew(this.proposal_id);
+    this.amount = this.proposal.insurance_premium;
+    if (this.proposal.renewed_by_admin) {
+      this.termsAndConditions.push({
+        message:
+          "Você só terá direito ao desconto caso o pagamento seja feito com uma parcela",
+      });
+    }
     this.setValues();
   }
   async created() {
@@ -134,6 +157,7 @@ export default class Available extends BaseComponent {
     this.changeLoading(false);
   }
   setValues() {
+    console.log(this.paymentChoice);
     const description = [
       {
         value: formatDateDetail(this.proposal.proposal_duration),
@@ -145,12 +169,15 @@ export default class Available extends BaseComponent {
         description: "",
       },
       {
-        value: this.proposal.insurance_premium,
+        value: formatPrice(
+          Number(this.proposal.insurance_premium) +
+            Number(this.discount.discount)
+        ),
         description: "",
       },
       {
         value:
-          this.paymentChoice == "Crédito 1x"
+          this.paymentChoice == "Crédito 1x" || !this.paymentChoice
             ? `${formatPrice(this.discount.discount)}(${
                 this.discount.discount_percent_renew
               }%)`
@@ -160,7 +187,13 @@ export default class Available extends BaseComponent {
           : "",
       },
       {
-        value: formatPrice(this.discount.calculated_insurance_premium),
+        value:
+          this.paymentChoice == "Crédito 1x" || !this.paymentChoice
+            ? formatPrice(this.proposal.insurance_premium)
+            : formatPrice(
+                Number(this.proposal.insurance_premium) +
+                  Number(this.discount.discount)
+              ),
         description: "",
       },
     ];
