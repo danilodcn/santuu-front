@@ -51,7 +51,7 @@ export default class QuizForm extends Vue {
     try {
       this.$watch(() => this.value, this.onModelChanged);
     } catch {
-      console.log("");
+      // empty
     }
   }
 

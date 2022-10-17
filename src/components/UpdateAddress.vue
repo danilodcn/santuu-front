@@ -125,8 +125,6 @@ export default class UpdateAddress extends BaseComponent {
     const response = await addressByCepService.getAddress(this.form.zipcode);
     this.changeLoading(false);
 
-    console.log(response);
-
     if (!response.error && !response.erro) {
       this.form.street = response.logradouro;
       this.form.neighborhood = response.bairro;

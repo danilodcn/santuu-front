@@ -196,7 +196,6 @@ export default class CertificatesView extends Vue {
   buildCertificateData() {
     for (const item of this.certificates) {
       let bike_price = item.associate_bikes[0]?.price || "-";
-      console.log(item.model, 123);
       let bike_new_price =
         item.model == null ? item.bike_new_price || "-" : item.model.price;
 
