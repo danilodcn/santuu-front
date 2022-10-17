@@ -172,12 +172,10 @@ export default class EventCard extends BaseComponent {
     this.date.max = `${year + 10}-${month}`;
 
     this.$watch(() => this.model, this.onModelChange);
-    console.log(this.proposal, "Aqui");
     this.getPaymentOptions();
   }
 
   onModelChange(val: any) {
-    console.log(val);
     this.$emit("input", val);
   }
 
@@ -186,10 +184,7 @@ export default class EventCard extends BaseComponent {
   }
 
   async getPaymentOptions() {
-    console.log("dentro", new Date(), this.proposal?.id);
     if (!this.proposal?.id) {
-      console.log("dentro do log");
-
       setTimeout(this.getPaymentOptions, 200);
       return;
     }
@@ -205,7 +200,7 @@ export default class EventCard extends BaseComponent {
     const acceptAll = acceptTerms.reduce((a: boolean, b: boolean) => {
       return a && b;
     }, initialValue);
-    console.log(acceptAll);
+
     if (!acceptAll) {
       this.changeMainDialog({
         active: true,
@@ -215,7 +210,7 @@ export default class EventCard extends BaseComponent {
         title: "Erro!",
         ident: false,
       });
-      console.log(this.terms);
+
       return;
     }
     const isValid = this.formIsValid();

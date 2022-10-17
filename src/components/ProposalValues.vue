@@ -537,7 +537,7 @@ export default class ProposalValues extends Vue {
     this.changeLoading(true);
     const response = await proposalService.getProposal(id);
     this.proposal = response;
-    console.log(this.proposal);
+
     this.discount = await proposalService.getDiscountProgram(this.proposal_id);
     this.setValues();
     this.$store.commit(

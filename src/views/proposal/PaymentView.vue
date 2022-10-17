@@ -27,7 +27,7 @@
         :proposal="proposal"
         :amount="amount"
         :terms="termsAndConditions"
-        :linkNext="`/web/associate/proposal/payment/sucess?proposal=${proposal_id}&email_check=true&cell_check=true`"
+        :linkNext="`/web/associate/proposal/payment/sucess?proposal=${id_proposal}&email_check=true&cell_check=true`"
       ></payment-form>
     </v-card>
   </v-container>
@@ -102,7 +102,7 @@ const proposalService = new ProposalService();
 
 @Component({ components: { ProposalValues, PaymentForm, DetailBox } })
 export default class Available extends BaseComponent {
-  proposal_id = this.$route.params.proposal_id;
+  id_proposal = this.$route.params.proposal_id;
   paymentModel = {};
   proposal = {} as Proposal;
   amount = 0;
@@ -140,8 +140,8 @@ export default class Available extends BaseComponent {
   }
 
   async getProposal() {
-    this.proposal = await proposalService.getSimpleProposal(this.proposal_id);
-    this.discount = await proposalService.getDiscountRenew(this.proposal_id);
+    this.proposal = await proposalService.getSimpleProposal(this.id_proposal);
+    this.discount = await proposalService.getDiscountRenew(this.id_proposal);
     this.amount = this.proposal.insurance_premium;
     if (this.proposal.renewed_by_admin) {
       this.termsAndConditions.push({
@@ -157,7 +157,6 @@ export default class Available extends BaseComponent {
     this.changeLoading(false);
   }
   setValues() {
-    console.log(this.paymentChoice);
     const description = [
       {
         value: formatDateDetail(this.proposal.proposal_duration),
@@ -204,7 +203,6 @@ export default class Available extends BaseComponent {
     this.tableDescription.rows[0].values = description;
   }
   mounted() {
-    console.log(this.termsAndConditions);
     this.acceptTerms = this.termsAndConditions.map((item) => !!item.accept);
   }
 }
