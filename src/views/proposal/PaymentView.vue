@@ -102,7 +102,7 @@ const proposalService = new ProposalService();
 
 @Component({ components: { ProposalValues, PaymentForm, DetailBox } })
 export default class Available extends BaseComponent {
-  proposal_id = this.$route.params.proposal_id;
+  proposalId = this.$route.params.proposal_id;
   paymentModel = {};
   proposal = {} as Proposal;
   amount = 0;
@@ -140,8 +140,8 @@ export default class Available extends BaseComponent {
   }
 
   async getProposal() {
-    this.proposal = await proposalService.getSimpleProposal(this.proposal_id);
-    this.discount = await proposalService.getDiscountRenew(this.proposal_id);
+    this.proposal = await proposalService.getSimpleProposal(this.proposalId);
+    this.discount = await proposalService.getDiscountRenew(this.proposalId);
     this.amount = this.proposal.insurance_premium;
     if (this.proposal.renewed_by_admin) {
       this.termsAndConditions.push({
