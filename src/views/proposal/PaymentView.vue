@@ -177,7 +177,9 @@ export default class Available extends BaseComponent {
       },
       {
         value:
-          this.paymentChoice == "Crédito 1x" || !this.paymentChoice
+          this.paymentChoice == "Crédito 1x" ||
+          !this.paymentChoice ||
+          !this.proposal.renewed_by_admin
             ? `${formatPrice(this.discount.discount)}(${
                 this.discount.discount_percent_renew
               }%)`
@@ -188,7 +190,9 @@ export default class Available extends BaseComponent {
       },
       {
         value:
-          this.paymentChoice == "Crédito 1x" || !this.paymentChoice
+          this.paymentChoice == "Crédito 1x" ||
+          !this.paymentChoice ||
+          !this.proposal.renewed_by_admin
             ? formatPrice(this.proposal.insurance_premium)
             : formatPrice(
                 Number(this.proposal.insurance_premium) +
