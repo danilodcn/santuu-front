@@ -25,8 +25,9 @@
       <payment-form
         v-model="paymentModel"
         :proposal="proposal"
+        :amount="amount"
         :terms="termsAndConditions"
-        :linkNext="`/web/associate/proposal/payment/sucess?proposal=${proposal_id}&email_check=true&cell_check=true`"
+        :linkNext="`/web/associate/proposal/payment/sucess?proposal=${id_proposal}&email_check=true&cell_check=true`"
       ></payment-form>
     </v-card>
   </v-container>
@@ -35,7 +36,7 @@
 <script lang="ts">
 import ProposalValues from "@/components/ProposalValues.vue";
 import PaymentForm from "@/components/PaymentFom.vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 import { ProposalService } from "@/api/proposal";
 import DetailBox, {
@@ -50,6 +51,7 @@ type Proposal = {
   insurance_premium_discount: number;
   insurance_premium: number;
   proposal_duration: string;
+  renewed_by_admin: boolean;
 };
 
 type Discount = {
@@ -66,7 +68,7 @@ type Terms = {
 
 const titlesDescription: IDetailedInfo[] = [
   {
-    value: "Data e hora do Início:",
+    value: "Data e hora do início:",
     description: "",
   },
   {
@@ -78,11 +80,11 @@ const titlesDescription: IDetailedInfo[] = [
     description: "",
   },
   {
-    value: "Desconto de Renovação:",
+    value: "Desconto de renovação:",
     description: "",
   },
   {
-    value: "Valor Total:",
+    value: "Valor a ser pago:",
     description: "",
   },
 ];
@@ -100,9 +102,10 @@ const proposalService = new ProposalService();
 
 @Component({ components: { ProposalValues, PaymentForm, DetailBox } })
 export default class Available extends BaseComponent {
-  proposal_id = this.$route.params.proposal_id;
+  id_proposal = this.$route.params.proposal_id;
   paymentModel = {};
   proposal = {} as Proposal;
+  amount = 0;
   keyResume = 0;
   tableDescription = tableDescription;
   discount = {} as Discount;
@@ -116,9 +119,36 @@ export default class Available extends BaseComponent {
 
   acceptTerms: boolean[] = [];
 
+  get paymentChoice() {
+    return this.$store.state.payment_choice;
+  }
+
+  @Watch("paymentChoice")
+  onPaymentChoiceChange() {
+    if (
+      !(this.paymentChoice == "Crédito 1x" || !this.paymentChoice) &&
+      this.proposal.renewed_by_admin
+    ) {
+      this.amount = Number(
+        (
+          Number(this.proposal.insurance_premium) +
+          Number(this.discount.discount)
+        ).toFixed(2)
+      );
+    }
+    this.setValues();
+  }
+
   async getProposal() {
-    this.proposal = await proposalService.getSimpleProposal(this.proposal_id);
-    this.discount = await proposalService.getDiscountRenew(this.proposal_id);
+    this.proposal = await proposalService.getSimpleProposal(this.id_proposal);
+    this.discount = await proposalService.getDiscountRenew(this.id_proposal);
+    this.amount = this.proposal.insurance_premium;
+    if (this.proposal.renewed_by_admin) {
+      this.termsAndConditions.push({
+        message:
+          "Você só terá direito ao desconto caso o pagamento seja feito com uma parcela",
+      });
+    }
     this.setValues();
   }
   async created() {
@@ -138,24 +168,41 @@ export default class Available extends BaseComponent {
         description: "",
       },
       {
-        value: this.proposal.insurance_premium,
+        value: formatPrice(
+          Number(this.proposal.insurance_premium) +
+            Number(this.discount.discount)
+        ),
         description: "",
       },
       {
-        value: `${formatPrice(this.discount.discount)}(${
-          this.discount.discount_percent_renew
-        }%)`,
-        description: "",
+        value:
+          this.paymentChoice == "Crédito 1x" ||
+          !this.paymentChoice ||
+          !this.proposal.renewed_by_admin
+            ? `${formatPrice(this.discount.discount)}(${
+                this.discount.discount_percent_renew
+              }%)`
+            : formatPrice(0),
+        description: this.proposal.renewed_by_admin
+          ? "O desconto só é aplicado se o pagamento for à vista"
+          : "",
       },
       {
-        value: formatPrice(this.discount.calculated_insurance_premium),
+        value:
+          this.paymentChoice == "Crédito 1x" ||
+          !this.paymentChoice ||
+          !this.proposal.renewed_by_admin
+            ? formatPrice(this.proposal.insurance_premium)
+            : formatPrice(
+                Number(this.proposal.insurance_premium) +
+                  Number(this.discount.discount)
+              ),
         description: "",
       },
     ];
     this.tableDescription.rows[0].values = description;
   }
   mounted() {
-    console.log(this.termsAndConditions);
     this.acceptTerms = this.termsAndConditions.map((item) => !!item.accept);
   }
 }

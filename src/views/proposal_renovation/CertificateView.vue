@@ -41,17 +41,17 @@
                   {{ certificate.data.model }}
                 </p>
                 <p class="detail">
-                  <strong> Preço: </strong>
+                  <strong> Preço da bike: </strong>
                   R$
-                  {{ certificate.data.price }}
-                  <InfoDialog text="Valor final pago pelo seguro">
+                  {{ certificate.data.bike_price }}
+                  <InfoDialog text="Valor da bike segurada">
                     <v-icon size="13">mdi-information</v-icon>
                   </InfoDialog>
                 </p>
                 <p class="detail">
                   <strong class="renewal-price"> Preço de Renovação: </strong>
                   R$
-                  {{ certificate.data.price }}
+                  {{ certificate.data.bike_new_price }}
                   <InfoDialog text="Valor considerado da bike para renovação">
                     <v-icon size="13">mdi-information</v-icon>
                   </InfoDialog>
@@ -92,6 +92,7 @@ import { IAssociateBike } from "@/types/proposal";
 import { CertificateService } from "@/api/certificate";
 import { RenewalService } from "@/api/renewal";
 import { formatPrice, orderImage } from "@/utils/utils";
+import { IModel } from "@/types/bike";
 
 type CallFunctionLoading = (loading: boolean) => void;
 type CallFunctionDialog = (payload: IDialog) => void;
@@ -109,13 +110,16 @@ interface ICertificate {
   associate_bikes: IAssociateBike[];
   data: ICertificateData;
   already_renewed: boolean;
+  model: IModel;
+  bike_new_price: string | number;
 }
 
 interface ICertificateData {
   image: string;
   brand: string;
   model: string;
-  price: string | number;
+  bike_price: string | number;
+  bike_new_price: string | number;
 }
 
 @Component({
@@ -154,7 +158,9 @@ export default class CertificatesView extends Vue {
   }
 
   canRenew(date: string) {
-    return this.getDaysRemaining(date) < 15;
+    const daysBeforeAlert = 415;
+    const daysRemaining = this.getDaysRemaining(date);
+    return daysRemaining < 0 && daysRemaining > -daysBeforeAlert;
   }
 
   async renew(id: number) {
@@ -162,6 +168,10 @@ export default class CertificatesView extends Vue {
     const response = await renewalService.renew(id);
     this.changeLoading(false);
     if (response.already_renewed) {
+      if (response.renewed_by_admin) {
+        this.$router.push({ path: `/proposal/payment/${response.id}` });
+        return;
+      }
       this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
       return;
     } else if (response.error) {
@@ -185,13 +195,20 @@ export default class CertificatesView extends Vue {
 
   buildCertificateData() {
     for (const item of this.certificates) {
-      let price = item.associate_bikes[0]?.price || "-";
+      let bike_price = item.associate_bikes[0]?.price || "-";
+      let bike_new_price =
+        item.model == null ? item.bike_new_price || "-" : item.model.price;
 
       const data: ICertificateData = {
         image: item.proposal_images[0]?.file || "",
         brand: item.associate_bikes[0]?.brand || "",
         model: item.associate_bikes[0]?.model || "",
-        price: price == "-" ? price : formatPrice(Number(price)),
+        bike_price:
+          bike_price == "-" ? bike_price : formatPrice(Number(bike_price)),
+        bike_new_price:
+          bike_new_price == "-"
+            ? bike_new_price
+            : formatPrice(Number(bike_new_price)),
       };
       item.data = data;
     }

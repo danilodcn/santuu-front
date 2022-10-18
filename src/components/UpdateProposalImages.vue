@@ -2,7 +2,7 @@
   <v-row class="mt-5 justify-start mb-14">
     <template v-for="item in missingImages">
       <v-col
-        cols="6"
+        cols="8"
         md="3"
         class="image-card mx-4 .rounded-lg"
         :ref="`image-card-${item.image_type}`"
@@ -151,7 +151,6 @@ export default class UpdateProposalImages extends BaseComponent {
       imagePreviewElement.src = e.target?.result as string;
     };
     reader.onprogress = function (data) {
-      console.log(data.loaded);
       const progress = Math.ceil((data.loaded / data.total) * 100);
       (loadingImageElement as any).value = `${progress}`;
     };
@@ -161,7 +160,6 @@ export default class UpdateProposalImages extends BaseComponent {
     let isValid = true;
     [...Array(13).keys()].forEach((element) => {
       if (this.$refs[`formImage-${element}`] as Vue[]) {
-        console.log(this.$refs[`image-card-${element}`] as Vue[]);
         if (
           !(
             (this.$refs[`formImage-${element}`] as Vue[])[0].$el
@@ -195,7 +193,6 @@ export default class UpdateProposalImages extends BaseComponent {
 
     [...Array(13).keys()].forEach((element) => {
       if (this.$refs[`formImage-${element}`] as Vue[]) {
-        console.log(this.$refs[`image-card-${element}`] as Vue[]);
         if (
           (
             (this.$refs[`formImage-${element}`] as Vue[])[0].$el

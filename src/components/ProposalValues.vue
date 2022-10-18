@@ -179,7 +179,9 @@
       </v-simple-table>
       <DetailBox
         v-if="
-          proposal.installment.length && proposal.installment[0].amount > 0.0
+          'installment' in proposal &&
+          proposal.installment.length &&
+          proposal.installment[0].amount > 0.0
         "
         :table="tableInstallments"
         :key="keyResume"
@@ -283,7 +285,7 @@
       <v-col
         md="2"
         class="ma-0 pa-0 d-none d-md-flex"
-        v-if="hasProgramDiscount && discount.discount_renew_program"
+        v-if="hasProgramDiscount || discount.discount_renew_program"
       >
         <PriceBox
           :good="true"
@@ -504,7 +506,7 @@ export default class ProposalValues extends Vue {
       price = this.proposal.insurance_premium;
     } else if (this.hasVoucherDiscount) {
       discount =
-        (this.discount.discount_renew_program *
+        (this.proposal.voucher.discount_percentage *
           this.proposal.gross_insurance_premium) /
         100;
       price = this.proposal.gross_insurance_premium;
@@ -535,6 +537,7 @@ export default class ProposalValues extends Vue {
     this.changeLoading(true);
     const response = await proposalService.getProposal(id);
     this.proposal = response;
+
     this.discount = await proposalService.getDiscountProgram(this.proposal_id);
     this.setValues();
     this.$store.commit(
@@ -613,8 +616,8 @@ export default class ProposalValues extends Vue {
     tableBike.rows[0].values = bike;
     // Criando tabela das parcelas
 
-    if (this.proposal.installment) {
-      this.proposal.installment.forEach(function (installment) {
+    if (this.proposal?.installment) {
+      this.proposal?.installment.forEach(function (installment) {
         const installmentObj = [
           //Fazendo umm "loop" pra adicionar o valores a variável
           {
@@ -847,7 +850,6 @@ h3 {
     padding: 50px;
   }
   .back-foward button {
-    margin-top: 80px;
     font-size: 16px !important;
   }
   .content {

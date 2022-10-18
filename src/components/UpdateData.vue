@@ -139,8 +139,9 @@
           filled
           label="Exposto(a) politicamente?"
           :items="[
-            { exposed: 'Sim', value: true },
-            { exposed: 'Não', value: false },
+            { exposed: 'Sim', value: 'true' },
+            { exposed: 'Não', value: 'false' },
+            { exposed: 'Relacionamento Próximo', value: 'Relationship' },
           ]"
           item-text="exposed"
           item-value="value"
@@ -153,6 +154,105 @@
         >
           <v-icon size="18">mdi-information</v-icon>
         </info-dialog>
+      </v-col>
+      <v-col v-if="form.share_pep_information == 'true'" cols="12" md="5">
+        <v-text-field
+          color="grey"
+          filled
+          label="Profissão"
+          v-model="form.occupation"
+          clearable
+          hide-spin-buttons
+        >
+        </v-text-field>
+      </v-col>
+      <v-col v-if="form.share_pep_information == 'true'" cols="12" md="5">
+        <v-text-field
+          color="grey"
+          filled
+          label="Faixa de renda"
+          v-model="form.income_bracket"
+          clearable
+          hide-spin-buttons
+        >
+        </v-text-field>
+      </v-col>
+      <v-col
+        v-if="form.share_pep_information == 'Relationship'"
+        cols="12"
+        md="5"
+      >
+        <v-text-field
+          color="grey"
+          filled
+          v-mask="'###.###.###-##'"
+          :rules="obrigatory.concat([(v) => isValidCPF(v) || 'CPF inválido'])"
+          label="CPF do relacionado"
+          v-model="form.cpf_related"
+          clearable
+          hide-spin-buttons
+        >
+        </v-text-field>
+      </v-col>
+      <v-col
+        v-if="form.share_pep_information == 'Relationship'"
+        cols="12"
+        md="5"
+      >
+        <v-text-field
+          color="grey"
+          filled
+          label="Nome Completo do relacionado"
+          v-model="form.name_related"
+          clearable
+          hide-spin-buttons
+        >
+        </v-text-field>
+      </v-col>
+      <v-col
+        v-if="form.share_pep_information == 'Relationship'"
+        cols="12"
+        md="5"
+      >
+        <v-text-field
+          color="grey"
+          filled
+          label="Grau de relacionamento"
+          v-model="form.degree_related"
+          clearable
+          hide-spin-buttons
+        >
+        </v-text-field>
+      </v-col>
+      <v-col
+        v-if="form.share_pep_information == 'Relationship'"
+        cols="12"
+        md="5"
+      >
+        <v-text-field
+          color="grey"
+          filled
+          label="Faixa de Renda do relacionado"
+          v-model="form.income_bracket_related"
+          clearable
+          hide-spin-buttons
+        >
+        </v-text-field>
+      </v-col>
+      <v-col
+        v-if="form.share_pep_information == 'Relationship'"
+        cols="12"
+        md="5"
+      >
+        <v-text-field
+          color="grey"
+          filled
+          label="Profissão do relacionado"
+          v-model="form.occupation_related"
+          clearable
+          hide-spin-buttons
+        >
+        </v-text-field>
       </v-col>
     </v-row>
   </v-form>
@@ -203,7 +303,16 @@ export default class UpdateData extends BaseComponent {
     phone: "",
     rg: "",
     birth_date: "",
-    share_pep_information: false,
+    share_pep_information: "",
+    //
+    occupation: "",
+    income_bracket: "",
+    //
+    cpf_related: "",
+    name_related: "",
+    degree_related: "",
+    income_bracket_related: "",
+    occupation_related: "",
     address: {} as IAddress,
   } as IUserData;
 

@@ -9,6 +9,7 @@ export enum MutationTypes {
   CHANGE_ENABLED = "CHANGE_ENABLED",
   TOGGLE_DIALOG = "TOGGLE_DIALOG",
   TOGGLE_LOADING = "TOGGLE_LOADING",
+  TOOGLE_PAYMENT_CHOICE = "TOOGLE_PAYMENT_CHOICE",
 }
 
 export interface IDialog {
@@ -43,6 +44,7 @@ const state = {
     termsAndConditions: false,
     afterFunction: undefined,
   } as IDialog,
+  payment_choice: "",
   proposal_coverages: [] as ICoverage[],
   loading: false,
 };
@@ -70,6 +72,10 @@ const mutations: MutationTree<RootState> = {
 
   [MutationTypes.TOGGLE_LOADING](state, payload: boolean) {
     state.loading = !state.loading;
+  },
+
+  [MutationTypes.TOOGLE_PAYMENT_CHOICE](state, payment_choice: string) {
+    state.payment_choice = payment_choice;
   },
 };
 
