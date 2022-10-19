@@ -2,7 +2,7 @@
   <v-container fluid>
     <proposal-values
       :proposal_id="proposal_id"
-      title="Valores da Proposta"
+      title="Valores da Renovação"
       back_link="/renovation/certificates"
       :next_link="`/renovation/update-proposal/${proposal_id}`"
       alert_coverage="(Por padrão é utilizada as coberturas do antigo seguro)"
