@@ -87,7 +87,7 @@
                 <v-switch
                   v-if="proposal.proposal_coverages"
                   class="coverage"
-                  readonly="true"
+                  :readonly=activeReadOnly()
                   :disabled="$store.state.proposal_coverages[i].is_fixed"
                   :input-value="$store.state.proposal_coverages[i].enabled"
                   @click.native.capture="changeStatus($event, i)"
@@ -154,7 +154,7 @@
                   <v-switch
                     v-if="proposal.proposal_coverages"
                     class="coverage"
-                    readonly="true"
+                    :readonly=activeReadOnly()
                     :disabled="$store.state.proposal_coverages[i].is_fixed"
                     :input-value="$store.state.proposal_coverages[i].enabled"
                     @click.native.capture="changeStatus($event, i)"
@@ -725,8 +725,7 @@ export default class ProposalValues extends Vue {
     if (
       this.proposal.insurance_premium - value <
         this.proposal.program.minimal_premium &&
-      coverage.enabled &&
-      this.type == "proposal_values"
+      coverage.enabled
     ) {
       event.stopPropagation();
 
@@ -738,6 +737,10 @@ export default class ProposalValues extends Vue {
         title: "Erro",
       });
     }
+  }
+  activeReadOnly(){
+    if (this.type == "certificate")
+    return true
   }
 
   onSwitchChange(index: number, indexDB: number, event: Event) {
