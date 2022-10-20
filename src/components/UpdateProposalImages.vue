@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mt-5 justify-start mb-14">
+  <v-row class="mt-5 justify-start mb-14" v-if="isMobile">
     <template v-for="item in missingImages">
       <v-col
         cols="8"
@@ -52,6 +52,7 @@
             name="file"
             :ref="`image-${item.image_type}`"
             accept="image/*"
+            capture="environment"
             @change="updateImage(item.image_type)"
           />
           <input
@@ -67,6 +68,33 @@
         </v-form>
       </v-col>
     </template>
+  </v-row>
+  <v-row class="mt-5 justify-start mb-14 mx-0" v-else>
+    <div class="text-center col-12">
+      <v-icon class="icon mb-3" size="35">mdi-cellphone-screenshot</v-icon>
+      <p class="text-subtitle-1 font-weight-bold">
+        Para tirar as fotos, por favor, acesse nossa plataforma WEB <br />
+        (<a class="font-weight-medium" href="https://www.clubesantuu.com.br/web"
+          >www.clubesantuu.com.br/web</a
+        >) pelo CELULAR.
+      </p>
+      <div class="content-send">
+        <p class="desc-comunicate">
+          Para continuar com sua proposta, <br />
+          basta fazer o login e <br />
+          clicar no botão Propostas em Andamento.
+        </p>
+      </div>
+      <div class="content-send">
+        <p class="desc-comunicate">
+          Não aceitamos Upload de imagens antigas por questões de segurança.
+        </p>
+      </div>
+      <br />
+      <a href="/web" class="btn"
+        ><v-icon class="icon" size="40">mdi-checkbox-marked</v-icon></a
+      >
+    </div>
   </v-row>
 </template>
 <script lang="ts">
@@ -95,6 +123,8 @@ interface IProgramImage {
   },
 })
 export default class UpdateProposalImages extends BaseComponent {
+  navigatorData = navigator as any;
+  isMobile = this.navigatorData.userAgentData.mobile;
   @Prop() proposal_id?: number;
   missingImages = [] as IProgramImage[];
   imagesConfig = imagesConfig;
@@ -133,7 +163,25 @@ export default class UpdateProposalImages extends BaseComponent {
     const reader = new FileReader();
 
     if (file) {
-      reader.readAsDataURL(file);
+      const date = new Date();
+
+      const lastModified = file.lastModified;
+      const timeDelta = date.getTime() - lastModified;
+      const timeDeltaInMinutes = timeDelta / 1000 / 60;
+
+      if (timeDeltaInMinutes > 20) {
+        imageInput.files = null;
+        this.changeMainDialog({
+          msg: "Você precisa tirar foto e não fazer upload",
+          title: "Atenção",
+          persistent: false,
+          active: true,
+          bntClose: true,
+        });
+        return false;
+      } else {
+        reader.readAsDataURL(file);
+      }
     } else {
       (loadingImageElement as any).value = `${0}`;
     }
@@ -252,6 +300,13 @@ export default class UpdateProposalImages extends BaseComponent {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/scss/main.scss";
+.btn {
+  text-decoration: none;
+}
+.icon {
+  color: $main-color;
+}
 .image-card {
   cursor: pointer;
 }

@@ -90,6 +90,7 @@
                 color="primary"
                 class="mx-2 mx-md-5"
                 @click="sendAllImages()"
+                :disabled="isMobile"
               >
                 Avançar
               </v-btn>
@@ -129,6 +130,8 @@ const proposalService = new ProposalService();
   },
 })
 export default class UpdateProposal extends BaseComponent {
+  navigatorData = navigator as any;
+  isMobile = this.navigatorData.userAgentData.mobile;
   updateData = false;
   updateAddress = false;
   proposalId = Number(this.$route.params.proposal_id);
@@ -188,9 +191,32 @@ export default class UpdateProposal extends BaseComponent {
 
   async sendAllImages() {
     const success = await (this.$refs.updateImages as any).sendAllImages();
+    const proposal = await proposalService.getProposal(this.proposalId);
+
+    const WAITING_FOR_CUSTOMER_ANALYSIS = 2;
+    const WAITING_FOR_PAYMENT = 4;
+
     if (success) {
-      this.nextPage(this.proposalId);
+      if (proposal.status == WAITING_FOR_CUSTOMER_ANALYSIS) {
+        this.changeMainDialog({
+          msg: "Sua proposta será analisada pela Santuu",
+          title: "Aguarde",
+          persistent: true,
+          active: true,
+          bntClose: false,
+          btnOkOnly: true,
+          msgOk: "ok",
+          afterFunction: this.toHomePage,
+          ident: false,
+        });
+      } else if (proposal.status == WAITING_FOR_PAYMENT) {
+        this.nextPage(this.proposalId);
+      }
     }
+  }
+
+  toHomePage(value: boolean) {
+    this.$router.push({ name: "certificates" });
   }
 
   async getData() {
