@@ -292,11 +292,13 @@
           :bold="false"
           :price="-proposal.insurance_premium_discount"
           >Desconto de&nbsp;
-          <span v-if="hasVoucherDiscount"
-            >{{ proposal.voucher.discount_percentage }}%</span
-          >
-          <span v-else-if="hasProgramDiscount"
-            >{{ discount.discount_renew_program }}%</span
+          <span
+            >{{
+              (
+                (proposal.insurance_premium_discount / grossPrice) *
+                100
+              ).toFixed(0)
+            }}%</span
           >
           <InfoDialog text="Valor a ser descontado do prêmio bruto total">
             <v-icon size="12">mdi-information</v-icon>
