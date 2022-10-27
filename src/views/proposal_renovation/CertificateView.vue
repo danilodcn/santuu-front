@@ -175,9 +175,26 @@ export default class CertificatesView extends Vue {
       this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
       return;
     } else if (response.error) {
-      this.fail(response);
+      var msg;
+      if ("without_price" in response.axiosError.response.data) {
+        msg =
+          "Sua proposta está sem valor. Favor entrar em contato com <a  target='_blank' href='http://api.whatsapp.com/send?1=pt_BR&phone=5511934862272'>55 11 9 3486-2272</a> ou renovacao@clubesantuu.com.br";
+      } else {
+        msg =
+          response.axiosError.response.data.error ||
+          response.axiosError.response.data.detail;
+      }
+      this.changeMainDialog({
+        msg: msg,
+        title: "Erro",
+        persistent: true,
+        active: true,
+        btnOkOnly: true,
+        msgOk: "ok",
+        bntClose: true,
+        ident: false,
+      });
     }
-    this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
   }
 
   fail(response: any) {

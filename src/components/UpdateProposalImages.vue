@@ -69,7 +69,10 @@
       </v-col>
     </template>
   </v-row>
-  <v-row class="mt-5 justify-start mb-14 mx-0" v-else>
+  <v-row
+    class="mt-5 justify-start mb-14 mx-0"
+    v-else-if="missingImages.length > 0"
+  >
     <div class="text-center col-12">
       <v-icon class="icon mb-3" size="35">mdi-cellphone-screenshot</v-icon>
       <p class="text-subtitle-1 font-weight-bold">

@@ -30,7 +30,7 @@
       <h3>
         Coberturas
         <InfoDialog
-          text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
+          text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/Bilhetes dos seguros."
         >
           <v-icon size="16">mdi-information</v-icon>
         </InfoDialog>

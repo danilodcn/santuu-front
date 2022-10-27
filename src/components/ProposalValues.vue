@@ -33,7 +33,7 @@
       <h3>
         Coberturas <span class="text-body-1"> {{ alert_coverage }} </span>
         <InfoDialog
-          text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/ Certificados/Bilhetes dos seguros."
+          text="Cobertura é a garantia de proteção contra riscos previstos nas Apólices/Bilhetes dos seguros."
         >
           <v-icon size="16">mdi-information</v-icon>
         </InfoDialog>
@@ -87,7 +87,7 @@
                 <v-switch
                   v-if="proposal.proposal_coverages"
                   class="coverage"
-                  :readonly=activeReadOnly()
+                  :readonly="activeReadOnly()"
                   :disabled="$store.state.proposal_coverages[i].is_fixed"
                   :input-value="$store.state.proposal_coverages[i].enabled"
                   @click.native.capture="changeStatus($event, i)"
@@ -154,7 +154,7 @@
                   <v-switch
                     v-if="proposal.proposal_coverages"
                     class="coverage"
-                    :readonly=activeReadOnly()
+                    :readonly="activeReadOnly()"
                     :disabled="$store.state.proposal_coverages[i].is_fixed"
                     :input-value="$store.state.proposal_coverages[i].enabled"
                     @click.native.capture="changeStatus($event, i)"
@@ -209,7 +209,7 @@
         <v-col
           md="6"
           cols="12"
-          v-if="hasVoucherDiscount || hasProgramDiscount"
+          v-if="proposal.insurance_premium_discount > 0"
           class="d-flex d-md-none"
         >
           <PriceBox
@@ -217,11 +217,13 @@
             :bold="false"
             :price="-proposal.insurance_premium_discount"
             >Desconto de&nbsp;
-            <span v-if="hasVoucherDiscount"
-              >{{ proposal.voucher.discount_percentage }}%</span
-            >
-            <span v-else-if="hasProgramDiscount"
-              >{{ discount.discount_renew_program }}%</span
+            <span
+              >{{
+                (
+                  (proposal.insurance_premium_discount / grossPrice) *
+                  100
+                ).toFixed(2)
+              }}%</span
             >
             <InfoDialog text="Valor a ser descontado do prêmio bruto total">
               <v-icon size="12">mdi-information</v-icon>
@@ -285,7 +287,7 @@
       <v-col
         md="2"
         class="ma-0 pa-0 d-none d-md-flex"
-        v-if="hasProgramDiscount || discount.discount_renew_program"
+        v-if="proposal.insurance_premium_discount > 0"
       >
         <PriceBox
           :good="true"
@@ -297,7 +299,7 @@
               (
                 (proposal.insurance_premium_discount / grossPrice) *
                 100
-              ).toFixed(0)
+              ).toFixed(2)
             }}%</span
           >
           <InfoDialog text="Valor a ser descontado do prêmio bruto total">
@@ -352,12 +354,12 @@ import { ProposalService } from "@/api/proposal";
 import { formatPrice, formatDate } from "@/utils/utils";
 import InfoDialog from "@/components/shared/InfoDialog.vue";
 import { MutationTypes, IDialog } from "@/store";
-import { CoverageService } from "@/api/coverage";
+import { CoverageAuthService } from "@/api/coverage";
 import { toDDMMYYYY } from "@/utils/utils";
 import { RenewalService } from "@/api/renewal";
 
 const renewalService = new RenewalService();
-const coverageService = new CoverageService();
+const coverageService = new CoverageAuthService();
 const proposalService = new ProposalService();
 
 const titlesResume: IDetailedInfo[] = [
@@ -740,9 +742,8 @@ export default class ProposalValues extends Vue {
       });
     }
   }
-  activeReadOnly(){
-    if (this.type == "certificate")
-    return true
+  activeReadOnly() {
+    if (this.type == "certificate") return true;
   }
 
   onSwitchChange(index: number, indexDB: number, event: Event) {

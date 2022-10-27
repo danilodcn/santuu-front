@@ -2,12 +2,12 @@ import { RouteConfig } from "vue-router";
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/renovation/certificates", //Meus Certificado
+    path: "/renovation/certificates", //Meus Bilhete
     name: "certificates",
     component: () => import("@/views/proposal_renovation/CertificateView.vue"),
   },
   {
-    path: "/renovation/summary-certificate/:proposal_id/", //Resumo do Certificado
+    path: "/renovation/summary-certificate/:proposal_id/", //Resumo do Bilhete
     name: "summary-certificate",
     component: () =>
       import("@/views/proposal_renovation/SummaryCertificate.vue"),

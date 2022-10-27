@@ -2,7 +2,7 @@
   <v-container fluid>
     <proposal-values
       :proposal_id="proposal_id"
-      title="Resumo do Certificado"
+      title="Resumo do Bilhete"
       type="certificate"
     >
     </proposal-values>
