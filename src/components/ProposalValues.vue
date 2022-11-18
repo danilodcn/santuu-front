@@ -13,7 +13,7 @@
       <div align="right" v-if="type == 'certificate'">
         <v-btn
           color="red"
-          href="https://app.clubesantuu.com.br/dashboard/cancelation/cancelation_proposal"
+          :href="`https://app.clubesantuu.com.br/dashboard/cancelation/cancelation_list/${proposal_id}`"
           target="_blank"
           text=""
           >Cancelar</v-btn
