@@ -17,9 +17,7 @@
     </div>
     <v-divider class="mt-10"></v-divider>
     <v-row justify="space-between" class="mt-10 mx-4">
-        <v-btn>
-        Voltar
-        </v-btn>
+      <v-btn> Voltar </v-btn>
     </v-row>
   </v-container>
 </template>

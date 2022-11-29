@@ -70,8 +70,8 @@ export default class Available extends Vue {
       return this.colors.past;
     } else if (current_position == given_position) {
       (
-        document.getElementById(`timeline-item-${current_status}`)?.lastChild
-          ?.lastChild?.lastChild as HTMLElement
+        document.getElementById(`timeline-item-${current_status?.status}`)
+          ?.lastChild?.lastChild?.lastChild as HTMLElement
       ).classList.add("blink");
       return this.colors.current;
     } else {
@@ -104,9 +104,9 @@ export default class Available extends Vue {
   }
 }
 .blink {
-  animation-name: blinking;
-  animation-duration: 2s;
-  animation-direction: alternate;
-  animation-iteration-count: infinite;
+  -webkit-animation-name: blinking;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-iteration-count: infinite;
 }
 </style>
