@@ -167,14 +167,8 @@ export default class CertificatesView extends Vue {
     this.changeLoading(true);
     const response = await renewalService.renew(id);
     this.changeLoading(false);
-    if (response.already_renewed) {
-      if (response.renewed_by_admin) {
-        this.$router.push({ path: `/proposal/payment/${response.id}` });
-        return;
-      }
-      this.$router.push({ path: `/renovation/proposal-values/${response.id}` });
-      return;
-    } else if (response.error) {
+
+    if (response.error) {
       var msg;
       if ("without_price" in response.axiosError.response.data) {
         msg =
@@ -194,6 +188,14 @@ export default class CertificatesView extends Vue {
         bntClose: true,
         ident: false,
       });
+    } else {
+      this.$router.push({
+        path: `/renovation/proposal-values/${response.id}`,
+        query: {
+          has_new_coverage: response.has_new_coverage,
+        },
+      });
+      return;
     }
   }
 

@@ -242,22 +242,9 @@ export default class EventCard extends BaseComponent {
           scheme = "MAESTRO";
         }
       }
-      this.changeMainDialog({
-        active: true,
-        bntClose: true,
-        msg:
-          "A renovação terá vigência a partir do vencimento da antiga proposta: " +
-          this.dateFormatted +
-          " e não da data de pagamento.",
-        persistent: false,
-        title: "Aviso!",
-        ident: false,
-      });
-      this.changeLoading(true);
       const response_next_step = await renewalService.getNextStep(
         this.proposal.id
       );
-      this.changeLoading(false);
       if (response_next_step.error) {
         this.changeMainDialog({
           msg: "Erro!",
@@ -291,10 +278,25 @@ export default class EventCard extends BaseComponent {
             ident: false,
           });
         } else {
-          document.location.href = this.linkNext;
+          this.changeMainDialog({
+            active: true,
+            bntClose: true,
+            msg:
+              "A renovação terá vigência a partir do vencimento da antiga proposta: " +
+              this.dateFormatted +
+              " e não da data de pagamento.",
+            persistent: false,
+            title: "Aviso!",
+            ident: false,
+            afterFunction: this.redirect,
+          });
         }
       }
     }
+  }
+
+  redirect() {
+    document.location.href = this.linkNext;
   }
 
   @Watch("model.securityCode")
