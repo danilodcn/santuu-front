@@ -158,7 +158,7 @@ export default class CertificatesView extends Vue {
   }
 
   canRenew(date: string) {
-    const daysBeforeAlert = 415;
+    const daysBeforeAlert = 30;
     const daysRemaining = this.getDaysRemaining(date);
     return daysRemaining < 0 && daysRemaining > -daysBeforeAlert;
   }

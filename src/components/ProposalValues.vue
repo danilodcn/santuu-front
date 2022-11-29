@@ -10,6 +10,15 @@
     >
     </v-alert>
     <v-card class="box-content">
+      <div align="right" v-if="type == 'certificate'">
+        <v-btn
+          color="red"
+          :href="`https://app.clubesantuu.com.br/dashboard/cancelation/cancelation_list/${proposal_id}`"
+          target="_blank"
+          text=""
+          >Cancelar</v-btn
+        >
+      </div>
       <v-row class="mt-10 mr-10" align="center" justify="center">
         <v-col cols="6" sm="4" md="3" class="text-center" v-if="page_title">
           <h3 class="pa-0 text-center">{{ page_title }}</h3>
