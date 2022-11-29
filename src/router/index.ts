@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import RenewRoutes from "./renew";
 import EventsRoutes from "./events";
 import ProposalRoutes from "./proposal";
+import SosRoutes from "./sos";
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,7 @@ const routes: Array<RouteConfig> = [
   ...ProposalRoutes,
   ...RenewRoutes,
   ...EventsRoutes,
+  ...SosRoutes,
 ];
 
 const router = new VueRouter({
