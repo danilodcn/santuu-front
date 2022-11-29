@@ -767,6 +767,18 @@ export default class ProposalValues extends Vue {
 
   created() {
     this.getProposal(parseInt(this.proposal_id));
+    if ((this.$route as any).query.has_new_coverage != "false") {
+      this.changeMainDialog({
+        msg: "Existem novas coberturas disponíveis para essa proposta!",
+        title: "Atenção",
+        persistent: false,
+        active: true,
+        bntClose: true,
+        btnOkOnly: true,
+        msgOk: "OK",
+        ident: false,
+      });
+    }
   }
 
   async nextPage(id: number | string) {
