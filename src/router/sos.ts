@@ -16,6 +16,11 @@ const routes: Array<RouteConfig> = [
     name: "form",
     component: () => import("@/views/sos/Form.vue"),
   },
+  {
+    path: "/sos/activecall", //Meus Bilhete
+    name: "activeCall",
+    component: () => import("@/views/sos/MechanicActiveCall.vue"),
+  },
 ];
 
 export { routes as default };

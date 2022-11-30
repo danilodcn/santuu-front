@@ -33,7 +33,12 @@
 
       <v-row>
         <v-col cols="12" md="4">
-          <v-text-field v-model="cpf" label="CPF" required></v-text-field>
+          <v-text-field
+            v-model="cpf"
+            label="CPF"
+            v-mask="'###.###.###-##'"
+            required
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -107,8 +112,8 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="4">
-          <v-btn color="primary" align="right"> Solicitar SOS </v-btn>
+        <v-col cols="12" md="4" offset-md="2">
+          <v-btn color="primary"> Solicitar SOS </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -127,7 +132,6 @@ export default class Available extends Vue {
   bike_model = "" as string;
   bike_brand = "" as string;
   cpf = "" as string;
-  email = "" as string;
   reference_point = "" as string;
   service_type = "" as string;
   observation = "" as string;
