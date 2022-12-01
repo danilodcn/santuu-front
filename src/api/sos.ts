@@ -6,6 +6,10 @@ class SOSService extends APIAuthBase {
     const url = `api/sos/sos_claim/get_open_order/`;
     return await this.request({ url, method: "GET" });
   }
+  async getOrder(id: number) {
+    const url = `api/sos/sos_claim/get_order?id=${id}`;
+    return await this.request({ url, method: "GET" });
+  }
 }
 
 const authProvider = new AuthProvider();
