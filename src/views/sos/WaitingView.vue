@@ -6,6 +6,7 @@
           v-for="(x, i) in status"
           :key="i"
           :color="getColorByStatus(x.status)"
+          :id="`timeline-item-${x.status}`"
           small
         >
           {{ `${x.status_text}` }}
@@ -68,6 +69,10 @@ export default class Available extends Vue {
     if (current_position > given_position) {
       return this.colors.past;
     } else if (current_position == given_position) {
+      (
+        document.getElementById(`timeline-item-${current_status?.status}`)
+          ?.lastChild?.lastChild?.lastChild as HTMLElement
+      ).classList.add("blink");
       return this.colors.current;
     } else {
       return this.colors.future;
@@ -89,19 +94,19 @@ export default class Available extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @keyframes blinking {
   from {
-    background: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
   }
   to {
-    background: rgba(184, 183, 3, 1);
+    background-color: rgba(184, 183, 3, 1);
   }
 }
 .blink {
-  animation-name: blinking;
-  animation-duration: 2s;
-  animation-direction: alternate;
-  animation-iteration-count: infinite;
+  -webkit-animation-name: blinking;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-iteration-count: infinite;
 }
 </style>
