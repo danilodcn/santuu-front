@@ -1,6 +1,9 @@
 <template>
   <v-form>
-    <v-container class="content-container mt-10 mt-md-3 px-10">
+    <v-container
+      v-show="mapping === false"
+      class="content-container mt-10 mt-md-3 px-10"
+    >
       <v-row>
         <v-col cols="3" md="1">
           <v-icon large @click.prevent=""> mdi-chevron-left </v-icon>
@@ -15,7 +18,7 @@
             <v-card
               :class="{ 'on-hover': hover }"
               :elevation="hover ? 12 : 2"
-              @click.prevent=""
+              @click="mapping = !mapping"
             >
               <v-img
                 lazy-src="https://cdn.pixabay.com/photo/2018/04/12/18/13/marker-3314279_960_720.png"
@@ -117,24 +120,55 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-container
+      v-show="mapping === true"
+      class="content-container mt-10 mt-md-3 px-10"
+    >
+      <div>
+        <v-row>
+          <v-col cols="12" md="4">
+            <h4>Your Position</h4>
+            Latitude: {{}}, Longitude:
+            <iframe
+              width="352.53"
+              height="500"
+              style="border: 1"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ
+              &q=Space+Needle,Seattle+WA"
+            >
+            </iframe>
+          </v-col>
+        </v-row>
+      </div>
+      <v-row>
+        <v-col cols="12" md="4" offset="1" offset-md="1">
+          <v-btn color="success" @click="mapping = !mapping">
+            Confirmar localização
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-form>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import EventCard from "@/components/shared/events/EventCard.vue";
 import { IEvent } from "@/types/events";
 
 @Component({
-  components: { EventCard },
+  components: {},
 })
 export default class Available extends Vue {
-  bike_model = "" as string;
-  bike_brand = "" as string;
-  cpf = "" as string;
-  reference_point = "" as string;
-  service_type = "" as string;
-  observation = "" as string;
+  bike_model = "";
+  bike_brand = "";
+  cpf = "";
+  reference_point = "";
+  service_type = "";
+  observation = "";
+  mapping = false;
   items = [
     { name: "Regulagem de selim", id: 0 },
     { name: "Regulagem de marcha", id: 1 },
