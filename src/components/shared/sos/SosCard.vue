@@ -1,16 +1,15 @@
 <template>
   <v-card>
     <v-card elevation="0">
-      <v-responsive :aspect-ratio="10 / 10">
+      <v-responsive :aspect-ratio="16 / 8">
         <v-col>
           <iframe
-            class="poster"
-            :src="`https://maps.google.com/maps?q=${data.coordinates}&amp;hl=ptbr;z=25.16&amp;output=embed`"
+            :src="`https://maps.google.com/maps?q=${data.coordinates}&amp;hl=ptbr;z=16.25&amp;output=embed`"
             style="border: 0"
             allowfullscreen=""
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
-            height="100%"
+            height="300"
             width="100%"
           ></iframe>
         </v-col>
@@ -96,9 +95,5 @@ export default class SosCard extends BaseComponent {
 .break {
   min-width: none;
   word-break: break-word;
-}
-.poster {
-  width: 100%;
-  height: 100%;
 }
 </style>
