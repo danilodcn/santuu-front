@@ -1,25 +1,40 @@
 <template>
-  <v-container class="content-container mt-10 mt-md-3 px-10">
-    <v-row class="ma-0 mb-16 timeline">
-      <v-col cols="9" class="h2 mb-10"> Acompanhe o seu chamado </v-col>
-      <v-timeline>
+  <v-container class="pt-12 px-10">
+    <v-col cols="12" class="ma-0"> Acompanhe o seu chamado </v-col>
+    <v-row class="ma-0 timeline d-flex align-center col-12">
+      <v-timeline class="pa-0">
         <v-timeline-item
           v-for="(x, i) in currentStatus"
           :key="i"
           :color="getColorByStatus(x.status)"
           :id="`timeline-item-${x.position}`"
+          :class="{ 'pb-0': i == currentStatus.length - 1 }"
           small
         >
-          <p class="body-2">{{ `${x.status_text}` }}</p>
+          <p
+            class="body-2 font-weight-medium"
+            :style="`color: ${getColorByStatus(x.status)}`"
+          >
+            {{ `${x.status_text}` }}
+          </p>
         </v-timeline-item>
       </v-timeline>
     </v-row>
-    <v-card-actions class="back-forward mt-16">
-      <v-row justify="space-between" class="mx-4">
+    <v-row class="col-12 my-0 px-6">
+      <p class="body-2 ma-0">Mecânico: Fulano de Tal</p>
+      <p class="body-2 ma-0">Tempo estimado de chegada: X min</p>
+    </v-row>
+    <v-card-actions class="back-forward mt-4 mb-10">
+      <v-row justify="space-between" class="mx-1">
         <v-btn color="#FF5252" class="white--text">Cancelar</v-btn>
         <v-btn color="#CCCB00" class="button white--text">Chat</v-btn>
       </v-row>
     </v-card-actions>
+    <loading-tips
+      :type="user_types.cyclist"
+      :time_showing_ms="5000"
+      class="mx-1 text-justify"
+    ></loading-tips>
   </v-container>
 </template>
 
@@ -28,14 +43,22 @@ import { Component, Vue } from "vue-property-decorator";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import { sosService } from "@/api/sos";
 import { IOrder } from "@/types/sos";
-import { status, status_finished, STATUS_NUMBER } from "@/utils/sos_timeline";
+import {
+  status,
+  status_finished,
+  user_types,
+  STATUS_NUMBER,
+} from "@/utils/sos_timeline";
+import LoadingTips from "@/components/LoadingTips.vue";
 
 @Component({
-  components: { EventCard },
+  components: { EventCard, LoadingTips },
 })
 export default class Available extends Vue {
   order_data = {} as IOrder;
   order_id = -1;
+
+  user_types = user_types;
 
   status = status;
   status_finished = status_finished;
@@ -166,6 +189,6 @@ export default class Available extends Vue {
   animation-iteration-count: infinite;
 }
 .timeline {
-  min-height: 500px;
+  min-height: 50vh;
 }
 </style>
