@@ -7,9 +7,9 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/sos/WaitingView.vue"),
   },
   {
-    path: "/sos/testePage",
-    name: "testePage",
-    component: () => import("@/views/sos/ListCall.vue"),
+    path: "/sos/testepage",
+    name: "testepage",
+    component: () => import("@/views/sos/TesteView.vue"),
   },
   {
     path: "/sos/form", //Meus Bilhete
