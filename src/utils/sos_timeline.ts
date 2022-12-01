@@ -40,3 +40,8 @@ export const status_finished = [
 ].sort((a, b) => {
   return a.position > b.position ? 1 : -1;
 });
+
+export const user_types = {
+  cyclist: 98,
+  mechanic: 99,
+};
