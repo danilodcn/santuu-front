@@ -6,14 +6,8 @@ const routes: Array<RouteConfig> = [
     name: "waiting",
     component: () => import("@/views/sos/WaitingView.vue"),
   },
-];
-
-export { routes as default };
-import { RouteConfig } from "vue-router";
-
-const routes: Array<RouteConfig> = [
   {
-    path: "/sos/testePage", //Meus Bilhete
+    path: "/sos/testePage",
     name: "testePage",
     component: () => import("@/views/sos/ListCall.vue"),
   },
