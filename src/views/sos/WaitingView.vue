@@ -1,18 +1,25 @@
 <template>
   <v-container class="content-container mt-10 mt-md-3 px-10">
-    <v-row>
+    <v-row class="ma-0 mb-16 timeline">
+      <v-col cols="9" class="h2 mb-10"> Acompanhe o seu chamado </v-col>
       <v-timeline>
         <v-timeline-item
-          v-for="(x, i) in status"
+          v-for="(x, i) in currentStatus"
           :key="i"
           :color="getColorByStatus(x.status)"
-          :id="`timeline-item-${x.status}`"
+          :id="`timeline-item-${x.position}`"
           small
         >
-          {{ `${x.status_text}` }}
+          <p class="body-2">{{ `${x.status_text}` }}</p>
         </v-timeline-item>
       </v-timeline>
     </v-row>
+    <v-card-actions class="back-forward mt-16">
+      <v-row justify="space-between" class="mx-4">
+        <v-btn color="#FF5252" class="white--text">Cancelar</v-btn>
+        <v-btn color="#CCCB00" class="button white--text">Chat</v-btn>
+      </v-row>
+    </v-card-actions>
   </v-container>
 </template>
 
@@ -21,75 +28,120 @@ import { Component, Vue } from "vue-property-decorator";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import { sosService } from "@/api/sos";
 import { IOrder } from "@/types/sos";
+import { status, status_finished, STATUS_NUMBER } from "@/utils/sos_timeline";
 
 @Component({
   components: { EventCard },
 })
 export default class Available extends Vue {
   order_data = {} as IOrder;
+  order_id = -1;
+
+  status = status;
+  status_finished = status_finished;
 
   colors = {
     past: "#DDDDB3",
     current: "#B8B703",
     future: "#989898",
   };
+  colors_finished = {
+    past: "#DDDDB3",
+    current: "#FF5252",
+    future: "#989898",
+  };
 
-  status = [
-    {
-      status_text: "Aguardando mecânico",
-      status: 1,
-      position: 0,
-    },
-    {
-      status_text: "Mecânico a caminho",
-      status: 2,
-      position: 1,
-    },
-    {
-      status_text: "Mecânico chegou no local",
-      status: 3,
-      position: 2,
-    },
-  ].sort((a, b) => {
-    return a.position > b.position ? 1 : -1;
-  });
+  get currentStatus() {
+    if (!("id" in this.order_data)) {
+      return [
+        {
+          status_text: "Carregando",
+          status: [-1],
+          position: 0,
+        },
+      ];
+    }
 
-  getColorByStatus(status: number) {
-    if (this.order_data == null) {
+    if (this.order_data.service_status == STATUS_NUMBER.FINISHED) {
+      return this.status_finished;
+    }
+    return this.status;
+  }
+
+  get currentColor() {
+    if (this.order_data == ({} as IOrder)) {
+      return this.colors;
+    }
+    if (this.order_data.service_status == STATUS_NUMBER.FINISHED) {
+      return this.colors_finished;
+    }
+    return this.colors;
+  }
+
+  findCommonElements(arr1: any[], arr2: any[]) {
+    return arr1.some((item) => arr2.includes(item));
+  }
+
+  getColorByStatus(status: number[]) {
+    if (!("id" in this.order_data)) {
       return;
     }
 
-    const current_status = this.status.find(
-      (x) => x.status == this.order_data.service_status
+    const current_status = this.currentStatus.find((x) =>
+      x.status.includes(this.order_data.service_status)
     );
-    const given_status = this.status.find((x) => x.status == status);
+    const given_status = this.currentStatus.find((x) =>
+      this.findCommonElements(x.status, status)
+    );
 
     const current_position = current_status?.position || 0;
     const given_position = given_status?.position || 0;
     if (current_position > given_position) {
-      return this.colors.past;
+      return this.currentColor.past;
     } else if (current_position == given_position) {
-      (
-        document.getElementById(`timeline-item-${current_status?.status}`)
-          ?.lastChild?.lastChild?.lastChild as HTMLElement
-      ).classList.add("blink");
-      return this.colors.current;
+      this.clearBlink();
+      if (this.order_data.service_status != STATUS_NUMBER.FINISHED) {
+        this.setToBlink(current_position);
+      }
+      return this.currentColor.current;
     } else {
-      return this.colors.future;
+      return this.currentColor.future;
     }
+  }
+
+  clearBlink() {
+    Array.from(document.querySelectorAll(".blink")).forEach((el) =>
+      el.classList.remove("blink")
+    );
+  }
+  setToBlink(position: number) {
+    (
+      document.getElementById(`timeline-item-${position}`)?.lastChild?.lastChild
+        ?.lastChild as HTMLElement
+    ).classList.add("blink");
   }
 
   created() {
     this.getOpenOrder();
-    this.refreshingTimeline();
   }
 
   async getOpenOrder() {
-    this.order_data = await sosService.getOpenOrder();
+    const response = await sosService.getOpenOrder();
+    if (!response.error) {
+      this.order_data = response;
+    } else {
+      return;
+    }
+    this.order_id = this.order_data.id;
+    setTimeout(this.refreshingTimeline, 5000);
+  }
+  async getOrder() {
+    this.order_data = await sosService.getOrder(this.order_id);
   }
 
   refreshingTimeline() {
-    setInterval(this.getOpenOrder, 2000);
+    this.$forceUpdate();
+    setInterval(this.getOrder, 5000);
   }
 }
 </script>
@@ -97,16 +149,23 @@ export default class Available extends Vue {
 <style lang="scss">
 @keyframes blinking {
   from {
-    background-color: rgba(0, 0, 0, 0);
+    background-color: #ddddb3;
   }
   to {
-    background-color: rgba(184, 183, 3, 1);
+    background-color: #b8b703;
   }
 }
 .blink {
   -webkit-animation-name: blinking;
+  animation-name: blinking;
   -webkit-animation-duration: 1s;
+  animation-duration: 1s;
   -webkit-animation-direction: alternate;
+  animation-direction: alternate;
   -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+.timeline {
+  min-height: 500px;
 }
 </style>
