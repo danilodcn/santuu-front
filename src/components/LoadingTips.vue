@@ -64,25 +64,29 @@ export default class LoadingTips extends Vue {
 @keyframes get-out {
   0% {
     transform: translateX(0%);
+    color: #000;
   }
   100% {
     transform: translateX(-100%);
+    color: #fff;
   }
 }
 @keyframes get-in {
   0% {
     transform: translateX(100%);
+    color: #fff;
   }
   100% {
+    color: #000;
     transform: translateX(0%);
   }
 }
 .next-enter-active {
-  animation: get-in 0.05s ease-in-out;
+  animation: get-in 0.2s ease-in-out;
 }
 
 .next-leave-active {
-  animation: get-out 0.15s ease-in-out;
+  animation: get-out 0.4s ease-in-out;
 }
 .tip {
   font-size: 0.8em;
