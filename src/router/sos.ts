@@ -7,17 +7,17 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/sos/WaitingView.vue"),
   },
   {
-    path: "/sos/testepage",
-    name: "testepage",
-    component: () => import("@/views/sos/TesteView.vue"),
+    path: "/sos/list-call",
+    name: "list-call",
+    component: () => import("@/views/sos/ListCall.vue"),
   },
   {
-    path: "/sos/form", //Meus Bilhete
+    path: "/sos/form",
     name: "form",
     component: () => import("@/views/sos/Form.vue"),
   },
   {
-    path: "/sos/activecall", //Meus Bilhete
+    path: "/sos/active-call",
     name: "activeCall",
     component: () => import("@/views/sos/MechanicActiveCall.vue"),
   },
