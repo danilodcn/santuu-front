@@ -255,3 +255,12 @@ export function validateDate(date: string) {
     (new Date().getTime() - dateObject.getTime()) / (1000 * 3600 * 24 * 365);
   return diff > 10 && diff < 110;
 }
+
+export function leftPad(
+  value: number,
+  totalWidth: number,
+  paddingChar: string
+) {
+  const length = totalWidth - value.toString().length + 1;
+  return Array(length).join(paddingChar || "0") + value;
+}
