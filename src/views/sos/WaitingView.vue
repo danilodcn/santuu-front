@@ -20,8 +20,8 @@
         </v-timeline-item>
       </v-timeline>
     </v-row>
-    <v-row class="col-12 my-0 px-6">
-      <p class="body-2 ma-0">Mecânico: Fulano de Tal</p>
+    <v-row class="col-12 my-0 px-6" v-if="order_data.mechanic">
+      <p class="body-2 ma-0">Mecânico: {{ order_data.mechanic_name }}</p>
       <p class="body-2 ma-0">Tempo estimado de chegada: X min</p>
     </v-row>
     <v-card-actions class="back-forward mt-4 mb-10">
