@@ -1,8 +1,10 @@
 <template>
-  <v-container class="pt-12 px-10">
-    <v-col cols="12" class="ma-0"> Acompanhe o seu chamado </v-col>
+  <v-container class="px-10 container elevation-xs-0 elevation-md-10">
+    <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-xs-0 mt-md-4">
+      Acompanhe o seu chamado
+    </v-col>
     <v-row class="ma-0 timeline d-flex align-center col-12">
-      <v-timeline class="pa-0">
+      <v-timeline class="pa-0 col-xs-12 offset-xs-0 col-md-6 offset-md-3">
         <v-timeline-item
           v-for="(x, i) in currentStatus"
           :key="i"
@@ -20,11 +22,18 @@
         </v-timeline-item>
       </v-timeline>
     </v-row>
-    <v-row class="col-12 my-0 px-6" v-if="order_data.mechanic">
-      <p class="body-2 ma-0">Mecânico: {{ order_data.mechanic_name }}</p>
-      <p class="body-2 ma-0">Tempo estimado de chegada: X min</p>
+    <v-row
+      class="col-xs-12 offset-xs-0 col-md-6 offset-md-3 my-0 px-6"
+      v-if="order_data.mechanic"
+    >
+      <p class="body-2 col-12 pa-0 ma-0">
+        Mecânico: {{ order_data.mechanic_name }}
+      </p>
+      <p class="body-2 col-12 pa-0 ma-0">Tempo estimado: X min</p>
     </v-row>
-    <v-card-actions class="back-forward mt-4 mb-10">
+    <v-card-actions
+      class="back-forward mt-4 mb-10 col-xs-12 offset-xs-0 col-md-6 offset-md-3"
+    >
       <v-row justify="space-between" class="mx-1">
         <v-btn color="#FF5252" class="white--text">Cancelar</v-btn>
         <v-btn color="#CCCB00" class="button white--text">Chat</v-btn>
@@ -33,7 +42,7 @@
     <loading-tips
       :type="user_types.cyclist"
       :time_showing_ms="5000"
-      class="mx-1 text-justify"
+      class="text-justify col-xs-10 offset-xs-1 col-md-6 offset-md-3 mb-xs-0 mb-md-2"
     ></loading-tips>
   </v-container>
 </template>
@@ -170,6 +179,14 @@ export default class Available extends Vue {
 </script>
 
 <style lang="scss">
+@media (min-width: 768px) {
+  .container {
+    background: #fff;
+    max-width: 800px;
+    margin-top: 30px;
+    border-radius: 10px;
+  }
+}
 @keyframes blinking {
   from {
     background-color: #ddddb3;
