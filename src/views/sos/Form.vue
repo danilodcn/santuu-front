@@ -21,13 +21,13 @@
               @click="mapping = !mapping"
             >
               <v-img
-                lazy-src="https://cdn.pixabay.com/photo/2018/04/12/18/13/marker-3314279_960_720.png"
-                max-height="150"
-                max-width="352.53"
-                src="https://cdn.pixabay.com/photo/2018/04/12/18/13/marker-3314279_960_720.png"
+                :lazy-src="imgLocDefault"
+                max-height="250"
+                max-width="100%"
+                :src="imgLocDefault"
               ></v-img>
               <v-card-text class="mx-0">
-                Clique aqui para ativar sua localização
+                {{ cardText }}
               </v-card-text>
             </v-card>
           </v-hover>
@@ -127,25 +127,25 @@
       <div>
         <v-row>
           <v-col cols="12" md="4">
-            <h4>Your Position</h4>
-            Latitude: {{}}, Longitude:
-            <iframe
-              width="352.53"
-              height="500"
-              style="border: 1"
-              loading="lazy"
-              allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ
-              &q=Space+Needle,Seattle+WA"
+            <h4 class="title-content">Localização</h4>
+            <GmapMap
+              :center="center"
+              :zoom="18"
+              style="width: 100%; height: 500px"
             >
-            </iframe>
+              <GmapMarker
+                :position="center"
+                :clickable="true"
+                :draggable="true"
+                @dragend="getMarkerPosition($event.latLng)"
+              />
+            </GmapMap>
           </v-col>
         </v-row>
       </div>
       <v-row>
         <v-col cols="12" md="4" offset="1" offset-md="1">
-          <v-btn color="success" @click="mapping = !mapping">
+          <v-btn color="success" @click="buttonConfirmPosition()">
             Confirmar localização
           </v-btn>
         </v-col>
@@ -162,6 +162,8 @@ import { IEvent } from "@/types/events";
   components: {},
 })
 export default class Available extends Vue {
+  apiKey = "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ";
+  address: any;
   bike_model = "";
   bike_brand = "";
   cpf = "";
@@ -169,6 +171,10 @@ export default class Available extends Vue {
   service_type = "";
   observation = "";
   mapping = false;
+  cyclistPosition = { lat: 0.0, lng: 0.0 };
+  imgLocDefault =
+    "https://cdn.pixabay.com/photo/2018/04/12/18/13/marker-3314279_960_720.png";
+  cardText = "Clique aqui para ativar sua localização";
   items = [
     { name: "Regulagem de selim", id: 0 },
     { name: "Regulagem de marcha", id: 1 },
@@ -194,12 +200,81 @@ export default class Available extends Vue {
     { name: "Outros serviços", id: 21 },
   ];
 
+  //mapa
+  options = {
+    enableHighAccuracy: true,
+  };
+  // eslint-disable-next-line
+  coords = {} as GeolocationCoordinates;
+
+  // eslint-disable-next-line
+  success(position: GeolocationPosition) {
+    console.info(position);
+    this.coords = position.coords;
+  }
+  // eslint-disable-next-line
+  error(error: GeolocationPositionError) {
+    console.warn(`ERROR(${error.code}): ${error.message}`);
+  }
+
+  getMarkerPosition(e: any) {
+    console.log(e.lat());
+    console.log(e.lng());
+    this.cyclistPosition = { lat: e.lat(), lng: e.lng() };
+    this.setLocImage(e.lat(), e.lng());
+  }
+
+  async getAddress(lat: number, lng: number) {
+    return fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${this.apiKey}`
+    )
+      .then((data) => data.json())
+      .catch((err) => console.log(err));
+  }
+
+  async buttonConfirmPosition() {
+    this.setLocImage(this.cyclistPosition.lat, this.cyclistPosition.lng);
+    this.address = await this.getAddress(
+      this.cyclistPosition.lat,
+      this.cyclistPosition.lng
+    );
+    this.cardText = this.address.results[0].formatted_address;
+    console.log(this.address);
+    console.log(this.cardText);
+    this.mapping = !this.mapping;
+  }
+
+  setLocImage(lat: number, lng: number) {
+    this.imgLocDefault = `https://maps.googleapis.com/maps/api/staticmap?\
+                          center=${lat},${lng}\
+                          &zoom=17&size=400x400\
+                          &markers=color:red%7Clabel:C%7C${lat},${lng}\
+                          &key=${this.apiKey}`;
+  }
+
+  getLocation() {
+    navigator.geolocation.getCurrentPosition(
+      this.success,
+      this.error,
+      this.options
+    );
+  }
+
   async sendFormData() {
     return null;
   }
 
   created() {
+    this.getLocation();
     this.sendFormData();
+  }
+
+  get center() {
+    this.cyclistPosition = {
+      lat: this.coords.latitude,
+      lng: this.coords.longitude,
+    };
+    return { lat: this.coords.latitude, lng: this.coords.longitude };
   }
 }
 </script>
