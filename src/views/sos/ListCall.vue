@@ -10,7 +10,7 @@
             <SosCard :data="orders" />
           </v-col>
         </template>
-        <h4 class="no-list" v-if="orders < 0">Nenhum Chamando</h4>
+        <h4 class="no-list" v-if="orders">Nenhum Chamando</h4>
       </v-row>
     </div>
     <v-divider class="mt-10"></v-divider>
@@ -24,15 +24,21 @@
 import { Component, Vue } from "vue-property-decorator";
 import SosCard from "@/components/shared/sos/SosCard.vue";
 import { sosService } from "@/api/sos";
+import { IOrder } from "@/types/sos";
 
 @Component({
   components: { SosCard },
 })
 export default class Available extends Vue {
-  orders = {};
+  orders = {} as IOrder;
 
-  async getOrder() {
-    this.orders = await sosService.getListCall();
+  async getListCall() {
+    const response = await sosService.getListCall();
+    if (response.error) {
+      console.log(console.error());
+    } else {
+      this.orders = response;
+    }
   }
 }
 </script>
