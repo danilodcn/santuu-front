@@ -1,49 +1,15 @@
 <template>
   <v-container class="px-10 container elevation-xs-0 elevation-md-10">
-    <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-xs-0 mt-md-4">
-      Acompanhe o seu chamado
-    </v-col>
-    <v-row class="ma-0 timeline d-flex align-center col-12">
-      <v-timeline class="pa-0 col-xs-12 offset-xs-0 col-md-6 offset-md-3">
-        <v-timeline-item
-          v-for="(x, i) in currentStatus"
-          :key="i"
-          :color="getColorByStatus(x.status)"
-          :id="`timeline-item-${x.position}`"
-          :class="{ 'pb-0': i == currentStatus.length - 1 }"
-          small
-        >
-          <p
-            class="body-2 font-weight-medium"
-            :style="`color: ${getColorByStatus(x.status)}`"
-          >
-            {{ `${x.status_text}` }}
-          </p>
-        </v-timeline-item>
-      </v-timeline>
-    </v-row>
-    <v-row
-      class="col-xs-12 offset-xs-0 col-md-6 offset-md-3 my-0 px-6"
-      v-if="order_data.mechanic"
-    >
-      <p class="body-2 col-12 pa-0 ma-0">
-        Mecânico: {{ order_data.mechanic_name }}
+    <v-col class="col-xs-10 offset-xs-1 col-md-8 offset-md-2 mt-xs-0 mt-md-4">
+      <p class="pa-0 ma-0">Chat - {{ order_data.mechanic_name }}</p>
+      <p class="pa-0 ma-0 body-2">
+        Chamado #{{ leftPad(order_data.id * 33, 8, "0") }}00
       </p>
-      <p class="body-2 col-12 pa-0 ma-0">Tempo estimado: X min</p>
-    </v-row>
-    <v-card-actions
-      class="back-forward mt-4 mb-10 col-xs-12 offset-xs-0 col-md-6 offset-md-3"
-    >
-      <v-row justify="space-between" class="mx-1">
-        <v-btn color="#FF5252" class="white--text">Cancelar</v-btn>
-        <v-btn color="#CCCB00" class="button white--text">Chat</v-btn>
-      </v-row>
-    </v-card-actions>
-    <loading-tips
-      :type="user_types.cyclist"
-      :time_showing_ms="5000"
-      class="text-justify col-xs-10 offset-xs-1 col-md-6 offset-md-3 mb-xs-0 mb-md-2"
-    ></loading-tips>
+    </v-col>
+    <div style="height: 400px"></div>
+    <chat-sender
+      class="ma-0 col-xs-12 offset-xs-0 col-md-8 offset-md-2"
+    ></chat-sender>
   </v-container>
 </template>
 
@@ -52,21 +18,23 @@ import { Component, Vue } from "vue-property-decorator";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import { sosService } from "@/api/sos";
 import { IOrder } from "@/types/sos";
+import { leftPad } from "@/utils/utils";
 import {
   status,
   status_finished,
   user_types,
   STATUS_NUMBER,
 } from "@/utils/sos_timeline";
-import LoadingTips from "@/components/LoadingTips.vue";
+import ChatSender from "@/components/ChatSender.vue";
 
 @Component({
-  components: { EventCard, LoadingTips },
+  components: { EventCard, ChatSender },
 })
 export default class Available extends Vue {
   order_data = {} as IOrder;
   order_id = -1;
 
+  leftPad = leftPad;
   user_types = user_types;
 
   status = status;
