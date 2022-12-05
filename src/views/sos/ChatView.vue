@@ -8,7 +8,7 @@
     </v-col>
     <div style="height: 400px"></div>
     <chat-sender
-      class="ma-0 col-xs-12 offset-xs-0 col-md-8 offset-md-2"
+      class="col-xs-12 offset-xs-0 col-md-8 offset-md-2"
     ></chat-sender>
   </v-container>
 </template>
@@ -150,7 +150,7 @@ export default class Available extends Vue {
 @media (min-width: 768px) {
   .container {
     background: #fff;
-    max-width: 800px;
+    max-width: 600px;
     margin-top: 30px;
     border-radius: 10px;
   }
