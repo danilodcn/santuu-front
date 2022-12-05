@@ -21,6 +21,11 @@ const routes: Array<RouteConfig> = [
     name: "activeCall",
     component: () => import("@/views/sos/MechanicActiveCall.vue"),
   },
+  {
+    path: "/sos/teste",
+    name: "teste",
+    component: () => import("@/views/sos/TesteView.vue"),
+  },
 ];
 
 export { routes as default };
