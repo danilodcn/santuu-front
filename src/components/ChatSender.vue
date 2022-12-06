@@ -1,18 +1,17 @@
 <template>
-  <v-row class="content">
-    <v-textarea
-      background-color="grey lighten-3"
-      class="col-11 message"
-      hint="Digite sua mensagem"
-      rows="3"
-      v-model="msg"
-    ></v-textarea>
-    <div class="col-1 btn-send d-flex align-content-center">
-      <v-icon @click="sendMessage(msg)" color="white" dense>
-        mdi-chevron-right
-      </v-icon>
-    </div>
-  </v-row>
+  <div class="content">
+    <v-col cols="12">
+      <v-textarea
+        background-color="grey lighten-3"
+        class="message"
+        hint="Digite sua mensagem"
+        rows="4"
+        v-model="msg"
+        append-icon="mdi-chevron-right"
+        @click:append="sendMessage(msg)"
+      ></v-textarea>
+    </v-col>
+  </div>
 </template>
 
 <script lang="ts">
@@ -44,14 +43,14 @@ export default class ChatSender extends Vue {
 .content >>> .v-input__control {
   border-radius: 3px !important;
 }
-.btn-send {
-  transform: translateX(-2em);
-  padding-left: 0px !important;
-}
-.btn-send > button {
+.content >>> .v-input__icon {
   background: #cccb00;
-  border-radius: 10px;
-  height: 34px !important;
-  margin-top: 13px !important;
+  border-radius: 15px;
+  height: 44px !important;
+  margin-top: 8px !important;
+  margin-right: 10px !important;
+}
+.content >>> .v-input__icon button {
+  color: white !important;
 }
 </style>
