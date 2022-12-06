@@ -70,8 +70,12 @@ const mutations: MutationTree<RootState> = {
     state.proposal_coverages[payload.index].enabled = payload.enabled;
   },
 
-  [MutationTypes.TOGGLE_LOADING](state, payload: boolean) {
-    state.loading = !state.loading;
+  [MutationTypes.TOGGLE_LOADING](state, payload: boolean | undefined) {
+    if (payload == undefined) {
+      state.loading = !state.loading;
+    } else {
+      state.loading = !!payload;
+    }
   },
 
   [MutationTypes.TOOGLE_PAYMENT_CHOICE](state, payment_choice: string) {
