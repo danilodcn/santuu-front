@@ -18,6 +18,18 @@ class SOSService extends APIAuthBase {
     const url = "api/sos/sos_claim/claim_list";
     return await this.request({ url, method: "GET" });
   }
+
+  async sendMessages(message: string, order_id: number) {
+    const url = `api/sos/message/`;
+    return await this.request({
+      url,
+      method: "POST",
+      data: {
+        message: message,
+        order_id: order_id,
+      },
+    });
+  }
   async getMessages(order_id: number, last_message_time: string) {
     const url = `api/sos/message/get_messages/?order_id=${order_id}&last_message_time=${last_message_time}`;
     return await this.request({ url, method: "GET" });

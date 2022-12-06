@@ -10,6 +10,7 @@
       <chat-messages :messages="messages"></chat-messages>
     </v-row>
     <chat-sender
+      :order_data="order_data"
       class="mx-xs-0 px-0 col-xs-12 offset-xs-0 col-md-8 offset-md-2"
     ></chat-sender>
   </v-container>

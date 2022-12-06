@@ -9,6 +9,7 @@
         v-model="msg"
         append-icon="mdi-chevron-right"
         @click:append="sendMessage(msg)"
+        @keyup="slice255()"
       ></v-textarea>
     </v-col>
   </div>
@@ -16,13 +17,21 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { IOrder } from "@/types/sos";
+import { sosService } from "@/api/sos";
 
 @Component
 export default class ChatSender extends Vue {
   msg = "";
+  @Prop() order_data!: IOrder;
 
-  sendMessage(msg: string) {
-    alert(msg);
+  async sendMessage(msg: string) {
+    const txt = this.msg;
+    this.msg = "";
+    const response = await sosService.sendMessages(txt, this.order_data.id);
+  }
+  slice255() {
+    this.msg = this.msg.slice(0, 255);
   }
 }
 </script>
@@ -34,8 +43,10 @@ export default class ChatSender extends Vue {
   line-height: 1.1em;
   overflow: hidden;
 }
-.v-textarea {
-  padding-right: 0px !important;
+.content >>> .v-text-field__slot {
+  padding-top: 10px !important;
+  padding-bottom: -10px !important;
+  padding-left: 10px !important;
 }
 .content >>> .v-input__slot::before {
   border: none !important;
@@ -47,7 +58,7 @@ export default class ChatSender extends Vue {
   background: #cccb00;
   border-radius: 15px;
   height: 44px !important;
-  margin-top: 8px !important;
+  margin-top: 13px !important;
   margin-right: 10px !important;
 }
 .content >>> .v-input__icon button {
