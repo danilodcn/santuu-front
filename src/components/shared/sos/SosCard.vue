@@ -17,32 +17,41 @@
       <v-card-title>
         <v-col class="ma-0 pa-0">
           <v-row class="ma-0 pa-0">
-            <v-col cols="10" class="name ma-0 pa-0">
-              <span class="text-body-2 break mx-auto" v-text="data.mechanic" />
+            <v-col cols="8" class="ma-0 pa-0">
+              <span
+                class="text-body-2 break mx-auto"
+                v-text="data.mechanic_name"
+              />
             </v-col>
-            <v-col
-              cols="2"
-              class="ma-0 pa-0 text-center icon-registered"
-              v-if="data.service_protocol"
-            >
-              <v-icon color="primary" size="16">mdi-check-circle</v-icon>
+            <v-col class="ma-0 pa-0" v-if="data.rating">
+              <v-rating
+                background-color="grey lighten-2"
+                color="warning"
+                length="5"
+                readonly
+                size="18"
+                :value="data.rating"
+                half-increments
+              >
+              </v-rating>
             </v-col>
           </v-row>
           <v-divider />
           <v-row class="ma-0 pa-0" align="center">
-            <v-col cols="2" align-self="center">
-              <v-icon color="primary">mdi-calendar</v-icon>
-            </v-col>
-            <v-col>
-              <span class="text--center mx-auto text-body-2" v-text="date" />
-            </v-col>
-            <v-col cols="10" class="name ma-0 pa-0">
+            <v-col cols="4" class="ma-0 pa-0">
               <span
-                class="text-body-2 break mx-auto"
+                class="text--center text-body-2"
+                color="primary"
+                v-text="get_date()"
+              />
+            </v-col>
+            <v-col cols="10" class="ma-0 pa-0">
+              <span
+                class="text-body-2 icon-registered"
                 v-text="data.service_ref_location"
               />
             </v-col>
-            <v-col class="name ma-0 pa-0">
+            <v-col class="ma-0 pa-0">
               <span
                 class="text-body-2 break mx-auto"
                 color=""
@@ -76,13 +85,14 @@ interface ICardData {
   service_protocol: string;
   status_text: string;
   coordinates: string;
+  rating: number;
 }
 
 @Component
 export default class SosCard extends BaseComponent {
   @Prop() data!: ICardData;
 
-  get date(): string {
+  get_date(): string {
     return formatDate("2022-10-03 19:35:35.993822");
   }
 }
@@ -90,7 +100,7 @@ export default class SosCard extends BaseComponent {
 
 <style scoped>
 .icon-registered {
-  margin-top: -6px !important;
+  margin-top: 20px !important;
 }
 .break {
   min-width: none;
