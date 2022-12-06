@@ -58,6 +58,21 @@ class SOSService extends APIAuthBase {
       },
     });
   }
+  async updateStatus(dataStatus: any) {
+    const url = `/api/sos/update_status/`;
+    const data = {
+      ...dataStatus,
+    };
+    console.log(data);
+    return await this.request({
+      url,
+      method: "PUT",
+      data: data,
+      headers: {
+        ...this.config.headers,
+      },
+    });
+  }
 }
 
 const authProvider = new AuthProvider();
