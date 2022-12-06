@@ -18,6 +18,11 @@ class SOSService extends APIAuthBase {
     const url = "api/sos/sos_claim/claim_list";
     return await this.request({ url, method: "GET" });
   }
+  async getMessages(order_id: number, last_message_time: string) {
+    const url = `api/sos/message/get_messages/?order_id=${order_id}&last_message_time=${last_message_time}`;
+    return await this.request({ url, method: "GET" });
+  }
+
   async getAddress(lat: number, lng: number, apiKey: string) {
     return fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
