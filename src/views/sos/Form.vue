@@ -108,6 +108,7 @@
             filled
             label="Imagem 1"
             prepend-icon="mdi-camera"
+            :rules="obrigatory"
             v-model="form.img_detail1"
           ></v-file-input>
         </v-col>
@@ -119,6 +120,7 @@
             filled
             label="Imagem 2"
             prepend-icon="mdi-camera"
+            :rules="obrigatory"
             v-model="form.img_detail2"
           ></v-file-input>
         </v-col>
@@ -246,6 +248,7 @@ import { ISosCallForm } from "@/types/sos";
 import { items } from "@/utils/sos_timeline";
 
 const form: ISosCallForm = {
+  id: 0,
   associate_cpf: "",
   associate_name: "",
   service_bike: undefined,
@@ -360,7 +363,7 @@ export default class Available extends Vue {
   }
 
   backListCall() {
-    this.$router.push({ path: "/sos/waiting/" });
+    this.$router.push({ path: "/sos/list-call/" });
   }
 
   created() {

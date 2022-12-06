@@ -19,6 +19,7 @@ export interface IOrder {
 }
 
 export interface ISosCallForm {
+  id: number;
   associate_cpf: string;
   associate_name: string;
   service_bike: undefined;
