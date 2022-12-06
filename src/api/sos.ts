@@ -46,6 +46,7 @@ class SOSService extends APIAuthBase {
       },
     });
   }
+}
 
 const authProvider = new AuthProvider();
 const sosService = new SOSService(authProvider);
