@@ -1,7 +1,7 @@
 export type UserData = {
   firstName: string;
   lastName: string;
-  avatarUrl: string;
+  avatar: { url: string; file?: Blob; delete?: boolean };
   email: string;
   cellPhone: string;
   cpf: string;
