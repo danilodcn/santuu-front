@@ -108,7 +108,6 @@
             filled
             label="Imagem 1"
             prepend-icon="mdi-camera"
-            :rules="obrigatory"
             v-model="form.img_detail1"
           ></v-file-input>
         </v-col>
@@ -120,7 +119,6 @@
             filled
             label="Imagem 2"
             prepend-icon="mdi-camera"
-            :rules="obrigatory"
             v-model="form.img_detail2"
           ></v-file-input>
         </v-col>
@@ -141,13 +139,7 @@
         <v-col cols="12" md="4">
           <div class="text-center">
             <v-btn class="ma-1" color="primary" @click="buttonCallSos()">
-              <div v-show="loading">
-                <v-progress-circular
-                  indeterminate
-                  color="white"
-                ></v-progress-circular>
-              </div>
-              <div v-show="!loading">Solicitar SOS</div>
+              <div>Solicitar SOS</div>
             </v-btn>
           </div>
         </v-col>
@@ -167,6 +159,40 @@
             <v-spacer></v-spacer>
             <v-btn color="primary" @click="dialog = false"> Ok </v-btn>
           </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+        v-model="missingDataDialog"
+        max-width="290"
+        transition="dialog-top-transition"
+      >
+        <v-card outlined>
+          <v-card-text class="mt-3">
+            Você precisa preencher todos os campos obrigatórios para realizar o
+            chamado SOS.
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="missingDataDialog = false">
+              Ok
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+        v-model="loading"
+        max-width="290"
+        transition="dialog-top-transition"
+        persistent
+      >
+        <v-card outlined>
+          <v-card-text class="mt-4 text-center"> Chamando SOS! </v-card-text>
+          <div>
+            <v-progress-linear color="lime" indeterminate></v-progress-linear>
+          </div>
         </v-card>
       </v-dialog>
     </v-container>
@@ -217,9 +243,11 @@
 import { Component, Vue } from "vue-property-decorator";
 import { sosService } from "@/api/sos";
 import { ISosCallForm } from "@/types/sos";
+import { items } from "@/utils/sos_timeline";
 
 const form: ISosCallForm = {
   associate_cpf: "",
+  associate_name: "",
   service_bike: undefined,
   service_bike_model: "",
   service_bike_brand: "",
@@ -230,14 +258,18 @@ const form: ISosCallForm = {
   img_detail1: undefined,
   img_detail2: undefined,
   img_detail3: undefined,
+  associated_coordinates: "",
+  service_address: "",
 };
 
 @Component({
   components: {},
 })
 export default class Available extends Vue {
+  items = items;
   loading = false;
   formSent = false;
+  missingDataDialog = false;
   form = form;
   obrigatory = [(v: string) => !!v || "Campo obrigatório"];
   apiKey = "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ";
@@ -249,30 +281,6 @@ export default class Available extends Vue {
   imgLocDefault =
     "https://cdn.pixabay.com/photo/2018/04/12/18/13/marker-3314279_960_720.png";
   cardText = "Clique aqui para ativar sua localização";
-  items = [
-    { name: "Regulagem de selim", id: 1 },
-    { name: "Regulagem de marcha", id: 2 },
-    { name: "Regulagem de câmbio", id: 3 },
-    { name: "Regulagem de guidão", id: 4 },
-    { name: "Regulagem de mesa", id: 5 },
-    { name: "Aperto de mesa", id: 6 },
-    { name: "Aperto de pedal", id: 7 },
-    { name: "Aperto de roda", id: 8 },
-    { name: "Aperto de direção", id: 9 },
-    { name: "Aperto de mov. central", id: 10 },
-    { name: "Aperto de pedivela", id: 11 },
-    { name: "Aperto de sup. de garrafa", id: 12 },
-    { name: "Reparo de acessórios", id: 13 },
-    { name: "Reparo de câmbio", id: 14 },
-    { name: "Reparo de eixo", id: 15 },
-    { name: "Reparo de câmara", id: 16 },
-    { name: "Reparo de corrente", id: 17 },
-    { name: "Reparo de pneu", id: 18 },
-    { name: "Calibragem de pneu", id: 19 },
-    { name: "Lubrificação de corrente", id: 20 },
-    { name: "Troca de selim", id: 21 },
-    { name: "Outros serviços", id: 22 },
-  ];
 
   //mapa
   options = {
@@ -302,8 +310,10 @@ export default class Available extends Vue {
       this.cyclistPosition.lng,
       this.apiKey
     );
+    this.form.associated_coordinates = `{"lat":"${this.cyclistPosition.lat}","lng":"${this.cyclistPosition.lng}"}`;
     this.locationConfirmed = true;
     this.cardText = this.address.results[0].formatted_address;
+    this.form.service_address = this.cardText;
     this.mapping = !this.mapping;
   }
 
@@ -332,17 +342,20 @@ export default class Available extends Vue {
   }
 
   async sendFormData() {
+    console.log(this.address);
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
       this.loading = true;
       const response = await sosService.submitSosForm(this.form);
-      this.loading = false;
       if (response.error) {
         console.log(response.error);
+        this.loading = false;
         return;
       } else {
         this.$router.push({ path: "/sos/waiting/" });
         return response;
       }
+    } else {
+      this.missingDataDialog = true;
     }
   }
 

@@ -35,6 +35,10 @@ class SOSService extends APIAuthBase {
       url,
       method: "POST",
       data: data,
+      headers: {
+        ...this.config.headers,
+        "Content-Type": "multipart/form-data",
+      },
     });
   }
 }

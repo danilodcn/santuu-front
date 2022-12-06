@@ -20,6 +20,7 @@ export interface IOrder {
 
 export interface ISosCallForm {
   associate_cpf: string;
+  associate_name: string;
   service_bike: undefined;
   service_bike_model: string;
   service_bike_brand: string;
@@ -30,4 +31,6 @@ export interface ISosCallForm {
   img_detail1?: File;
   img_detail2?: File;
   img_detail3?: File;
+  associated_coordinates: string;
+  service_address: string;
 }
