@@ -24,8 +24,8 @@
               <v-img
                 gradient="to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)"
                 :lazy-src="imgLocDefault"
-                height="100"
-                contain
+                :height="!img_updated ? 100 : 150"
+                :contain="!img_updated"
                 :src="imgLocDefault"
               ></v-img>
               <v-card-text class="mx-0">
@@ -42,7 +42,7 @@
             v-model="form.associate_cpf"
             label="CPF"
             v-mask="'###.###.###-##'"
-            :rules="obrigatory"
+            :rules="obrigatory.concat([(v) => isValidCPF(v) || 'CPF inválido'])"
             required
           ></v-text-field>
         </v-col>
@@ -77,6 +77,7 @@
             v-model="form.service_type"
             item-text="name"
             item-value="id"
+            :rules="obrigatory"
             label="Tipo de serviço"
           ></v-select>
         </v-col>
@@ -142,66 +143,11 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
-        <v-col cols="12 px-8">
-          <div class="text-center">
-            <v-btn class="ma-1" color="primary" @click="buttonCallSos()">
-              <div>Solicitar SOS</div>
-            </v-btn>
-          </div>
-        </v-col>
+      <v-row justify="end" class="pr-11 my-3">
+        <v-btn color="primary" @click="buttonCallSos()">
+          <div>Solicitar SOS</div>
+        </v-btn>
       </v-row>
-
-      <v-dialog
-        v-model="dialog"
-        max-width="290"
-        transition="dialog-top-transition"
-      >
-        <v-card outlined>
-          <v-card-text class="mt-3">
-            Você precisa enviar sua localização para solicitar o chamado SOS.
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="dialog = false"> Ok </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog
-        v-model="missingDataDialog"
-        max-width="290"
-        transition="dialog-top-transition"
-      >
-        <v-card outlined>
-          <v-card-text class="mt-3">
-            Você precisa preencher todos os campos obrigatórios para realizar o
-            chamado SOS.
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="missingDataDialog = false">
-              Ok
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog
-        v-model="loading"
-        max-width="290"
-        transition="dialog-top-transition"
-        persistent
-      >
-        <v-card outlined>
-          <v-card-text class="mt-4 text-center"> Chamando SOS! </v-card-text>
-          <div>
-            <v-progress-linear color="lime" indeterminate></v-progress-linear>
-          </div>
-        </v-card>
-      </v-dialog>
     </v-container>
     <v-container
       v-show="mapping === true"
@@ -248,9 +194,11 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { BaseComponent } from "@/utils/component";
 import { sosService } from "@/api/sos";
 import { ISosCallForm } from "@/types/sos";
 import { items } from "@/utils/sos";
+import { isValidCPF } from "@/utils/utils";
 
 const form: ISosCallForm = {
   id: 0,
@@ -259,7 +207,7 @@ const form: ISosCallForm = {
   service_bike: undefined,
   service_bike_model: "",
   service_bike_brand: "",
-  service_type: 1,
+  service_type: 0,
   service_text: "",
   service_bike_lane: 4,
   service_ref_location: "",
@@ -273,9 +221,8 @@ const form: ISosCallForm = {
 @Component({
   components: {},
 })
-export default class Available extends Vue {
+export default class Available extends BaseComponent {
   items = items;
-  loading = false;
   formSent = false;
   missingDataDialog = false;
   form = form;
@@ -283,12 +230,14 @@ export default class Available extends Vue {
   apiKey = "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ";
   address: any;
   locationConfirmed = false;
-  dialog = false;
   mapping = false;
   cyclistPosition = { lat: 0.0, lng: 0.0 };
   imgLocDefault =
     "https://www.nicepng.com/png/full/10-100907_location-black-black-location-icon-png.png";
   cardText = "Clique aqui para ativar sua localização";
+  img_updated = false;
+
+  isValidCPF = isValidCPF;
 
   //mapa
   options = {
@@ -331,6 +280,7 @@ export default class Available extends Vue {
                           &zoom=17&size=400x400\
                           &markers=color:red%7Clabel:C%7C${lat},${lng}\
                           &key=${this.apiKey}`;
+    this.img_updated = true;
   }
 
   getLocation() {
@@ -343,28 +293,57 @@ export default class Available extends Vue {
 
   async buttonCallSos() {
     if (this.locationConfirmed == false) {
-      this.dialog = true;
+      this.changeMainDialog({
+        msg: "Você precisa enviar sua localização para solicitar o chamado SOS.",
+        title: "Localização obrigatória",
+        persistent: true,
+        active: true,
+        bntClose: true,
+        btnOkOnly: true,
+        msgOk: "OK",
+        ident: false,
+      });
       return;
     }
     this.sendFormData();
   }
 
   async sendFormData() {
-    console.log(this.address);
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      this.loading = true;
+      this.changeLoading(true);
       const response = await sosService.submitSosForm(this.form);
       if (response.error) {
-        console.log(response.error);
-        this.loading = false;
+        this.fail(response);
         return;
       } else {
+        this.changeLoading(false);
         this.$router.push({ path: "/sos/waiting/" });
         return response;
       }
     } else {
-      this.missingDataDialog = true;
+      this.changeMainDialog({
+        msg: "Você precisa preencher todos os campos obrigatórios para realizar o chamado SOS.",
+        title: "Campos obrigatórios",
+        persistent: true,
+        active: true,
+        bntClose: true,
+        btnOkOnly: true,
+        msgOk: "OK",
+        ident: false,
+      });
     }
+  }
+
+  fail(response: any) {
+    this.changeMainDialog({
+      msg:
+        response.axiosError.response.data?.error ||
+        "Não foi possível realizar esta ação",
+      title: "Erro",
+      persistent: false,
+      active: true,
+      bntClose: true,
+    });
   }
 
   backListCall() {

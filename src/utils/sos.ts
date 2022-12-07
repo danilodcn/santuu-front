@@ -47,6 +47,7 @@ export const user_types = {
 };
 
 export const items = [
+  { name: "", id: 0 },
   { name: "Regulagem de selim", id: 1 },
   { name: "Regulagem de marcha", id: 2 },
   { name: "Regulagem de câmbio", id: 3 },

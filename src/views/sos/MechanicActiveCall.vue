@@ -24,8 +24,7 @@
                 <v-img
                   gradient="to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)"
                   :lazy-src="imgLocDefault"
-                  height="100"
-                  contain
+                  height="150"
                   :src="imgLocDefault"
                 ></v-img>
               </div>
@@ -191,6 +190,7 @@
       </v-row>
       <v-row>
         <v-col cols="6" md="1" class="align-md-content-end">
+          <!-- #TODO -->
           <v-dialog v-model="dialog" max-width="290">
             <v-card>
               <v-card-text class="pa-5">
@@ -408,7 +408,7 @@ export default class Available extends Vue {
   }
 
   getLocation() {
-    // navigator.geolocation.watchPosition(this.success, this.error, this.options);
+    navigator.geolocation.watchPosition(this.success, this.error, this.options);
     this.dataMapLoaded = true;
   }
 

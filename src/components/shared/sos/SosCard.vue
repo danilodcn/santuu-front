@@ -86,6 +86,7 @@ interface ICardData {
   status_text: string;
   coordinates: string;
   rating: number;
+  mechanic_name: string;
   date: string;
 }
 
