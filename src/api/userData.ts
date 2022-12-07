@@ -7,6 +7,10 @@ class UserDataService extends APIAuthBase {
     const url = `/account/user-data/${userId}`;
     return await this.request({ url, method: "GET" });
   }
+  async getUserProfile() {
+    const url = `/account/account/profile/`;
+    return await this.request({ url, method: "GET" });
+  }
   async updateUserData(userId: number, form: IUserData) {
     const url = `/account/user-data/${userId}/`;
     const data = form;
