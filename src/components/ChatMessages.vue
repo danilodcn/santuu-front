@@ -3,9 +3,7 @@
     <template v-for="(message, i) in messages">
       <v-row
         :key="i"
-        :justify="
-          profile.personal_info.user == message.sender ? 'end' : 'start'
-        "
+        :justify="userId == message.sender ? 'end' : 'start'"
         class="row-message"
       >
         <div class="message">
@@ -25,13 +23,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import ChatSender from "@/components/ChatSender.vue";
-import { UserDataService } from "@/api/userData";
 import { leftPad } from "@/utils/utils";
-
-const userDataService = new UserDataService();
 
 interface IMessage {
   id: number;
@@ -45,34 +40,31 @@ interface IMessage {
   components: { EventCard, ChatSender },
 })
 export default class ChatMessages extends Vue {
-  @Prop() messages = [] as IMessage[];
+  @Prop() messages!: IMessage[];
   @Prop() viewer_id!: number;
+  @Prop() profile!: any;
 
-  already_scrolled = false; //Variável para rolar para baixo a conversa somente no começo
-
-  profile: any;
+  get messagesLength() {
+    return this.messages.length;
+  }
   leftPad = leftPad;
 
-  created() {
-    this.getProfile();
+  get userId() {
+    return this.profile?.personal_info?.user;
   }
 
-  async getProfile() {
-    const response = await userDataService.getUserProfile();
-    this.profile = response;
-    if (!response.error) {
-      this.profile = response;
-    } else {
-      return;
-    }
-  }
-
-  updated() {
+  scrollToBottom() {
     const elem = document.querySelector(".container-messages");
-    if (elem && !this.already_scrolled) {
-      this.already_scrolled = true;
-      elem.scrollTo(0, elem.scrollHeight);
+    if (elem) {
+      setTimeout(() => {
+        elem.scrollTo(0, elem.scrollHeight);
+      }, 200);
     }
+  }
+
+  @Watch("messagesLength")
+  onMessagesLengthChange() {
+    this.scrollToBottom();
   }
 }
 </script>
@@ -88,11 +80,14 @@ export default class ChatMessages extends Vue {
   background: #eeeeee;
 }
 .container-messages {
-  max-height: 60vh;
+  max-height: 100%;
   overflow: scroll;
 }
 .container-messages::-webkit-scrollbar {
   display: none;
+}
+.container-messages {
+  scrollbar-width: none;
 }
 .text {
   padding-bottom: 2px;

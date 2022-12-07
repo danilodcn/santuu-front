@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { user_types } from "@/utils/sos_timeline";
+import { user_types } from "@/utils/sos";
 
 @Component
 export default class LoadingTips extends Vue {

@@ -78,3 +78,12 @@ export function getLocImage(lat: number, lng: number, apiKey: string) {
                         &markers=color:red%7Clabel:C%7C${lat},${lng}\
                         &key=${apiKey}`;
 }
+
+export const order_status_choices = {
+  open: "open",
+  progress: "progress",
+  travel: "travel",
+  repair: "repair",
+  finished: "finished",
+  canceled: "canceled",
+};

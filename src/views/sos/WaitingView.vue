@@ -1,6 +1,6 @@
 <template>
   <v-container class="px-10 container elevation-xs-0 elevation-md-10">
-    <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-xs-0 mt-md-4">
+    <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-8">
       Acompanhe o seu chamado
     </v-col>
     <v-row class="ma-0 timeline d-flex align-center col-12">
@@ -29,14 +29,17 @@
       <p class="body-2 col-12 pa-0 ma-0">
         Mecânico: {{ order_data.mechanic_name }}
       </p>
-      <p class="body-2 col-12 pa-0 ma-0">Tempo estimado: X min</p>
     </v-row>
     <v-card-actions
       class="back-forward mt-4 mb-10 col-xs-12 offset-xs-0 col-md-6 offset-md-3"
     >
       <v-row justify="space-between" class="mx-1">
-        <v-btn color="#FF5252" class="white--text">Cancelar</v-btn>
-        <v-btn color="#CCCB00" class="button white--text">Chat</v-btn>
+        <v-btn color="#FF5252" class="white--text" @click="cancel"
+          >Cancelar</v-btn
+        >
+        <v-btn color="#CCCB00" class="button white--text" @click="chat"
+          >Chat</v-btn
+        >
       </v-row>
     </v-card-actions>
     <loading-tips
@@ -57,7 +60,7 @@ import {
   status_finished,
   user_types,
   STATUS_NUMBER,
-} from "@/utils/sos_timeline";
+} from "@/utils/sos";
 import LoadingTips from "@/components/LoadingTips.vue";
 
 @Component({
@@ -110,6 +113,18 @@ export default class Available extends Vue {
     return this.colors;
   }
 
+  async cancel() {
+    const response = await sosService.updateStatus({
+      order_id: this.order_id,
+      status: "canceled",
+    });
+    if (!response.error) {
+      this.order_data = response;
+    } else {
+      return;
+    }
+  }
+
   findCommonElements(arr1: any[], arr2: any[]) {
     return arr1.some((item) => arr2.includes(item));
   }
@@ -155,6 +170,10 @@ export default class Available extends Vue {
 
   created() {
     this.getOpenOrder();
+  }
+
+  chat() {
+    this.$router.push({ path: "/sos/chat/" });
   }
 
   async getOpenOrder() {

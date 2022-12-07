@@ -1,5 +1,5 @@
 <template>
-  <v-form class="form" ref="form">
+  <v-form class="form title-content" ref="form">
     <v-container
       v-show="mapping === false"
       class="content-container mt-4 mt-md-3 px-7"
@@ -13,17 +13,19 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-hover v-slot="{ hover }">
             <v-card
+              class="pt-4 mb-8"
               :class="{ 'on-hover': hover }"
-              :elevation="hover ? 12 : 2"
+              :elevation="hover ? 3 : 2"
               @click="mapping = !mapping"
             >
               <v-img
+                gradient="to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)"
                 :lazy-src="imgLocDefault"
-                max-height="250"
-                max-width="100%"
+                height="100"
+                contain
                 :src="imgLocDefault"
               ></v-img>
               <v-card-text class="mx-0">
@@ -35,7 +37,7 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-text-field
             v-model="form.associate_cpf"
             label="CPF"
@@ -47,7 +49,7 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-text-field
             v-model="form.service_bike_brand"
             label="Marca da bike"
@@ -58,7 +60,7 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-text-field
             v-model="form.service_bike_model"
             label="Modelo da bike"
@@ -69,7 +71,7 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-select
             :items="items"
             v-model="form.service_type"
@@ -81,7 +83,7 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-text-field
             v-model="form.service_ref_location"
             label="Ponto de referência"
@@ -92,7 +94,7 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-text-field
             v-model="form.service_text"
             label="Observação"
@@ -103,11 +105,12 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-file-input
             filled
             label="Imagem 1"
-            prepend-icon="mdi-camera"
+            prepend-icon=""
+            append-icon="mdi-camera"
             :rules="obrigatory"
             v-model="form.img_detail1"
           ></v-file-input>
@@ -115,11 +118,12 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-file-input
             filled
             label="Imagem 2"
-            prepend-icon="mdi-camera"
+            prepend-icon=""
+            append-icon="mdi-camera"
             :rules="obrigatory"
             v-model="form.img_detail2"
           ></v-file-input>
@@ -127,18 +131,19 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <v-file-input
             filled
             label="Imagem 3"
-            prepend-icon="mdi-camera"
+            prepend-icon=""
+            append-icon="mdi-camera"
             v-model="form.img_detail3"
           ></v-file-input>
         </v-col>
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <div class="text-center">
             <v-btn class="ma-1" color="primary" @click="buttonCallSos()">
               <div>Solicitar SOS</div>
@@ -212,7 +217,7 @@
       </v-toolbar>
       <div>
         <v-row no-gutters>
-          <v-col cols="12" md="4">
+          <v-col cols="12 px-8">
             <GmapMap
               :center="center"
               :zoom="18"
@@ -229,7 +234,7 @@
         </v-row>
       </div>
       <v-row class="mt-1">
-        <v-col cols="12" md="4">
+        <v-col cols="12 px-8">
           <div class="text-center">
             <v-btn color="success" @click="buttonConfirmPosition()">
               Confirmar localização
@@ -245,7 +250,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { sosService } from "@/api/sos";
 import { ISosCallForm } from "@/types/sos";
-import { items } from "@/utils/sos_timeline";
+import { items } from "@/utils/sos";
 
 const form: ISosCallForm = {
   id: 0,
@@ -282,7 +287,7 @@ export default class Available extends Vue {
   mapping = false;
   cyclistPosition = { lat: 0.0, lng: 0.0 };
   imgLocDefault =
-    "https://cdn.pixabay.com/photo/2018/04/12/18/13/marker-3314279_960_720.png";
+    "https://www.nicepng.com/png/full/10-100907_location-black-black-location-icon-png.png";
   cardText = "Clique aqui para ativar sua localização";
 
   //mapa
@@ -390,5 +395,16 @@ export default class Available extends Vue {
     color: $main-dark-color;
     margin: 5px auto 0px 10px;
   }
+  .content-container {
+    margin-left: auto;
+    margin-top: 30px !important;
+    border-radius: 10px;
+    background: white;
+    max-width: 600px;
+  }
+}
+.title-content {
+  font-weight: 500 !important;
+  color: $main-dark-color;
 }
 </style>

@@ -39,6 +39,10 @@ export default class HelloWorld extends Vue {
 
 <style lang="scss">
 @import "@/scss/main.scss";
+#content-main {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
 #fake-menu {
   display: none;
   background-color: red;

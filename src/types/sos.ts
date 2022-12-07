@@ -1,6 +1,7 @@
 export interface IOrder {
   id: number;
   associate: number;
+  associate_name: string;
   service_bike: number;
   service_bike_model: string;
   service_bike_brand: string;

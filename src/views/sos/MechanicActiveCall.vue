@@ -2,7 +2,7 @@
   <v-form>
     <v-container
       v-if="mapping === false && haveOpenOrder === true"
-      class="content-container mt-4 mt-md-3 px-7"
+      class="content-container justify-center mt-4 mt-md-3 px-7"
     >
       <v-toolbar color="transparent" flat>
         <v-btn icon light @click.prevent="">
@@ -13,18 +13,19 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-row class="text-center">
-        <v-col cols="12" md="4">
+        <v-col cols="12">
           <v-hover v-slot="{ hover }">
             <v-card
               :class="{ 'on-hover': hover }"
-              :elevation="hover ? 12 : 2"
+              :elevation="hover ? 3 : 2"
               @click="mapping = !mapping"
             >
-              <div class="align-center">
+              <div class="align-center pt-4">
                 <v-img
+                  gradient="to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)"
                   :lazy-src="imgLocDefault"
-                  max-height="150"
-                  max-width="100%"
+                  height="100"
+                  contain
                   :src="imgLocDefault"
                 ></v-img>
               </div>
@@ -36,165 +37,152 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col col="12" md="4">
-          <v-card class="mx-auto" max-width="400" tile>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-subtitle>Ciclista:</v-list-item-subtitle>
-                <v-list-item-title>{{ associate_name }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-subtitle>Marca da bike:</v-list-item-subtitle>
-                <v-list-item-title>{{ bike_brand }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-subtitle>Modelo da bike:</v-list-item-subtitle>
-                <v-list-item-title>{{ bike_model }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-subtitle>Tipo de serviço:</v-list-item-subtitle>
-                <v-list-item-title> {{ service_name }} </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-subtitle>Obs.:</v-list-item-subtitle>
-                <v-list-item-title>{{ service_text }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-row justify="center">
-                  <v-btn
-                    class="white--text"
-                    color="primary"
-                    @click="overlay1 = !overlay1"
-                  >
-                    Imagem SOS 1
-                  </v-btn>
-                  <v-overlay z-index="2" :value="overlay1">
-                    <v-row no-gutters>
-                      <v-col cols="12" md="4">
-                        <v-img
-                          :lazy-src="img_detail1"
-                          max-height="500"
-                          max-width="400"
-                          :src="img_detail1"
-                        ></v-img>
-                      </v-col>
-                    </v-row>
-                    <v-row class="text-center">
-                      <v-col cols="12" md="4">
-                        <v-btn
-                          class="white--text"
-                          color="primary"
-                          @click="overlay1 = false"
-                        >
-                          Fechar imagem
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-overlay>
-                </v-row>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content>
-                <v-row justify="center">
-                  <v-btn
-                    class="white--text"
-                    color="primary"
-                    @click="overlay2 = !overlay2"
-                  >
-                    Imagem SOS 2
-                  </v-btn>
-                  <v-overlay z-index="1" :value="overlay2">
-                    <v-row no-gutters>
-                      <v-col cols="12" md="4">
-                        <v-img
-                          :lazy-src="img_detail2"
-                          max-height="500"
-                          max-width="400"
-                          :src="img_detail2"
-                        ></v-img>
-                      </v-col>
-                    </v-row>
-                    <v-row class="text-center">
-                      <v-col cols="12" md="4">
-                        <v-btn
-                          class="white--text"
-                          color="primary"
-                          @click="overlay2 = false"
-                        >
-                          Fechar imagem
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-overlay>
-                </v-row>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item v-if="haveImg3">
-              <v-list-item-content>
-                <v-row justify="center">
-                  <v-btn
-                    class="white--text"
-                    color="primary"
-                    @click="overlay3 = !overlay3"
-                  >
-                    Imagem SOS 3
-                  </v-btn>
-                  <v-overlay z-index="1" :value="overlay3">
-                    <v-row no-gutters>
-                      <v-col cols="12" md="4">
-                        <v-img
-                          :lazy-src="img_detail3"
-                          max-height="500"
-                          max-width="400"
-                          :src="img_detail3"
-                        ></v-img>
-                      </v-col>
-                    </v-row>
-                    <v-row class="text-center">
-                      <v-col cols="12" md="4">
-                        <v-btn
-                          class="white--text"
-                          color="primary"
-                          @click="overlay3 = false"
-                        >
-                          Fechar imagem
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-overlay>
-                </v-row>
-              </v-list-item-content>
-            </v-list-item>
-          </v-card>
+        <v-col col="12">
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-subtitle>Ciclista:</v-list-item-subtitle>
+              <v-list-item-title>{{ associate_name }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-subtitle>Marca da bike:</v-list-item-subtitle>
+              <v-list-item-title>{{ bike_brand }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-subtitle>Modelo da bike:</v-list-item-subtitle>
+              <v-list-item-title>{{ bike_model }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-subtitle>Tipo de serviço:</v-list-item-subtitle>
+              <v-list-item-title> {{ service_name }} </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-subtitle>Obs.:</v-list-item-subtitle>
+              <v-list-item-title>{{ service_text }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="imgs">
+            <v-list-item-content>
+              <v-row>
+                <v-btn text color="primary" @click="overlay1 = !overlay1">
+                  Imagem SOS 1
+                </v-btn>
+                <v-overlay z-index="2" :value="overlay1">
+                  <v-row no-gutters>
+                    <v-col cols="12">
+                      <v-img
+                        :lazy-src="img_detail1"
+                        max-height="500"
+                        max-width="400"
+                        :src="img_detail1"
+                      ></v-img>
+                    </v-col>
+                  </v-row>
+                  <v-row class="text-center">
+                    <v-col cols="12">
+                      <v-btn
+                        class="white--text"
+                        color="primary"
+                        @click="overlay1 = false"
+                      >
+                        Fechar imagem
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-overlay>
+              </v-row>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="imgs">
+            <v-list-item-content>
+              <v-row>
+                <v-btn text color="primary" @click="overlay2 = !overlay2">
+                  Imagem SOS 2
+                </v-btn>
+                <v-overlay z-index="1" :value="overlay2">
+                  <v-row no-gutters>
+                    <v-col cols="12">
+                      <v-img
+                        :lazy-src="img_detail2"
+                        max-height="500"
+                        max-width="400"
+                        :src="img_detail2"
+                      ></v-img>
+                    </v-col>
+                  </v-row>
+                  <v-row class="text-center">
+                    <v-col cols="12">
+                      <v-btn text color="primary" @click="overlay2 = false">
+                        Fechar imagem
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-overlay>
+              </v-row>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item v-if="haveImg3" class="imgs">
+            <v-list-item-content>
+              <v-row>
+                <v-btn
+                  class="white--text text"
+                  color="primary"
+                  @click="overlay3 = !overlay3"
+                >
+                  Imagem SOS 3
+                </v-btn>
+                <v-overlay z-index="1" :value="overlay3">
+                  <v-row no-gutters>
+                    <v-col cols="12">
+                      <v-img
+                        :lazy-src="img_detail3"
+                        max-height="500"
+                        max-width="400"
+                        :src="img_detail3"
+                      ></v-img>
+                    </v-col>
+                  </v-row>
+                  <v-row class="text-center">
+                    <v-col cols="12">
+                      <v-btn
+                        class="white--text"
+                        color="primary"
+                        @click="overlay3 = false"
+                      >
+                        Fechar imagem
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-overlay>
+              </v-row>
+            </v-list-item-content>
+          </v-list-item>
         </v-col>
       </v-row>
-      <v-row class="text-center">
-        <v-col cols="12" md="4" v-if="callStatus !== 'finished'">
+      <v-row>
+        <v-col
+          cols="12"
+          v-if="callStatus !== 'finished'"
+          justify="space-between"
+        >
           <v-btn color="success" align="right" @click.stop="dialog = true">
-            <div v-if="callStatus === 'travel'">Cheguei no local</div>
-            <div v-if="callStatus === 'repair'">Finalizar</div>
+            <div v-if="callStatus === order_status_choices.travel">
+              Cheguei no local
+            </div>
+            <div v-if="callStatus === order_status_choices.repair">
+              Finalizar
+            </div>
           </v-btn>
           <v-btn color="primary" class="ml-5" @click="chat()"> Chat </v-btn>
         </v-col>
-        <v-col cols="12" md="4" v-else-if="callStatus === 'finished'">
+        <v-col cols="12" v-else-if="callStatus === 'finished'">
           <v-btn color="primary" class="ml-5" @click="backListCall()">
             <v-icon dark left> mdi-arrow-left </v-icon>
             Voltar
@@ -250,7 +238,7 @@
       </v-toolbar>
       <div v-if="dataMapLoaded">
         <v-row no-gutters>
-          <v-col cols="12" md="4">
+          <v-col cols="12">
             <iframe
               width="100%"
               height="450"
@@ -270,12 +258,12 @@
       v-if="haveOpenOrder === false"
     >
       <v-row class="text-center p-16">
-        <v-col cols="12" md="4">
+        <v-col cols="12">
           <div>Você não possui chamado aberto.</div>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12">
           <v-btn color="primary" class="ml-5" @click="backListCall()">
             <v-icon dark left> mdi-arrow-left </v-icon>
             Voltar
@@ -289,37 +277,20 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import EventCard from "@/components/shared/events/EventCard.vue";
-import { IEvent } from "@/types/events";
 import { sosService } from "@/api/sos";
 import { ISosCallForm } from "@/types/sos";
-import { items, getLocImage } from "@/utils/sos_timeline";
-
-const form: ISosCallForm = {
-  id: 0,
-  associate_cpf: "",
-  associate_name: "",
-  service_bike: undefined,
-  service_bike_model: "",
-  service_bike_brand: "",
-  service_type: 1,
-  service_text: "",
-  service_bike_lane: 4,
-  service_ref_location: "",
-  img_detail1: undefined,
-  img_detail2: undefined,
-  img_detail3: undefined,
-  associated_coordinates: "",
-  service_address: "",
-};
+import { items, getLocImage, order_status_choices } from "@/utils/sos";
 
 @Component({
   components: { EventCard },
 })
 export default class Available extends Vue {
+  order_status_choices = order_status_choices;
+
   mapping = false;
   haveOpenOrder = false;
   imgLocDefault =
-    "https://cdn.pixabay.com/photo/2018/04/12/18/13/marker-3314279_960_720.png";
+    "https://www.nicepng.com/png/full/10-100907_location-black-black-location-icon-png.png";
   order_id = 0;
   associate_name = "";
   bike_model = "";
@@ -350,13 +321,16 @@ export default class Available extends Vue {
   mode = "bicycling";
 
   confirmDialog(confirm: boolean) {
-    if (confirm == true && this.callStatus == "travel") {
+    if (confirm == true && this.callStatus == order_status_choices.travel) {
       this.dialog = false;
-      this.updateStatus("repair");
-      this.callStatus = "repair";
-    } else if (confirm == true && this.callStatus == "repair") {
-      this.callStatus = "finished";
-      this.updateStatus("finished");
+      this.updateStatus(order_status_choices.repair);
+      this.callStatus = order_status_choices.repair;
+    } else if (
+      confirm == true &&
+      this.callStatus == order_status_choices.repair
+    ) {
+      this.callStatus = order_status_choices.finished;
+      this.updateStatus(order_status_choices.finished);
     } else {
       this.dialog = false;
     }
@@ -387,7 +361,8 @@ export default class Available extends Vue {
     this.bike_model = this.order_data.service_bike_model;
     this.service_type = this.order_data.service_type;
     this.service_text = this.order_data.service_text;
-    this.service_name = items[this.service_type - 1].name;
+    this.service_name =
+      items.find((x) => x.id == this.service_type)?.name || "";
     this.associated_coordinates = this.order_data.associated_coordinates;
     this.img_detail1 = this.order_data.img_detail1;
     this.img_detail2 = this.order_data.img_detail2;
@@ -435,7 +410,6 @@ export default class Available extends Vue {
   getLocation() {
     // navigator.geolocation.watchPosition(this.success, this.error, this.options);
     this.dataMapLoaded = true;
-    console.log("teste");
   }
 
   created() {
@@ -458,5 +432,16 @@ export default class Available extends Vue {
   .center-vertically {
     top: 50%;
   }
+  .content-container {
+    margin-left: auto;
+    margin-top: 30px !important;
+    border-radius: 10px;
+    background: white;
+    max-width: 600px;
+  }
+}
+.imgs {
+  text-decoration: underline;
+  text-decoration-color: $main-dark-color;
 }
 </style>
