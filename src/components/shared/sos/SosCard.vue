@@ -86,6 +86,7 @@ interface ICardData {
   status_text: string;
   coordinates: string;
   rating: number;
+  date: string;
 }
 
 @Component
@@ -93,7 +94,7 @@ export default class SosCard extends BaseComponent {
   @Prop() data!: ICardData;
 
   get_date(): string {
-    return formatDate("2022-10-03 19:35:35.993822");
+    return formatDate(this.data.date);
   }
 }
 </script>

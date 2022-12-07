@@ -26,9 +26,7 @@ import SosCard from "@/components/shared/sos/SosCard.vue";
 import { sosService } from "@/api/sos";
 import { IOrder } from "@/types/sos";
 
-@Component({
-  components: { SosCard },
-})
+@Component
 export default class Available extends Vue {
   orders = {
     id: 1,
