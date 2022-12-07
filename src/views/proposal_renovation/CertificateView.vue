@@ -19,8 +19,7 @@
                   class="view-button rounded-0 rounded-br-xl elevation-0"
                   text
                   color="primary"
-                  target="_blank"
-                  :href="`/renovation/summary-certificate/${certificate.id}`"
+                  :to="`/renovation/summary-certificate/${certificate.id}/?has_new_coverage=false`"
                 >
                   Visualizar
                 </v-btn>
