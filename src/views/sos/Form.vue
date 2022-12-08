@@ -42,9 +42,10 @@
       <v-row no-gutters>
         <v-col cols="12 px-8">
           <v-text-field
-            v-model="form.associate_cpf"
+            v-model="associate_cpf"
             label="CPF"
             v-mask="'###.###.###-##'"
+            :readonly="haveCPF"
             :rules="obrigatory.concat([(v) => isValidCPF(v) || 'CPF inválido'])"
             required
           ></v-text-field>
@@ -203,6 +204,7 @@ import { ISosCallForm } from "@/types/sos";
 import { items } from "@/utils/sos";
 import { isValidCPF } from "@/utils/utils";
 import { IOrder } from "@/types/sos";
+import { UserDataService } from "@/api/userData";
 
 const form: ISosCallForm = {
   id: 0,
@@ -224,10 +226,13 @@ const form: ISosCallForm = {
   service_status: 0,
 };
 
+const userDataService = new UserDataService();
+
 @Component({
   components: {},
 })
 export default class Available extends BaseComponent {
+  associate_cpf = "";
   order_open = {} as IOrder;
   items = items;
   formSent = false;
@@ -235,6 +240,7 @@ export default class Available extends BaseComponent {
   form = form;
   obrigatory = [(v: string) => !!v || "Campo obrigatório"];
   apiKey = "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ";
+  // apiKey = "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88";
   address: any;
   locationConfirmed = false;
   mapping = false;
@@ -243,7 +249,8 @@ export default class Available extends BaseComponent {
     "https://www.nicepng.com/png/full/10-100907_location-black-black-location-icon-png.png";
   cardText = "Clique aqui para ativar sua localização";
   img_updated = false;
-
+  profile = {} as any;
+  haveCPF = false;
   isValidCPF = isValidCPF;
 
   //mapa
@@ -354,7 +361,7 @@ export default class Available extends BaseComponent {
   }
 
   backButton() {
-    this.$router.push({ path: "/sos/" });
+    this.$router.push({ path: "/sos/choose-lane" });
   }
 
   async getOpenOrder() {
@@ -367,11 +374,28 @@ export default class Available extends BaseComponent {
     }
   }
 
+  async getCPF() {
+    const response = await userDataService.getUserProfile();
+    if (!response.error) {
+      this.profile = response;
+      this.associate_cpf = this.profile.personal_info?.cpf;
+      if (this.associate_cpf) {
+        this.haveCPF = true;
+      }
+    } else {
+      return;
+    }
+  }
+
   mapClick() {
     this.mapping = true;
-    this.getOpenOrder();
     this.getLocation();
     form.service_bike_lane = Number(this.$route.query.lane_id);
+  }
+
+  created() {
+    this.getOpenOrder();
+    this.getCPF();
   }
 
   get center() {

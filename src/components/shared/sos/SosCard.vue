@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card elevation="0">
-      <span class="pl-3 grey--text text--darken-4">
+      <span class="pl-3 grey--text text--darken-3">
         Chamado #{{ data.id }}
       </span>
       <v-responsive :aspect-ratio="16 / 8">
@@ -21,43 +21,49 @@
         <v-col class="ma-0 pa-0">
           <v-row class="ma-0 pa-0">
             <v-col cols="8" class="ma-0 pa-0">
-              <span
-                class="text-body-2 break mx-auto"
-                v-text="data.mechanic_name"
-              />
+              <span class="text-body-2 break mx-auto">{{
+                user_type == 98
+                  ? `Mecânico: ${data.mechanic_name}`
+                  : `Ciclista: ${data.associate_name}`
+              }}</span>
             </v-col>
-            <v-col class="ma-0 pa-0" v-if="data.rating_service">
+          </v-row>
+          <v-row class="ma-0 pa-0">
+            <v-col class="ma-0 pa-0" v-if="parseFloat(data.rating_service)">
               <v-rating
                 background-color="grey lighten-2"
                 color="warning"
                 length="5"
                 readonly
                 size="18"
-                :value="data.rating_service"
+                :value="parseFloat(data.rating_service)"
                 half-increments
               >
               </v-rating>
             </v-col>
+            <v-col class="ma-0 pa-0" v-else>
+              <span class="text-body-2" v-text="'Não avaliado'"
+            /></v-col>
           </v-row>
           <v-divider />
           <v-row class="ma-0 pa-0" align="center">
-            <v-col cols="6" class="ma-0 pa-0">
-              <span
-                class="text--center text-body-2"
-                color="primary"
-                v-text="date"
-              />
+            <v-col cols="12" class="ma-0 pa-0">
+              <span class="text--center text-body-2" color="primary"
+                >{{ status_date_text }} em: {{ date }}</span
+              >
             </v-col>
+          </v-row>
+          <v-row class="ma-0 pa-0" align="center">
             <v-col cols="9" class="ma-0 pa-0">
               <span
                 class="text-body-2 break icon-registered"
-                v-text="data.service_ref_location"
+                v-text="service_name"
               />
             </v-col>
             <v-col class="ma-0 pa-0">
               <span
-                class="text-body-2 mx-auto"
-                color="green"
+                class="text-body-2"
+                :class="status_color"
                 v-text="status_name"
               />
             </v-col>
@@ -74,10 +80,13 @@ import { formatDate } from "@/utils/utils";
 import { BaseComponent } from "@/utils/component";
 import { items, getLocImage, order_status_choices } from "@/utils/sos";
 import { ISosCallForm } from "@/types/sos";
+import { user_types } from "@/utils/sos";
+import { UserDataService } from "@/api/userData";
 
 interface ICardData {
   id: number;
   associate: number;
+  associate_name: string;
   service_bike: number;
   service_bike_model: string;
   service_bike_brand: string;
@@ -90,14 +99,22 @@ interface ICardData {
   service_protocol: string;
   status_text: string;
   associated_coordinates: string;
-  rating_service: number;
+  rating_service: string;
   mechanic_name: string;
-  created_at: string;
+  finish_date: string;
 }
+
+const userDataService = new UserDataService();
 
 @Component
 export default class SosCard extends BaseComponent {
   @Prop() data!: ICardData;
+
+  status_color = "";
+  status_date_text = "";
+  profile = {} as any;
+  user_types = user_types;
+  user_type = -1;
 
   get service_name(): string {
     return items.find((x) => x.id == this.data.service_type)?.name || "";
@@ -105,11 +122,29 @@ export default class SosCard extends BaseComponent {
 
   get status_name(): string {
     if (this.data.service_status == 4) {
+      this.status_color = "green--text";
+      this.status_date_text = "Finalizado";
       return "Finalizado";
     } else if (this.data.service_status == 5) {
+      this.status_color = "red--text";
+      this.status_date_text = "Cancelado";
       return "Cancelado";
     } else {
-      return "";
+      this.status_color = "";
+      return "Pendente";
+    }
+  }
+
+  async getProfile() {
+    const response = await userDataService.getUserProfile();
+    if (!response.error) {
+      this.profile = response;
+      this.user_type =
+        this.data.associate == this.profile.personal_info?.user
+          ? this.user_types.cyclist
+          : this.user_types.mechanic;
+    } else {
+      return;
     }
   }
 
@@ -119,7 +154,11 @@ export default class SosCard extends BaseComponent {
   }
 
   get date(): string {
-    return formatDate(this.data.created_at);
+    return formatDate(this.data.finish_date);
+  }
+
+  created() {
+    this.getProfile();
   }
 }
 </script>
