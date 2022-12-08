@@ -35,6 +35,11 @@ class SOSService extends APIAuthBase {
     return await this.request({ url, method: "GET" });
   }
 
+  async hasNewMessages(order_id: number) {
+    const url = `api/sos/message/has_new_messages/?order_id=${order_id}&force_no_cache=${Math.random()}`;
+    return await this.request({ url, method: "GET" });
+  }
+
   async getAddress(lat: number, lng: number, apiKey: string) {
     return fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
@@ -63,7 +68,6 @@ class SOSService extends APIAuthBase {
     const data = {
       ...dataStatus,
     };
-    console.log(data);
     return await this.request({
       url,
       method: "PUT",
@@ -72,6 +76,11 @@ class SOSService extends APIAuthBase {
         ...this.config.headers,
       },
     });
+  }
+
+  async getLanes() {
+    const url = `api/sos/sos_lane/`;
+    return await this.request({ url, method: "GET" });
   }
 }
 

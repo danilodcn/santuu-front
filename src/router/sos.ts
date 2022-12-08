@@ -27,9 +27,9 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/sos/MechanicActiveCall.vue"),
   },
   {
-    path: "/sos/teste",
-    name: "teste",
-    component: () => import("@/views/sos/TesteView.vue"),
+    path: "/sos/choose-lane",
+    name: "chooseLane",
+    component: () => import("@/views/sos/ChooseLaneView.vue"),
   },
 ];
 

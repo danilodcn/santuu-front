@@ -19,6 +19,18 @@ export interface IOrder {
   img_detail3: undefined;
 }
 
+export interface ILane {
+  id?: number;
+  lane_name: string;
+  description: string;
+  active: boolean;
+  state: string;
+  city: string;
+  url_map_location: string;
+  hours: any;
+  url_card?: string;
+}
+
 export interface ISosCallForm {
   id: number;
   associate_cpf: string;

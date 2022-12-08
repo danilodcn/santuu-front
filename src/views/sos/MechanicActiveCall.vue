@@ -13,7 +13,7 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-row class="text-center">
-        <v-col cols="12">
+        <v-col cols="12" class="px-6">
           <v-hover v-slot="{ hover }">
             <v-card
               :class="{ 'on-hover': hover }"
@@ -184,10 +184,11 @@
       <v-row>
         <v-col
           cols="12"
+          class="px-6"
           v-if="callStatus !== 'finished'"
           justify="space-between"
         >
-          <v-btn color="success" align="right" @click.stop="dialog = true">
+          <v-btn color="primary" align="right" @click.stop="dialog = true">
             <div>
               {{ buttonStatusText }}
             </div>
@@ -198,7 +199,16 @@
               Finalizar
             </div> -->
           </v-btn>
-          <v-btn color="primary" class="ml-5" @click="chat()"> Chat </v-btn>
+          <v-badge
+            color="white"
+            dot
+            offset-x="12"
+            offset-y="12"
+            :value="has_new_messages"
+            class="msg-blink"
+          >
+            <v-btn color="primary" class="ml-5" @click="chat()"> Chat </v-btn>
+          </v-badge>
         </v-col>
         <v-col cols="12" v-else-if="callStatus === 'finished'">
           <v-btn color="primary" class="ml-5" @click="backListCall()">
@@ -306,6 +316,8 @@ import { items, getLocImage, order_status_choices } from "@/utils/sos";
 })
 export default class Available extends BaseComponent {
   order_status_choices = order_status_choices;
+  has_new_messages = false;
+
   mapping = false;
   haveOpenOrder = false;
   imgLocDefault =
@@ -369,7 +381,7 @@ export default class Available extends BaseComponent {
     if (this.order_data.id) {
       this.haveOpenOrder = true;
     } else {
-      console.log("não há chamado aberto");
+      console.log("Não há chamado aberto");
     }
     this.service_type = this.order_data.service_type;
     this.service_name =
@@ -440,10 +452,20 @@ export default class Available extends BaseComponent {
     this.dataMapLoaded = true;
   }
 
+  async hasNewMsg() {
+    const response = await sosService.hasNewMessages(this.order_id);
+    this.has_new_messages = response.has_new_messages;
+  }
+
+  interval!: any;
   created() {
+    this.interval = setInterval(this.hasNewMsg, 5000);
     this.getOpenOrder();
     console.log(this.order_data.service_status);
     this.getLocation();
+  }
+  beforeDestroy() {
+    clearInterval(this.interval);
   }
 }
 </script>
@@ -472,5 +494,23 @@ export default class Available extends BaseComponent {
 .imgs {
   text-decoration: underline;
   text-decoration-color: $main-dark-color;
+}
+@keyframes msg-blinker {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.msg-blink .v-badge__badge {
+  -webkit-animation-name: msg-blinker;
+  animation-name: msg-blinker;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+  animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+  -webkit-animation-duration: 1.7s;
+  animation-duration: 1.7s;
 }
 </style>

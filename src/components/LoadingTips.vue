@@ -57,6 +57,9 @@ export default class LoadingTips extends Vue {
   created() {
     this.interval = setInterval(this.nextTip, this.time_showing_ms);
   }
+  beforeDestroy() {
+    clearInterval(this.interval);
+  }
 }
 </script>
 

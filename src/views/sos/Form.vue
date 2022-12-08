@@ -202,6 +202,7 @@ import { sosService } from "@/api/sos";
 import { ISosCallForm } from "@/types/sos";
 import { items } from "@/utils/sos";
 import { isValidCPF } from "@/utils/utils";
+import { IOrder } from "@/types/sos";
 
 const form: ISosCallForm = {
   id: 0,
@@ -212,7 +213,7 @@ const form: ISosCallForm = {
   service_bike_brand: "",
   service_type: 0,
   service_text: "",
-  service_bike_lane: 4,
+  service_bike_lane: -1,
   service_ref_location: "",
   img_detail1: undefined,
   img_detail2: undefined,
@@ -227,6 +228,7 @@ const form: ISosCallForm = {
   components: {},
 })
 export default class Available extends BaseComponent {
+  order_open = {} as IOrder;
   items = items;
   formSent = false;
   missingDataDialog = false;
@@ -317,11 +319,11 @@ export default class Available extends BaseComponent {
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
       this.changeLoading(true);
       const response = await sosService.submitSosForm(this.form);
+      this.changeLoading(false);
       if (response.error) {
         this.fail(response);
         return;
       } else {
-        this.changeLoading(false);
         this.$router.push({ path: "/sos/waiting/" });
         return response;
       }
@@ -355,9 +357,21 @@ export default class Available extends BaseComponent {
     this.$router.push({ path: "/sos/" });
   }
 
+  async getOpenOrder() {
+    const response = await sosService.getOpenOrder();
+    if (!response.error) {
+      this.order_open = response;
+      this.$router.push({ path: "/sos/waiting/" });
+    } else {
+      return;
+    }
+  }
+
   mapClick() {
     this.mapping = true;
+    this.getOpenOrder();
     this.getLocation();
+    form.service_bike_lane = Number(this.$route.query.lane_id);
   }
 
   get center() {
