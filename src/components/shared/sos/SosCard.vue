@@ -1,10 +1,13 @@
 <template>
   <v-card>
     <v-card elevation="0">
+      <span class="pl-3 grey--text text--darken-4">
+        Chamado #{{ data.id }}
+      </span>
       <v-responsive :aspect-ratio="16 / 8">
-        <v-col>
+        <v-col class="pt-0 pb-0">
           <iframe
-            :src="`https://maps.google.com/maps?q=${data.coordinates}&amp;hl=ptbr;z=16.25&amp;output=embed`"
+            :src="`https://maps.google.com/maps?q=${coordinates}&amp;hl=ptbr;z=16.25&amp;output=embed`"
             style="border: 0"
             allowfullscreen=""
             loading="lazy"
@@ -14,7 +17,7 @@
           ></iframe>
         </v-col>
       </v-responsive>
-      <v-card-title>
+      <v-card-title class="pt-0">
         <v-col class="ma-0 pa-0">
           <v-row class="ma-0 pa-0">
             <v-col cols="8" class="ma-0 pa-0">
@@ -23,14 +26,14 @@
                 v-text="data.mechanic_name"
               />
             </v-col>
-            <v-col class="ma-0 pa-0" v-if="data.rating">
+            <v-col class="ma-0 pa-0" v-if="data.rating_service">
               <v-rating
                 background-color="grey lighten-2"
                 color="warning"
                 length="5"
                 readonly
                 size="18"
-                :value="data.rating"
+                :value="data.rating_service"
                 half-increments
               >
               </v-rating>
@@ -38,24 +41,24 @@
           </v-row>
           <v-divider />
           <v-row class="ma-0 pa-0" align="center">
-            <v-col cols="4" class="ma-0 pa-0">
+            <v-col cols="6" class="ma-0 pa-0">
               <span
                 class="text--center text-body-2"
                 color="primary"
-                v-text="get_date()"
+                v-text="date"
               />
             </v-col>
-            <v-col cols="10" class="ma-0 pa-0">
+            <v-col cols="9" class="ma-0 pa-0">
               <span
-                class="text-body-2 icon-registered"
+                class="text-body-2 break icon-registered"
                 v-text="data.service_ref_location"
               />
             </v-col>
             <v-col class="ma-0 pa-0">
               <span
-                class="text-body-2 break mx-auto"
-                color=""
-                v-text="data.service_status"
+                class="text-body-2 mx-auto"
+                color="green"
+                v-text="status_name"
               />
             </v-col>
           </v-row>
@@ -69,6 +72,8 @@
 import { Component, Prop } from "vue-property-decorator";
 import { formatDate } from "@/utils/utils";
 import { BaseComponent } from "@/utils/component";
+import { items, getLocImage, order_status_choices } from "@/utils/sos";
+import { ISosCallForm } from "@/types/sos";
 
 interface ICardData {
   id: number;
@@ -84,18 +89,37 @@ interface ICardData {
   service_status: number;
   service_protocol: string;
   status_text: string;
-  coordinates: string;
-  rating: number;
+  associated_coordinates: string;
+  rating_service: number;
   mechanic_name: string;
-  date: string;
+  created_at: string;
 }
 
 @Component
 export default class SosCard extends BaseComponent {
   @Prop() data!: ICardData;
 
-  get_date(): string {
-    return formatDate(this.data.date);
+  get service_name(): string {
+    return items.find((x) => x.id == this.data.service_type)?.name || "";
+  }
+
+  get status_name(): string {
+    if (this.data.service_status == 4) {
+      return "Finalizado";
+    } else if (this.data.service_status == 5) {
+      return "Cancelado";
+    } else {
+      return "";
+    }
+  }
+
+  get coordinates(): string {
+    let coords = JSON.parse(this.data.associated_coordinates);
+    return `${coords.lat},${coords.lng}`;
+  }
+
+  get date(): string {
+    return formatDate(this.data.created_at);
   }
 }
 </script>

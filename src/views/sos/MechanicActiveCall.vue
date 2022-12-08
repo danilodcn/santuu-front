@@ -5,7 +5,7 @@
       class="content-container justify-center mt-4 mt-md-3 px-7"
     >
       <v-toolbar color="transparent" flat>
-        <v-btn icon light @click.prevent="">
+        <v-btn icon light @click="backButton()">
           <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
         </v-btn>
         <v-toolbar-title class="grey--text text--darken-4">
@@ -20,16 +20,20 @@
               :elevation="hover ? 3 : 2"
               @click="mapping = !mapping"
             >
-              <div class="align-center pt-4">
+              <div :class="!img_updated ? 'align-center pt-4' : 'align-center'">
                 <v-img
-                  gradient="to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)"
+                  :gradient="
+                    !img_updated
+                      ? 'to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)'
+                      : ''
+                  "
                   :lazy-src="imgLocDefault"
                   height="150"
                   :src="imgLocDefault"
                 ></v-img>
               </div>
               <v-card-text class="mx-0">
-                {{ service_address }}
+                {{ order_data.service_address }}
               </v-card-text>
             </v-card>
           </v-hover>
@@ -40,19 +44,25 @@
           <v-list-item>
             <v-list-item-content>
               <v-list-item-subtitle>Ciclista:</v-list-item-subtitle>
-              <v-list-item-title>{{ associate_name }}</v-list-item-title>
+              <v-list-item-title>{{
+                order_data.associate_name
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
             <v-list-item-content>
               <v-list-item-subtitle>Marca da bike:</v-list-item-subtitle>
-              <v-list-item-title>{{ bike_brand }}</v-list-item-title>
+              <v-list-item-title>{{
+                order_data.service_bike_brand
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
             <v-list-item-content>
               <v-list-item-subtitle>Modelo da bike:</v-list-item-subtitle>
-              <v-list-item-title>{{ bike_model }}</v-list-item-title>
+              <v-list-item-title>{{
+                order_data.service_bike_model
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
@@ -64,7 +74,9 @@
           <v-list-item>
             <v-list-item-content>
               <v-list-item-subtitle>Obs.:</v-list-item-subtitle>
-              <v-list-item-title>{{ service_text }}</v-list-item-title>
+              <v-list-item-title>{{
+                order_data.service_text
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item class="imgs">
@@ -77,10 +89,10 @@
                   <v-row no-gutters>
                     <v-col cols="12">
                       <v-img
-                        :lazy-src="img_detail1"
+                        :lazy-src="order_data.img_detail1"
                         max-height="500"
                         max-width="400"
-                        :src="img_detail1"
+                        :src="order_data.img_detail1"
                       ></v-img>
                     </v-col>
                   </v-row>
@@ -109,16 +121,20 @@
                   <v-row no-gutters>
                     <v-col cols="12">
                       <v-img
-                        :lazy-src="img_detail2"
+                        :lazy-src="order_data.img_detail2"
                         max-height="500"
                         max-width="400"
-                        :src="img_detail2"
+                        :src="order_data.img_detail2"
                       ></v-img>
                     </v-col>
                   </v-row>
                   <v-row class="text-center">
                     <v-col cols="12">
-                      <v-btn text color="primary" @click="overlay2 = false">
+                      <v-btn
+                        color="primary"
+                        @click="overlay2 = false"
+                        class="white--text"
+                      >
                         Fechar imagem
                       </v-btn>
                     </v-col>
@@ -141,10 +157,10 @@
                   <v-row no-gutters>
                     <v-col cols="12">
                       <v-img
-                        :lazy-src="img_detail3"
+                        :lazy-src="order_data.img_detail3"
                         max-height="500"
                         max-width="400"
-                        :src="img_detail3"
+                        :src="order_data.img_detail3"
                       ></v-img>
                     </v-col>
                   </v-row>
@@ -172,12 +188,15 @@
           justify="space-between"
         >
           <v-btn color="success" align="right" @click.stop="dialog = true">
-            <div v-if="callStatus === order_status_choices.travel">
+            <div>
+              {{ buttonStatusText }}
+            </div>
+            <!-- <div v-if="callStatus === order_status_choices.travel">
               Cheguei no local
             </div>
             <div v-if="callStatus === order_status_choices.repair">
               Finalizar
-            </div>
+            </div> -->
           </v-btn>
           <v-btn color="primary" class="ml-5" @click="chat()"> Chat </v-btn>
         </v-col>
@@ -276,6 +295,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { BaseComponent } from "@/utils/component";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import { sosService } from "@/api/sos";
 import { ISosCallForm } from "@/types/sos";
@@ -284,33 +304,23 @@ import { items, getLocImage, order_status_choices } from "@/utils/sos";
 @Component({
   components: { EventCard },
 })
-export default class Available extends Vue {
+export default class Available extends BaseComponent {
   order_status_choices = order_status_choices;
-
   mapping = false;
   haveOpenOrder = false;
   imgLocDefault =
     "https://www.nicepng.com/png/full/10-100907_location-black-black-location-icon-png.png";
-  order_id = 0;
-  associate_name = "";
-  bike_model = "";
-  bike_brand = "";
+  img_updated = false;
   cpf = "000.000.000-00";
-  reference_point = "";
   service_name = "";
   service_type = 1;
-  service_text = "";
-  service_address = "";
-  img_detail1: any = "";
-  img_detail2: any = "";
-  img_detail3: any = "";
   haveImg3 = false;
-  associated_coordinates = "";
   cyclistPosition = { lat: 0.0, lng: 0.0 };
   dialog = false;
   callStatus = "travel";
   order_data = {} as ISosCallForm;
   dataMapLoaded = false;
+  img_detail3: any = "";
   overlay1 = false;
   overlay2 = false;
   overlay3 = false;
@@ -319,11 +329,13 @@ export default class Available extends Vue {
   origin = "0.0, 0.0";
   destination = "0.0, 0.0";
   mode = "bicycling";
+  buttonStatusText = "";
 
   confirmDialog(confirm: boolean) {
     if (confirm == true && this.callStatus == order_status_choices.travel) {
       this.dialog = false;
       this.updateStatus(order_status_choices.repair);
+      this.get_button_status_text();
       this.callStatus = order_status_choices.repair;
     } else if (
       confirm == true &&
@@ -331,6 +343,7 @@ export default class Available extends Vue {
     ) {
       this.callStatus = order_status_choices.finished;
       this.updateStatus(order_status_choices.finished);
+      this.get_button_status_text();
     } else {
       this.dialog = false;
     }
@@ -340,11 +353,15 @@ export default class Available extends Vue {
     this.cyclistPosition = JSON.parse(
       `${this.order_data.associated_coordinates}`
     );
+    let imgAux = this.imgLocDefault;
     this.imgLocDefault = getLocImage(
       this.cyclistPosition.lat,
       this.cyclistPosition.lng,
       this.apiKey
     );
+    if (this.imgLocDefault != imgAux) {
+      this.img_updated = true;
+    }
   }
 
   async getOpenOrder() {
@@ -354,28 +371,40 @@ export default class Available extends Vue {
     } else {
       console.log("não há chamado aberto");
     }
-    this.order_id = this.order_data.id;
-    this.service_address = this.order_data.service_address;
-    this.associate_name = this.order_data.associate_name;
-    this.bike_brand = this.order_data.service_bike_brand;
-    this.bike_model = this.order_data.service_bike_model;
     this.service_type = this.order_data.service_type;
-    this.service_text = this.order_data.service_text;
     this.service_name =
       items.find((x) => x.id == this.service_type)?.name || "";
-    this.associated_coordinates = this.order_data.associated_coordinates;
-    this.img_detail1 = this.order_data.img_detail1;
-    this.img_detail2 = this.order_data.img_detail2;
-    this.img_detail3 = this.order_data.img_detail3;
     if (this.img_detail3 != "") {
       this.haveImg3 = false;
     }
     this.LocImage();
+    this.get_destination();
+    this.get_button_status_text();
+  }
+
+  get_destination(): void {
+    let coords = JSON.parse(this.order_data.associated_coordinates);
+    this.destination = `${coords.lat},${coords.lng}`;
+  }
+
+  backButton() {
+    this.$router.push({ path: "/sos/" });
+  }
+
+  get_button_status_text() {
+    let status = this.order_data.service_status;
+    if (status == 2) {
+      this.buttonStatusText = "Cheguei no local";
+    } else if (status == 3) {
+      this.buttonStatusText = "Finalizar";
+    } else {
+      return "Finalizado";
+    }
   }
 
   async updateStatus(nextStatus: string) {
     await sosService.updateStatus({
-      order_id: this.order_id,
+      order_id: this.order_data.id,
       status: nextStatus,
     });
   }
@@ -399,7 +428,6 @@ export default class Available extends Vue {
   // eslint-disable-next-line
   success(position: GeolocationPosition) {
     this.coords = position.coords;
-    console.log(this.coords.latitude);
     this.origin = `${this.coords.latitude},${this.coords.longitude}`;
   }
   // eslint-disable-next-line
@@ -414,6 +442,7 @@ export default class Available extends Vue {
 
   created() {
     this.getOpenOrder();
+    console.log(this.order_data.service_status);
     this.getLocation();
   }
 }

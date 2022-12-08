@@ -5,7 +5,7 @@
       class="content-container mt-4 mt-md-3 px-7"
     >
       <v-toolbar color="transparent" flat>
-        <v-btn icon light @click="backListCall()">
+        <v-btn icon light @click="backButton()">
           <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
         </v-btn>
         <v-toolbar-title class="grey--text text--darken-4">
@@ -16,15 +16,18 @@
         <v-col cols="12 px-8">
           <v-hover v-slot="{ hover }">
             <v-card
-              class="pt-4 mb-8"
-              :class="{ 'on-hover': hover }"
+              :class="!img_updated ? 'pt-4 mb-8' : 'mb-8'"
               :elevation="hover ? 3 : 2"
-              @click="mapping = !mapping"
+              @click="mapClick()"
             >
               <v-img
-                gradient="to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)"
+                :gradient="
+                  !img_updated
+                    ? 'to top right, rgba(255,255,255,.6), rgba(255,255,255,.8)'
+                    : ''
+                "
                 :lazy-src="imgLocDefault"
-                :height="!img_updated ? 100 : 150"
+                :height="!img_updated ? 100 : 180"
                 :contain="!img_updated"
                 :src="imgLocDefault"
               ></v-img>
@@ -150,7 +153,7 @@
       </v-row>
     </v-container>
     <v-container
-      v-show="mapping === true"
+      v-if="mapping === true"
       class="content-container mt-4 mt-md-3 px-7"
     >
       <v-toolbar color="transparent" flat>
@@ -166,7 +169,7 @@
           <v-col cols="12 px-8">
             <GmapMap
               :center="center"
-              :zoom="18"
+              :zoom="17"
               style="width: 100%; height: 550px"
             >
               <GmapMarker
@@ -216,6 +219,8 @@ const form: ISosCallForm = {
   img_detail3: undefined,
   associated_coordinates: "",
   service_address: "",
+  created_at: "",
+  service_status: 0,
 };
 
 @Component({
@@ -346,11 +351,12 @@ export default class Available extends BaseComponent {
     });
   }
 
-  backListCall() {
-    this.$router.push({ path: "/sos/list-call/" });
+  backButton() {
+    this.$router.push({ path: "/sos/" });
   }
 
-  created() {
+  mapClick() {
+    this.mapping = true;
     this.getLocation();
   }
 

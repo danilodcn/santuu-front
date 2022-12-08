@@ -35,4 +35,6 @@ export interface ISosCallForm {
   img_detail3?: File;
   associated_coordinates: string;
   service_address: string;
+  created_at: string;
+  service_status: number;
 }

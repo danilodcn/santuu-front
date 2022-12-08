@@ -1,22 +1,23 @@
 <template>
   <v-container class="content-container mt-10 mt-md-3 px-10">
-    <v-row>
-      <h4 class="title-content">Chamados</h4>
-    </v-row>
+    <v-toolbar color="transparent" flat>
+      <v-btn icon light @click="backButton()">
+        <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
+      </v-btn>
+      <v-toolbar-title class="grey--text text--darken-4">
+        Chamados SOS
+      </v-toolbar-title>
+    </v-toolbar>
     <div class="call">
       <v-row>
-        <template v-for="(order, i) in orders">
+        <template v-for="(order, i) in order_data">
           <v-col cols="12" sm="6" md="4" v-if="order" :key="`event-${i}`">
             <SosCard :data="order" />
           </v-col>
         </template>
-        <h4 class="no-list" v-if="orders.length < 1">Nenhum Chamando</h4>
+        <h4 class="no-list" v-if="order_data.length < 1">Nenhum Chamando</h4>
       </v-row>
     </div>
-    <v-divider class="mt-10"></v-divider>
-    <v-row justify="space-between" class="mt-10 mx-4">
-      <v-btn href="dashboard">Voltar</v-btn>
-    </v-row>
   </v-container>
 </template>
 
@@ -24,41 +25,30 @@
 import { Component, Vue } from "vue-property-decorator";
 import SosCard from "@/components/shared/sos/SosCard.vue";
 import { sosService } from "@/api/sos";
-import { IOrder } from "@/types/sos";
+import { IOrder, ISosCallForm } from "@/types/sos";
 
 @Component({
   components: { SosCard },
 })
 export default class Available extends Vue {
-  orders = [
-    {
-      id: 1,
-      associate: 22,
-      service_bike: 20,
-      service_bike_model: "service_bike_model",
-      service_bike_brand: "service_bike_brand",
-      service_type: 5,
-      service_text: "string",
-      service_bike_lane: 2,
-      service_ref_location: "Marginal Pinheiros, São Paulo-SP",
-      mechanic: 5,
-      service_status: "Aberto",
-      service_protocol: "service_protocol",
-      status_text: "status_text",
-      coordinates: "-23.580483258417278, -46.661190902681504",
-      mechanic_name: "João",
-      rating: 3.5,
-    },
-  ];
+  order_data = {} as ISosCallForm;
 
-  // async getListCall() {
-  //   const response = await sosService.getListCall();
-  //   if (response.error) {
-  //     console.log(console.error());
-  //   } else {
-  //     this.orders = response;
-  //   }
-  // }
+  async getClaimList() {
+    const response = await sosService.getClaimList();
+    if (response.error) {
+      console.log(console.error());
+    } else {
+      this.order_data = response;
+    }
+  }
+
+  backButton() {
+    this.$router.push({ path: "/sos/" });
+  }
+
+  created() {
+    this.getClaimList();
+  }
 }
 </script>
 
