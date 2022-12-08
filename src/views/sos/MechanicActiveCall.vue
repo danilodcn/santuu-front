@@ -179,7 +179,16 @@
               Finalizar
             </div>
           </v-btn>
-          <v-btn color="primary" class="ml-5" @click="chat()"> Chat </v-btn>
+          <v-badge
+            color="pink"
+            dot
+            offset-x="12"
+            offset-y="12"
+            :value="has_new_messages"
+            class="msg-blink"
+          >
+            <v-btn color="primary" class="ml-5" @click="chat()"> Chat </v-btn>
+          </v-badge>
         </v-col>
         <v-col cols="12" v-else-if="callStatus === 'finished'">
           <v-btn color="primary" class="ml-5" @click="backListCall()">
@@ -286,6 +295,8 @@ import { items, getLocImage, order_status_choices } from "@/utils/sos";
 })
 export default class Available extends Vue {
   order_status_choices = order_status_choices;
+
+  has_new_messages = false;
 
   mapping = false;
   haveOpenOrder = false;
@@ -412,9 +423,19 @@ export default class Available extends Vue {
     this.dataMapLoaded = true;
   }
 
+  async hasNewMsg() {
+    const response = await sosService.hasNewMessages(this.order_id);
+    this.has_new_messages = response.has_new_messages;
+  }
+
+  interval!: any;
   created() {
+    this.interval = setInterval(this.hasNewMsg, 5000);
     this.getOpenOrder();
     this.getLocation();
+  }
+  beforeDestroy() {
+    clearInterval(this.interval);
   }
 }
 </script>

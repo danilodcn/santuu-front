@@ -69,9 +69,13 @@ export default class Available extends Vue {
   leftPad = leftPad;
   user_types = user_types;
 
+  interval!: any;
   created() {
     this.getOpenOrder();
-    setInterval(this.refreshingMessages, 5000);
+    this.interval = setInterval(this.refreshingMessages, 5000);
+  }
+  beforeDestroy() {
+    clearInterval(this.interval);
   }
 
   backButton() {
