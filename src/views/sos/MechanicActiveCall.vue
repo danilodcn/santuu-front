@@ -453,7 +453,7 @@ export default class Available extends BaseComponent {
   }
 
   async hasNewMsg() {
-    const response = await sosService.hasNewMessages(this.order_id);
+    const response = await sosService.hasNewMessages(this.order_data.id);
     this.has_new_messages = response.has_new_messages;
   }
 

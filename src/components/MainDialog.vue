@@ -36,7 +36,7 @@
         >
         </v-checkbox>
       </div>
-      <v-row class="px-0 mx-0 py-4" justify="end">
+      <v-row class="px-0 ma-0 py-4" justify="end">
         <v-btn
           class="col-6"
           small

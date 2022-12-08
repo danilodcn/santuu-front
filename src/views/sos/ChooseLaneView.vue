@@ -11,7 +11,10 @@
             <lane-card :data="lane" />
           </v-col>
         </template>
-        <h4 class="col-12 no-lanes text-center mt-10" v-if="lanes.length < 1">
+        <h4
+          class="col-12 no-lanes text-center mt-10"
+          v-if="!lanes.find((x) => x.active)"
+        >
           Nenhuma ciclovia disponível
         </h4>
       </v-row>

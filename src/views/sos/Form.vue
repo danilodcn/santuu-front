@@ -367,9 +367,12 @@ export default class Available extends BaseComponent {
     }
   }
 
+  created() {
+    this.getOpenOrder();
+  }
+
   mapClick() {
     this.mapping = true;
-    this.getOpenOrder();
     this.getLocation();
     form.service_bike_lane = Number(this.$route.query.lane_id);
   }

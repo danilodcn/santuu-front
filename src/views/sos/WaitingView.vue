@@ -33,7 +33,7 @@
     <v-card-actions
       class="back-forward mt-4 mb-10 col-xs-12 offset-xs-0 col-md-6 offset-md-3"
     >
-      <v-row justify="space-between" class="mx-1">
+      <v-row justify="space-between" class="mx-1" v-if="!isFinished">
         <v-btn
           :disabled="!canCancel"
           color="#FF5252"
@@ -53,6 +53,11 @@
             Chat
           </v-btn>
         </v-badge>
+      </v-row>
+      <v-row justify="center" v-else>
+        <v-btn color="#FF5252" class="white--text" @click="sendToBegin()"
+          >Voltar</v-btn
+        >
       </v-row>
     </v-card-actions>
     <loading-tips
@@ -121,10 +126,28 @@ export default class Available extends BaseComponent {
   }
 
   sendToBegin() {
-    this.$router.push({ path: "/sos/form/" });
+    this.$router.push({ path: "/sos/choose-lane/" });
   }
 
-  async cancel() {
+  cancel() {
+    this.changeMainDialog({
+      active: true,
+      bntClose: false,
+      msg: "",
+      persistent: true,
+      btnOkCancel: true,
+      msgOk: "Sim",
+      msgCancel: "Não",
+      title: "Você deseja realmente cancelar",
+      ident: true,
+      afterFunction: this.finalCancel,
+    });
+  }
+
+  async finalCancel(can_cancel: boolean) {
+    if (!can_cancel) {
+      return;
+    }
     this.changeLoading(true);
     const response = await sosService.updateStatus({
       order_id: this.order_id,
@@ -215,6 +238,10 @@ export default class Available extends BaseComponent {
     }
   }
 
+  get isFinished() {
+    return this.order_data.service_status == STATUS_NUMBER.FINISHED;
+  }
+
   async getOpenOrder() {
     const response = await sosService.getOpenOrder();
     if (!response.error) {
@@ -236,6 +263,8 @@ export default class Available extends BaseComponent {
     }
     this.order_id = this.order_data.id;
     setTimeout(this.refreshingTimeline, 5000);
+    this.interval_1 = setInterval(this.hasNewMsg, 5000);
+    this.interval_2 = setInterval(this.getOrder, 5000);
   }
   async getOrder() {
     this.order_data = await sosService.getOrder(this.order_id);
@@ -251,8 +280,6 @@ export default class Available extends BaseComponent {
 
   refreshingTimeline() {
     this.$forceUpdate();
-    setInterval(this.hasNewMsg, 5000);
-    setInterval(this.getOrder, 5000);
   }
   beforeDestroy() {
     clearInterval(this.interval_1);
