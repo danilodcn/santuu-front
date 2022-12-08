@@ -13,7 +13,7 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-row class="text-center">
-        <v-col cols="12">
+        <v-col cols="12" class="px-6">
           <v-hover v-slot="{ hover }">
             <v-card
               :class="{ 'on-hover': hover }"
@@ -168,10 +168,11 @@
       <v-row>
         <v-col
           cols="12"
+          class="px-6"
           v-if="callStatus !== 'finished'"
           justify="space-between"
         >
-          <v-btn color="success" align="right" @click.stop="dialog = true">
+          <v-btn color="primary" align="right" @click.stop="dialog = true">
             <div v-if="callStatus === order_status_choices.travel">
               Cheguei no local
             </div>
@@ -180,7 +181,7 @@
             </div>
           </v-btn>
           <v-badge
-            color="pink"
+            color="white"
             dot
             offset-x="12"
             offset-y="12"
@@ -363,7 +364,7 @@ export default class Available extends Vue {
     if (this.order_data.id) {
       this.haveOpenOrder = true;
     } else {
-      console.log("não há chamado aberto");
+      console.log("Não há chamado aberto");
     }
     this.order_id = this.order_data.id;
     this.service_address = this.order_data.service_address;
@@ -410,7 +411,6 @@ export default class Available extends Vue {
   // eslint-disable-next-line
   success(position: GeolocationPosition) {
     this.coords = position.coords;
-    console.log(this.coords.latitude);
     this.origin = `${this.coords.latitude},${this.coords.longitude}`;
   }
   // eslint-disable-next-line
@@ -464,5 +464,23 @@ export default class Available extends Vue {
 .imgs {
   text-decoration: underline;
   text-decoration-color: $main-dark-color;
+}
+@keyframes msg-blinker {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.msg-blink .v-badge__badge {
+  -webkit-animation-name: msg-blinker;
+  animation-name: msg-blinker;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+  animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+  -webkit-animation-duration: 1.7s;
+  animation-duration: 1.7s;
 }
 </style>

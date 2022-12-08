@@ -77,6 +77,11 @@ class SOSService extends APIAuthBase {
       },
     });
   }
+
+  async getLanes() {
+    const url = `api/sos/sos_lane/`;
+    return await this.request({ url, method: "GET" });
+  }
 }
 
 const authProvider = new AuthProvider();

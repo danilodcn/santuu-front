@@ -1,0 +1,89 @@
+<template>
+  <v-container class="content-container mt-10 mt-md-3 px-10">
+    <v-row>
+      <h4 class="title-content mt-6">SOS BIKE</h4>
+    </v-row>
+    <v-row class="title-3 ml-8 mb-8"> Em qual ciclovia você está? </v-row>
+    <div class="lanes">
+      <v-row>
+        <template v-for="(lane, i) in lanes">
+          <v-col cols="12" sm="6" md="4" v-if="lane" :key="`lane-${i}`">
+            <lane-card :data="lane" />
+          </v-col>
+        </template>
+        <h4 class="col-12 no-lanes text-center mt-10" v-if="lanes.length < 1">
+          Nenhuma ciclovia disponível
+        </h4>
+      </v-row>
+    </div>
+  </v-container>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import LaneCard from "@/components/shared/sos/LaneCard.vue";
+import { sosService } from "@/api/sos";
+import { ILane } from "@/types/sos";
+
+@Component({
+  components: { LaneCard },
+})
+export default class Available extends Vue {
+  lanes: ILane[] = [];
+  type = this.$route.query.type as string;
+
+  async getLanes() {
+    let lanes = await sosService.getLanes();
+    lanes = lanes.map((e: any) => {
+      return {
+        ...e,
+      };
+    });
+
+    this.lanes = lanes;
+  }
+
+  handle() {
+    this.lanes = this.lanes.map((e) => {
+      return { ...e };
+    });
+  }
+
+  created() {
+    this.getLanes();
+    // this.handle();
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+@import "@/scss/main.scss";
+.lanes {
+  min-height: 400px;
+}
+.button {
+  color: $main-dark-color !important;
+}
+.no-lane {
+  font-weight: 200;
+  color: $main-dark-color;
+  margin: 40px auto 0px 40px;
+}
+.title-content {
+  font-weight: 500 !important;
+  color: $main-dark-color;
+  margin: 15px auto 30px auto;
+}
+.lane_image {
+  padding: 10px;
+  margin-top: auto;
+}
+.item-proposal {
+  font-size: 0.8em;
+}
+@media (min-width: 960px) {
+  .title-content {
+    font-size: 1.5em;
+  }
+}
+</style>

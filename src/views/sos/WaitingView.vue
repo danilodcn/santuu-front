@@ -42,7 +42,7 @@
           >Cancelar</v-btn
         >
         <v-badge
-          color="pink"
+          color="white"
           dot
           offset-x="12"
           offset-y="12"
@@ -221,6 +221,17 @@ export default class Available extends BaseComponent {
       this.order_data = response;
       this.setStatus();
     } else {
+      this.changeMainDialog({
+        active: true,
+        bntClose: false,
+        msg: "Você não tem chamado aberto",
+        persistent: true,
+        btnOkOnly: true,
+        msgOk: "OK",
+        title: "Sem chamado aberto",
+        ident: false,
+        afterFunction: this.sendToBegin,
+      });
       return;
     }
     this.order_id = this.order_data.id;
