@@ -12,7 +12,10 @@
           Chamado SOS
         </v-toolbar-title>
       </v-toolbar>
-      <v-row class="text-center">
+      <v-row
+        class="text-center"
+        v-if="callStatus !== order_status_choices.finished"
+      >
         <v-col cols="12" class="px-6">
           <v-hover v-slot="{ hover }">
             <v-card
@@ -346,18 +349,30 @@ export default class Available extends BaseComponent {
   confirmDialog(confirm: boolean) {
     if (confirm == true && this.callStatus == order_status_choices.travel) {
       this.dialog = false;
-      this.updateStatus(order_status_choices.repair);
-      this.get_button_status_text();
       this.callStatus = order_status_choices.repair;
+      this.updateStatus(order_status_choices.repair);
     } else if (
       confirm == true &&
       this.callStatus == order_status_choices.repair
     ) {
       this.callStatus = order_status_choices.finished;
       this.updateStatus(order_status_choices.finished);
-      this.get_button_status_text();
     } else {
       this.dialog = false;
+    }
+    this.get_button_status_text();
+  }
+
+  async get_button_status_text() {
+    this.order_data = await sosService.getOrder(this.order_data.id);
+    let status = this.order_data.service_status;
+    console.log(status);
+    if (status == 2) {
+      this.buttonStatusText = "Cheguei no local";
+    } else if (status == 3) {
+      this.buttonStatusText = "Finalizar";
+    } else {
+      return "Finalizado";
     }
   }
 
@@ -401,17 +416,6 @@ export default class Available extends BaseComponent {
 
   backButton() {
     this.$router.push({ path: "/sos/" });
-  }
-
-  get_button_status_text() {
-    let status = this.order_data.service_status;
-    if (status == 2) {
-      this.buttonStatusText = "Cheguei no local";
-    } else if (status == 3) {
-      this.buttonStatusText = "Finalizar";
-    } else {
-      return "Finalizado";
-    }
   }
 
   async updateStatus(nextStatus: string) {
@@ -461,7 +465,6 @@ export default class Available extends BaseComponent {
   created() {
     this.interval = setInterval(this.hasNewMsg, 5000);
     this.getOpenOrder();
-    console.log(this.order_data.service_status);
     this.getLocation();
   }
   beforeDestroy() {
