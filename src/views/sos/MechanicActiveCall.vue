@@ -223,7 +223,7 @@
       <v-row>
         <v-col cols="6" md="1" class="align-md-content-end">
           <!-- #TODO -->
-          <v-dialog v-model="dialog" max-width="290">
+          <v-dialog v-model="dialog" max-width="500" persistent>
             <v-card>
               <v-card-text class="pa-5">
                 <div v-if="callStatus === 'travel'">
@@ -233,7 +233,21 @@
                   Você confirma que finalizou o chamado?
                 </div>
                 <div v-else-if="callStatus === 'finished'">
-                  Muito bom! Você acabou de finalizar um chamado.
+                  Muito bom! Você acabou de finalizar um chamado. Deixe uma
+                  observação sobre o chamado.
+                  <v-textarea
+                    v-model="mechanic_report"
+                    clearable
+                    rows="2"
+                    max-rows="2"
+                    :rules="[
+                      (v) => v.length <= 200 || 'Máximo 200 caracteres.',
+                    ]"
+                    counter="200"
+                    label="Observação"
+                    auto-grow
+                  />
+                  <span v-text="warning" />
                 </div>
               </v-card-text>
 
@@ -247,7 +261,12 @@
                 </v-btn>
               </v-card-actions>
               <v-card-actions v-else>
-                <v-btn color="green darken-1" text @click="dialog = false">
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="green darken-1"
+                  text
+                  @click="sendObservationOrNothing()"
+                >
                   Ok
                 </v-btn>
               </v-card-actions>
@@ -345,6 +364,8 @@ export default class Available extends BaseComponent {
   destination = "0.0, 0.0";
   mode = "bicycling";
   buttonStatusText = "";
+  mechanic_report = "";
+  warning = "";
 
   confirmDialog(confirm: boolean) {
     if (confirm == true && this.callStatus == order_status_choices.travel) {
@@ -363,13 +384,36 @@ export default class Available extends BaseComponent {
     this.get_button_status_text();
   }
 
+  async sendMechanicReport() {
+    console.log(this.mechanic_report);
+    let data = {
+      id: this.order_data.id,
+      mechanic_report: this.mechanic_report,
+    };
+    console.log(data);
+    await sosService.sendMechanicReport(data);
+  }
+
+  sendObservationOrNothing(): void {
+    if (this.mechanic_report == "") {
+      this.dialog = false;
+    } else if (this.mechanic_report.length > 200) {
+      this.warning = "Texto ultrapassou o limite de 200 caracteres.";
+    } else {
+      this.sendMechanicReport();
+      this.dialog = false;
+    }
+  }
+
   async get_button_status_text() {
     this.order_data = await sosService.getOrder(this.order_data.id);
     let status = this.order_data.service_status;
     console.log(status);
     if (status == 2) {
+      this.callStatus = "travel";
       this.buttonStatusText = "Cheguei no local";
     } else if (status == 3) {
+      this.callStatus = "repair";
       this.buttonStatusText = "Finalizar";
     } else {
       return "Finalizado";

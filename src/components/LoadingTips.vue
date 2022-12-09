@@ -30,6 +30,8 @@ export default class LoadingTips extends Vue {
   cyclist_tips = [
     "Você pode avaliar o mecânico após a finalização do chamado",
     "Você pode entrar em contato com o mecânico assim que ele estive a caminho",
+    "A Santuu dispõe de serviços de seguros especiais para você, ciclista!",
+    "Acesse app.clubesantuu.com.br e fique por dentro das nossas novidades!",
   ];
 
   mechanic_tips = [
@@ -37,8 +39,7 @@ export default class LoadingTips extends Vue {
     "Você deve clicar em finalizar quando o reparo for efetuado",
   ];
 
-  tips =
-    this.type == user_types.cyclist ? this.cyclist_tips : this.mechanic_tips;
+  tips = [""];
 
   nextTip() {
     this.show = false;
@@ -56,6 +57,11 @@ export default class LoadingTips extends Vue {
 
   created() {
     this.interval = setInterval(this.nextTip, this.time_showing_ms);
+    this.tips =
+      this.type == user_types.cyclist ? this.cyclist_tips : this.mechanic_tips;
+    console.log(this.type);
+    console.log(user_types.cyclist);
+    console.log(this.type == user_types.cyclist);
   }
   beforeDestroy() {
     clearInterval(this.interval);
