@@ -11,7 +11,7 @@ class SOSService extends APIAuthBase {
     });
   }
   async getOrder(id: number) {
-    const url = `api/sos/sos_claim/get_order?id=${id}`;
+    const url = `api/sos/sos_claim/get_order?id=${id}&force_no_cache=${Math.random()}`;
     return await this.request({ url, method: "GET" });
   }
   async getClaimList() {
