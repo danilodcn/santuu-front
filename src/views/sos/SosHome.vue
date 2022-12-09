@@ -13,7 +13,7 @@
         <template>
           <v-card class="mx-auto mb-3" max-width="300" @click="nextStep()">
             <v-img :src="image" contain height="200px"></v-img>
-            <v-card-text> Criar chamado </v-card-text>
+            <v-card-text> {{ text }} </v-card-text>
           </v-card>
           <v-card class="mx-auto mt-3" max-width="300" @click="openListCalls()">
             <v-img
@@ -42,6 +42,7 @@ import { userDataService } from "@/api/userData";
 export default class Available extends Vue {
   is_mechanic = false;
   profile = {} as any;
+  text = "Criar chamado";
   image =
     "https://cdn.icon-icons.com/icons2/2645/PNG/512/exclamation_icon_160163.png";
 
@@ -62,6 +63,7 @@ export default class Available extends Vue {
     this.is_mechanic = response.is_mechanic;
     console.log(this.is_mechanic);
     if (this.is_mechanic) {
+      this.text = "Chamados";
       this.image =
         "https://img.freepik.com/icones-gratis/configuracoes-engrenagem-simbolo_318-10116.jpg";
     }
