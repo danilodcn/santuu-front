@@ -43,7 +43,7 @@ export default class Available extends Vue {
   }
 
   backButton() {
-    this.$router.push({ path: "/sos/" });
+    this.$router.push({ path: "/sos/home/" });
   }
 
   created() {

@@ -1,8 +1,13 @@
 <template>
   <v-container class="content-container mt-10 mt-md-3 px-10">
-    <v-row>
-      <h4 class="title-content mt-6">SOS BIKE</h4>
-    </v-row>
+    <v-toolbar color="transparent" flat>
+      <v-btn icon light @click="backButton()">
+        <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
+      </v-btn>
+      <v-toolbar-title class="grey--text text--darken-4">
+        Ciclovias
+      </v-toolbar-title>
+    </v-toolbar>
     <v-row class="title-3 ml-8 mb-8"> Em qual ciclovia você está? </v-row>
     <div class="lanes">
       <v-row>
@@ -44,6 +49,10 @@ export default class Available extends Vue {
     });
 
     this.lanes = lanes;
+  }
+
+  backButton() {
+    this.$router.push({ path: "/sos/home/" });
   }
 
   handle() {
