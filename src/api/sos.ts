@@ -78,6 +78,21 @@ class SOSService extends APIAuthBase {
     });
   }
 
+  async sendMechanicReport(dataReport: any) {
+    const url = `/api/sos/sos_claim/send_mechanic_report/`;
+    const data = {
+      ...dataReport,
+    };
+    return await this.request({
+      url,
+      method: "PUT",
+      data: data,
+      headers: {
+        ...this.config.headers,
+      },
+    });
+  }
+
   async getLanes() {
     const url = `api/sos/sos_lane/`;
     return await this.request({ url, method: "GET" });
