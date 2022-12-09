@@ -195,12 +195,6 @@
             <div>
               {{ buttonStatusText }}
             </div>
-            <!-- <div v-if="callStatus === order_status_choices.travel">
-              Cheguei no local
-            </div>
-            <div v-if="callStatus === order_status_choices.repair">
-              Finalizar
-            </div> -->
           </v-btn>
           <v-badge
             color="white"

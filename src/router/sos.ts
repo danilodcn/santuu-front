@@ -31,6 +31,11 @@ const routes: Array<RouteConfig> = [
     name: "chooseLane",
     component: () => import("@/views/sos/ChooseLaneView.vue"),
   },
+  {
+    path: "/sos/review",
+    name: "review",
+    component: () => import("@/views/sos/ReviewView.vue"),
+  },
 ];
 
 export { routes as default };

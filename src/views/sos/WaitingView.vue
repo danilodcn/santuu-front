@@ -153,8 +153,8 @@ export default class Available extends BaseComponent {
       order_id: this.order_id,
       status: order_status_choices.canceled,
     });
+    this.changeLoading(false);
     if (!response.error) {
-      this.changeLoading(false);
       this.order_data = response;
       this.changeMainDialog({
         active: true,
