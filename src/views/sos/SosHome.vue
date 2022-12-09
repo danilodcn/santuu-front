@@ -42,9 +42,8 @@ import { userDataService } from "@/api/userData";
 export default class Available extends Vue {
   is_mechanic = false;
   profile = {} as any;
-  text = "Criar chamado";
-  image =
-    "https://cdn.icon-icons.com/icons2/2645/PNG/512/exclamation_icon_160163.png";
+  text = "";
+  image = "";
 
   async getProfile() {
     const response = await userDataService.getUserProfile();
@@ -66,6 +65,10 @@ export default class Available extends Vue {
       this.text = "Chamados";
       this.image =
         "https://img.freepik.com/icones-gratis/configuracoes-engrenagem-simbolo_318-10116.jpg";
+    } else {
+      this.text = "Criar chamado";
+      this.image =
+        "https://cdn.icon-icons.com/icons2/2645/PNG/512/exclamation_icon_160163.png";
     }
   }
 
