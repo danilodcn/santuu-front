@@ -234,12 +234,12 @@
                     clearable
                     rows="2"
                     max-rows="2"
+                    no-resize
                     :rules="[
                       (v) => v.length <= 200 || 'Máximo 200 caracteres.',
                     ]"
                     counter="200"
                     label="Observação"
-                    auto-grow
                   />
                   <span v-text="warning" />
                 </div>

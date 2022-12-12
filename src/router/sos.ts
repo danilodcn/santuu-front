@@ -37,9 +37,9 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/sos/SosHome.vue"),
   },
   {
-    path: "/sos/review",
-    name: "review",
-    component: () => import("@/views/sos/ReviewView.vue"),
+    path: "/sos/rating",
+    name: "rating",
+    component: () => import("@/views/sos/RatingView.vue"),
   },
 ];
 

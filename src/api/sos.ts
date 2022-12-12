@@ -34,8 +34,8 @@ class SOSService extends APIAuthBase {
     const url = `api/sos/message/get_messages/?order_id=${order_id}&last_message_time=${last_message_time}`;
     return await this.request({ url, method: "GET" });
   }
-  async checkMechanic(mechanic_id: number) {
-    const url = `api/sos/check_mechanic/${mechanic_id}`;
+  async checkMechanic() {
+    const url = `api/sos/check_mechanic/`;
     return await this.request({ url, method: "GET" });
   }
 
@@ -96,9 +96,26 @@ class SOSService extends APIAuthBase {
       },
     });
   }
-
+  async sendRating(dataRating: any) {
+    const url = `/api/sos/sos_claim/rating_order/`;
+    const data = {
+      ...dataRating,
+    };
+    return await this.request({
+      url,
+      method: "PUT",
+      data: data,
+      headers: {
+        ...this.config.headers,
+      },
+    });
+  }
   async getLanes() {
     const url = `api/sos/sos_lane/`;
+    return await this.request({ url, method: "GET" });
+  }
+  async getUserLastOrder() {
+    const url = `api/sos/sos_claim/user_last_order/`;
     return await this.request({ url, method: "GET" });
   }
 }

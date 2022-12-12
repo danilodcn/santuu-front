@@ -268,6 +268,9 @@ export default class Available extends BaseComponent {
   }
   async getOrder() {
     this.order_data = await sosService.getOrder(this.order_id);
+    if (this.order_data.service_status == 4) {
+      this.$router.push({ path: "/sos/rating/" });
+    }
   }
 
   async hasNewMsg() {

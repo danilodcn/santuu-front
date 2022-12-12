@@ -45,22 +45,9 @@ export default class Available extends Vue {
   text = "";
   image = "";
 
-  async getProfile() {
-    const response = await userDataService.getUserProfile();
-    if (!response.error) {
-      this.profile = response;
-    } else {
-      return;
-    }
-  }
   async check_mechanic() {
-    await this.getProfile();
-    console.log(this.profile.personal_info?.user);
-    let response = await sosService.checkMechanic(
-      this.profile.personal_info?.user
-    );
+    let response = await sosService.checkMechanic();
     this.is_mechanic = response.is_mechanic;
-    console.log(this.is_mechanic);
     if (this.is_mechanic) {
       this.text = "Chamados";
       this.image =
