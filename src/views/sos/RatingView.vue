@@ -139,7 +139,7 @@ export default class Available extends BaseComponent {
 
   initDialog(): void {
     this.changeMainDialog({
-      msg: `O chamado #${this.order_data.id} foi finalizado! agora você fazer a sua avaliação.`,
+      msg: `O chamado #${this.order_data.id} foi finalizado! agora você pode fazer a sua avaliação.`,
       title: "Chamado finalizado",
       persistent: true,
       active: true,
