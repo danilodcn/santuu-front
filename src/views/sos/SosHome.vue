@@ -25,7 +25,7 @@
             <v-card-text> {{ text }} </v-card-text>
           </v-card>
           <v-card
-            class="mx-10 mb-6 text-center pt-4"
+            class="mx-10 mb-6 text-center pt-4 history"
             max-width="200"
             @click="openListCalls()"
           >
@@ -132,7 +132,8 @@ export default class Available extends BaseComponent {
     font-size: 1.5em;
   }
 }
-.no-active-call {
+.no-active-call,
+.history {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
