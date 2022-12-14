@@ -333,7 +333,12 @@ import { BaseComponent } from "@/utils/component";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import { sosService } from "@/api/sos";
 import { ISosCallForm } from "@/types/sos";
-import { items, getLocImage, order_status_choices } from "@/utils/sos";
+import {
+  items,
+  getLocImage,
+  order_status_choices,
+  STATUS_NUMBER,
+} from "@/utils/sos";
 
 @Component({
   components: { EventCard },
@@ -411,17 +416,17 @@ export default class Available extends BaseComponent {
     this.order_data = await sosService.getOrder(this.order_data.id);
     let status = this.order_data.service_status;
     console.log(status);
-    if (status == 1) {
+    if (status == STATUS_NUMBER.PROGRESS) {
       this.callStatus = "progress";
       this.buttonStatusText = "Indo ao local";
-    } else if (status == 2) {
+    } else if (status == STATUS_NUMBER.TRAVEL) {
       this.callStatus = "travel";
       this.buttonStatusText = "Cheguei no local";
-    } else if (status == 3) {
+    } else if (status == STATUS_NUMBER.REPAIR) {
       this.callStatus = "repair";
       this.buttonStatusText = "Finalizar";
     } else {
-      clearInterval(this.interval);
+      clearInterval(this.interval_1);
       return "Finalizado";
     }
   }
@@ -530,14 +535,39 @@ export default class Available extends BaseComponent {
     this.has_new_messages = response.has_new_messages;
   }
 
-  interval!: any;
+  interval_1!: any;
   created() {
-    this.interval = setInterval(this.hasNewMsg, 5000);
     this.getOpenOrder();
+    this.interval_1 = setInterval(this.getOrder, 5000);
     this.getLocation();
   }
+
+  sendToBegin() {
+    this.$router.push({ path: "/sos/home/" });
+  }
+
+  interval_2!: any;
+  async getOrder() {
+    this.order_data = await sosService.getOrder(this.order_data.id);
+    if (this.order_data.service_status == STATUS_NUMBER.CANCELED) {
+      clearInterval(this.interval_1);
+      clearInterval(this.interval_2);
+      this.changeMainDialog({
+        active: true,
+        bntClose: false,
+        msg: "Seu chamado foi cancelado, você será levado para página inicial.",
+        persistent: true,
+        btnOkOnly: true,
+        msgOk: "OK",
+        title: "Cancelado",
+        ident: false,
+        afterFunction: this.sendToBegin,
+      });
+    }
+  }
   beforeDestroy() {
-    clearInterval(this.interval);
+    clearInterval(this.interval_1);
+    clearInterval(this.interval_2);
   }
 }
 </script>
