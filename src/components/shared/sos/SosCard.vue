@@ -1,76 +1,70 @@
 <template>
   <v-card>
-    <v-card elevation="0">
-      <span class="pl-3 grey--text text--darken-3">
-        Chamado #{{ data.id }}
-      </span>
-      <v-responsive :aspect-ratio="16 / 8">
-        <v-col class="pt-0 pb-0">
-          <iframe
-            :src="`https://maps.google.com/maps?q=${coordinates}&amp;hl=ptbr;z=16.25&amp;output=embed`"
-            style="border: 0"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            height="300"
-            width="100%"
-          ></iframe>
+    <v-card-title> Chamado #{{ data.id }} </v-card-title>
+    <v-responsive :aspect-ratio="16 / 8">
+      <v-col class="pt-0 pb-0">
+        <iframe
+          :src="`https://maps.google.com/maps?q=${coordinates}&amp;hl=ptbr;z=16.25&amp;output=embed`"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          height="300"
+          width="100%"
+        ></iframe>
+      </v-col>
+    </v-responsive>
+    <v-card-text class="pt-0">
+      <v-row class="ma-0 pa-0">
+        <v-col cols="8" class="ma-0 pa-0">
+          <span class="text-body-2 break mx-auto">{{
+            user_type == 98
+              ? `Mecânico: ${data.mechanic_name}`
+              : `Ciclista: ${data.associate_name}`
+          }}</span>
         </v-col>
-      </v-responsive>
-      <v-card-title class="pt-0">
+      </v-row>
+      <v-row class="ma-0 pa-0 pb-2">
+        <v-col class="ma-0 pa-0" v-if="parseFloat(data.rating_service)">
+          <v-rating
+            background-color="grey lighten-2"
+            color="warning"
+            length="5"
+            readonly
+            size="18"
+            :value="parseFloat(data.rating_service)"
+            half-increments
+          >
+          </v-rating>
+        </v-col>
+        <v-col class="ma-0 pa-0" v-else>
+          <span class="text-body-2" v-text="'Não avaliado'"
+        /></v-col>
+      </v-row>
+      <v-divider />
+      <v-row class="ma-0 pa-0 pt-2" align="center">
+        <v-col cols="12" class="ma-0 pa-0">
+          <span class="text--center text-body-2" color="primary"
+            >{{ status_date_text }} em: {{ date }}</span
+          >
+        </v-col>
+      </v-row>
+      <v-row class="ma-0 pa-0" align="center">
+        <v-col cols="9" class="ma-0 pa-0">
+          <span
+            class="text-body-2 break icon-registered"
+            v-text="service_name"
+          />
+        </v-col>
         <v-col class="ma-0 pa-0">
-          <v-row class="ma-0 pa-0">
-            <v-col cols="8" class="ma-0 pa-0">
-              <span class="text-body-2 break mx-auto">{{
-                user_type == 98
-                  ? `Mecânico: ${data.mechanic_name}`
-                  : `Ciclista: ${data.associate_name}`
-              }}</span>
-            </v-col>
-          </v-row>
-          <v-row class="ma-0 pa-0">
-            <v-col class="ma-0 pa-0" v-if="parseFloat(data.rating_service)">
-              <v-rating
-                background-color="grey lighten-2"
-                color="warning"
-                length="5"
-                readonly
-                size="18"
-                :value="parseFloat(data.rating_service)"
-                half-increments
-              >
-              </v-rating>
-            </v-col>
-            <v-col class="ma-0 pa-0" v-else>
-              <span class="text-body-2" v-text="'Não avaliado'"
-            /></v-col>
-          </v-row>
-          <v-divider />
-          <v-row class="ma-0 pa-0" align="center">
-            <v-col cols="12" class="ma-0 pa-0">
-              <span class="text--center text-body-2" color="primary"
-                >{{ status_date_text }} em: {{ date }}</span
-              >
-            </v-col>
-          </v-row>
-          <v-row class="ma-0 pa-0" align="center">
-            <v-col cols="9" class="ma-0 pa-0">
-              <span
-                class="text-body-2 break icon-registered"
-                v-text="service_name"
-              />
-            </v-col>
-            <v-col class="ma-0 pa-0">
-              <span
-                class="text-body-2"
-                :class="status_color"
-                v-text="status_name"
-              />
-            </v-col>
-          </v-row>
+          <span
+            class="text-body-2"
+            :class="status_color"
+            v-text="status_name"
+          />
         </v-col>
-      </v-card-title>
-    </v-card>
+      </v-row>
+    </v-card-text>
   </v-card>
 </template>
 

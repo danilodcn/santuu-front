@@ -154,12 +154,16 @@ export default class Available extends Vue {
 .blink {
   -webkit-animation-name: blinking;
   animation-name: blinking;
+  -moz-animation-name: blinking;
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
+  -moz-animation-duration: 1s;
   -webkit-animation-direction: alternate;
   animation-direction: alternate;
+  -moz-animation-direction: alternate;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
 }
 .msgs {
   height: 70vh;

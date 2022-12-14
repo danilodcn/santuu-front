@@ -328,7 +328,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import { sosService } from "@/api/sos";
@@ -578,11 +578,15 @@ export default class Available extends BaseComponent {
 .msg-blink .v-badge__badge {
   -webkit-animation-name: msg-blinker;
   animation-name: msg-blinker;
+  -moz-animation-name: msg-blinker;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
   -webkit-animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
   animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+  -moz-animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
   -webkit-animation-duration: 1.7s;
   animation-duration: 1.7s;
+  -moz-animation-duration: 1.7s;
 }
 </style>

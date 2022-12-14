@@ -1,5 +1,5 @@
 <template>
-  <v-container class="content-container mt-10 mt-md-3 px-10">
+  <v-container class="content-container mt-10 mt-md-3 px-xs-0 px-md-10">
     <v-toolbar color="transparent" flat>
       <v-btn icon light @click="backButton()">
         <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>

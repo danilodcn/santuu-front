@@ -314,12 +314,16 @@ export default class Available extends BaseComponent {
 .blink {
   -webkit-animation-name: blinking;
   animation-name: blinking;
+  -moz-animation-name: blinking;
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
+  -moz-animation-duration: 1s;
   -webkit-animation-direction: alternate;
   animation-direction: alternate;
+  -moz-animation-direction: alternate;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
 }
 .timeline {
   min-height: 50vh;
@@ -334,9 +338,17 @@ export default class Available extends BaseComponent {
   }
 }
 .msg-blink .v-badge__badge {
+  animation-name: msg-blinker;
+  -moz-animation-name: msg-blinker;
   -webkit-animation-name: msg-blinker;
+  animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
   -webkit-animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+  -moz-animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
   -webkit-animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+  animation-duration: 1.7s;
+  -moz-animation-duration: 1.7s;
   -webkit-animation-duration: 1.7s;
 }
 </style>
