@@ -11,11 +11,11 @@
     <div class="call pt-10">
       <v-row>
         <template>
-          <v-card class="mx-auto mb-3" max-width="300" @click="nextStep()">
+          <v-card class="mx-auto mb-6" max-width="300" @click="nextStep()">
             <v-img :src="image" contain height="200px"></v-img>
             <v-card-text> {{ text }} </v-card-text>
           </v-card>
-          <v-card class="mx-auto mt-3" max-width="300" @click="openListCalls()">
+          <v-card class="mx-auto mb-6" max-width="300" @click="openListCalls()">
             <v-img
               contain
               src="https://static.vecteezy.com/ti/vetor-gratis/p1/582034-ilustracao-em-icone-calendario-gratis-vetor.jpg"
@@ -32,6 +32,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import SosCard from "@/components/shared/sos/SosCard.vue";
+import { BaseComponent } from "@/utils/component";
 import { sosService } from "@/api/sos";
 import { IOrder, ISosCallForm } from "@/types/sos";
 import { userDataService } from "@/api/userData";
@@ -39,13 +40,14 @@ import { userDataService } from "@/api/userData";
 @Component({
   components: { SosCard },
 })
-export default class Available extends Vue {
+export default class Available extends BaseComponent {
   is_mechanic = false;
   profile = {} as any;
   text = "";
   image = "";
 
   async check_mechanic() {
+    this.changeLoading(true);
     let response = await sosService.checkMechanic();
     this.is_mechanic = response.is_mechanic;
     if (this.is_mechanic) {
@@ -57,6 +59,7 @@ export default class Available extends Vue {
       this.image =
         "https://cdn.icon-icons.com/icons2/2645/PNG/512/exclamation_icon_160163.png";
     }
+    this.changeLoading(false);
   }
 
   nextStep() {

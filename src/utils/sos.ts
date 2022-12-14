@@ -9,7 +9,8 @@ export const STATUS_NUMBER = {
 
 export const status = [
   {
-    status_text: "Aguardando mecânico",
+    status_text:
+      "No momento todos os mecânicos estão em atendimento, aguarde na fila.",
     status: [STATUS_NUMBER.OPEN, STATUS_NUMBER.PROGRESS],
     position: 0,
   },

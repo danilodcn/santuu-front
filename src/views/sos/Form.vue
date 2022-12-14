@@ -116,7 +116,7 @@
             label="Imagem 1"
             prepend-icon=""
             append-icon="mdi-camera"
-            :rules="obrigatory"
+            :rules="files_rules"
             v-model="form.img_detail1"
           ></v-file-input>
         </v-col>
@@ -129,7 +129,7 @@
             label="Imagem 2"
             prepend-icon=""
             append-icon="mdi-camera"
-            :rules="obrigatory"
+            :rules="files_rules"
             v-model="form.img_detail2"
           ></v-file-input>
         </v-col>
@@ -141,6 +141,7 @@
             filled
             label="Imagem 3"
             prepend-icon=""
+            :rules="size_rule"
             append-icon="mdi-camera"
             v-model="form.img_detail3"
           ></v-file-input>
@@ -239,8 +240,19 @@ export default class Available extends BaseComponent {
   missingDataDialog = false;
   form = form;
   obrigatory = [(v: string) => !!v || "Campo obrigatório"];
-  apiKey = "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ";
-  // apiKey = "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88";
+  files_rules = [
+    (f: File) =>
+      (!!f && f?.size < 5e6) ||
+      "Envio de imagem obrigatório com no máximo 5 MB",
+  ];
+  size_rule = [
+    (f: File) => {
+      if (f) {
+        f?.size < 5e6 || "Tamanho da imagem deve ser menor que 5 MB";
+      }
+    },
+  ];
+  apiKey = "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88";
   address: any;
   locationConfirmed = false;
   mapping = false;

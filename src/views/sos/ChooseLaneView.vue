@@ -30,17 +30,19 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import LaneCard from "@/components/shared/sos/LaneCard.vue";
+import { BaseComponent } from "@/utils/component";
 import { sosService } from "@/api/sos";
 import { ILane } from "@/types/sos";
 
 @Component({
   components: { LaneCard },
 })
-export default class Available extends Vue {
+export default class Available extends BaseComponent {
   lanes: ILane[] = [];
   type = this.$route.query.type as string;
 
   async getLanes() {
+    this.changeLoading(true);
     let lanes = await sosService.getLanes();
     lanes = lanes.map((e: any) => {
       return {
@@ -49,6 +51,7 @@ export default class Available extends Vue {
     });
 
     this.lanes = lanes;
+    this.changeLoading(false);
   }
 
   backButton() {

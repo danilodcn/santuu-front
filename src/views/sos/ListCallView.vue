@@ -25,21 +25,24 @@
 import { Component, Vue } from "vue-property-decorator";
 import SosCard from "@/components/shared/sos/SosCard.vue";
 import { sosService } from "@/api/sos";
+import { BaseComponent } from "@/utils/component";
 import { IOrder, ISosCallForm } from "@/types/sos";
 
 @Component({
   components: { SosCard },
 })
-export default class Available extends Vue {
+export default class Available extends BaseComponent {
   order_data = {} as ISosCallForm;
 
   async getClaimList() {
+    this.changeLoading(true);
     const response = await sosService.getClaimList();
     if (response.error) {
       console.log(console.error());
     } else {
       this.order_data = response;
     }
+    this.changeLoading(false);
   }
 
   backButton() {

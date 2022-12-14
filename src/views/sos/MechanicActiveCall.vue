@@ -76,6 +76,14 @@
           </v-list-item>
           <v-list-item>
             <v-list-item-content>
+              <v-list-item-subtitle>Ponto de referência:</v-list-item-subtitle>
+              <v-list-item-title>
+                {{ order_data.service_ref_location }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
               <v-list-item-subtitle>Obs.:</v-list-item-subtitle>
               <v-list-item-title>{{
                 order_data.service_text
@@ -309,7 +317,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-btn color="primary" class="ml-5" @click="backListCall()">
+          <v-btn color="primary" class="ml-5" @click="backButton()">
             <v-icon dark left> mdi-arrow-left </v-icon>
             Voltar
           </v-btn>
@@ -353,7 +361,7 @@ export default class Available extends BaseComponent {
   overlay2 = false;
   overlay3 = false;
   //map config
-  apiKey = "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ";
+  apiKey = "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88";
   origin = "0.0, 0.0";
   destination = "0.0, 0.0";
   mode = "bicycling";
@@ -403,13 +411,17 @@ export default class Available extends BaseComponent {
     this.order_data = await sosService.getOrder(this.order_data.id);
     let status = this.order_data.service_status;
     console.log(status);
-    if (status == 2) {
+    if (status == 1) {
+      this.callStatus = "progress";
+      this.buttonStatusText = "Indo ao local";
+    } else if (status == 2) {
       this.callStatus = "travel";
       this.buttonStatusText = "Cheguei no local";
     } else if (status == 3) {
       this.callStatus = "repair";
       this.buttonStatusText = "Finalizar";
     } else {
+      clearInterval(this.interval);
       return "Finalizado";
     }
   }
@@ -429,10 +441,29 @@ export default class Available extends BaseComponent {
     }
   }
 
+  updateStatusTravel(): void {
+    this.updateStatus("travel");
+    this.callStatus = "travel";
+    this.get_button_status_text();
+  }
+
   async getOpenOrder() {
     this.order_data = await sosService.getOpenOrder();
     if (this.order_data.id) {
       this.haveOpenOrder = true;
+      if (this.order_data.service_status == 1) {
+        this.changeMainDialog({
+          msg: `O chamado #${this.order_data.id} está em progresso. O ciclista está aguardando a sua ajuda, confirme que está indo ao local.`,
+          title: "Novo chamado SOS!",
+          persistent: true,
+          active: true,
+          bntClose: false,
+          btnOkOnly: true,
+          msgOk: "Estou indo!",
+          ident: false,
+          afterFunction: this.updateStatusTravel,
+        });
+      }
     } else {
       console.log("Não há chamado aberto");
     }
@@ -453,7 +484,7 @@ export default class Available extends BaseComponent {
   }
 
   backButton() {
-    this.$router.push({ path: "/sos/" });
+    this.$router.push({ path: "/sos/home/" });
   }
 
   async updateStatus(nextStatus: string) {

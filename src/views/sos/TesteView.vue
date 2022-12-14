@@ -14,7 +14,7 @@ import { sosService } from "@/api/sos";
 
 @Component
 export default class MapDirections extends Vue {
-  apiKey = "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ";
+  apiKey = "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88";
   paths = [
     { lat: -4.948918605677907, lng: -47.50236213790677 },
     { lat: -4.951202708685028, lng: -47.50240351692399 },

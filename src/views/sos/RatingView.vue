@@ -111,7 +111,7 @@ export default class Available extends BaseComponent {
   async sendRating() {
     if (this.order_data.rating_service != null) {
       this.changeMainDialog({
-        msg: `O chamado ${this.order_data.id} já foi avaliado!`,
+        msg: `O chamado #${this.order_data.id} já foi avaliado!`,
         title: "Avaliação",
         persistent: true,
         active: true,
@@ -128,12 +128,24 @@ export default class Available extends BaseComponent {
         rating_text: this.rating_text,
       });
       this.changeLoading(false);
-      this.backButton();
+      this.changeMainDialog({
+        msg: `Muito bem! seu chamado foi avaliado.`,
+        title: "Chamado avaliado",
+        persistent: true,
+        active: true,
+        bntClose: false,
+        btnOkOnly: true,
+        msgOk: "Voltar",
+        ident: false,
+        afterFunction: this.backButton,
+      });
     }
   }
 
   async getUserLastOrder() {
+    this.changeLoading(true);
     this.order_data = await sosService.getUserLastOrder();
+    this.changeLoading(false);
     this.initDialog();
   }
 
@@ -141,19 +153,17 @@ export default class Available extends BaseComponent {
     this.changeMainDialog({
       msg: `O chamado #${this.order_data.id} foi finalizado! agora você pode fazer a sua avaliação.`,
       title: "Chamado finalizado",
-      persistent: true,
+      persistent: false,
       active: true,
-      bntClose: false,
-      btnOkOnly: true,
+      bntClose: true,
+      btnOkOnly: false,
       msgOk: "OK",
       ident: false,
     });
   }
 
   created() {
-    this.changeLoading(true);
     this.getUserLastOrder();
-    this.changeLoading(false);
   }
 }
 </script>

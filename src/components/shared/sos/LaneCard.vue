@@ -38,7 +38,9 @@
       <v-divider />
       <v-row class="ma-0 pa-0" align="center">
         <v-col cols="10" class="pl-4 link">
-          <a @click="showOperationTime(data.lane_name)">Horário</a>
+          <a @click="showOperationTime(data.lane_name)"
+            >Horários de funcionamento</a
+          >
         </v-col>
       </v-row>
     </v-card>
