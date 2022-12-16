@@ -1,71 +1,138 @@
 <template>
-  <v-container class="px-10 container elevation-xs-0 elevation-md-10">
-    <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-8">
-      Acompanhe o seu chamado
-    </v-col>
-    <v-row class="ma-0 timeline d-flex align-center col-12">
-      <v-timeline class="pa-0 col-xs-12 offset-xs-0 col-md-6 offset-md-3">
-        <v-timeline-item
-          v-for="(x, i) in current_status"
-          :key="i"
-          :color="getColorByStatus(x.status)"
-          :id="`timeline-item-${x.position}`"
-          :class="{ 'pb-0': i == current_status.length - 1 }"
-          small
-        >
-          <p
-            class="body-2 font-weight-medium"
-            :style="`color: ${getColorByStatus(x.status)}`"
+  <div>
+    <v-container
+      class="px-10 container elevation-xs-0 elevation-md-10"
+      v-show="!mapping && !is_mechanic"
+    >
+      <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-8">
+        Acompanhe o seu chamado
+      </v-col>
+      <v-row class="ma-0 timeline d-flex align-center col-12">
+        <v-timeline class="pa-0 col-xs-12 offset-xs-0 col-md-6 offset-md-3">
+          <v-timeline-item
+            v-for="(x, i) in current_status"
+            :key="i"
+            :color="getColorByStatus(x.status)"
+            :id="`timeline-item-${x.position}`"
+            :class="{ 'pb-0': i == current_status.length - 1 }"
+            small
           >
-            {{ `${x.status_text}` }}
-          </p>
-        </v-timeline-item>
-      </v-timeline>
-    </v-row>
-    <v-row
-      class="col-xs-12 offset-xs-0 col-md-6 offset-md-3 my-0 px-6"
-      v-if="order_data.mechanic"
-    >
-      <p class="body-2 col-12 pa-0 ma-0">
-        Mecânico: {{ order_data.mechanic_name }}
-      </p>
-    </v-row>
-    <v-card-actions
-      class="back-forward mt-4 mb-10 col-xs-12 offset-xs-0 col-md-6 offset-md-3"
-    >
-      <v-row justify="space-between" class="mx-1" v-if="!isFinished">
-        <v-btn
-          :disabled="!canCancel"
-          color="#FF5252"
-          class="white--text"
-          @click="cancel"
-          >Cancelar</v-btn
-        >
-        <v-badge
-          color="white"
-          dot
-          offset-x="12"
-          offset-y="12"
-          :value="has_new_messages"
-          class="msg-blink"
-        >
-          <v-btn color="#CCCB00" class="button white--text" @click="chat" dot>
-            Chat
-          </v-btn>
-        </v-badge>
+            <p
+              class="body-2 font-weight-medium"
+              :style="`color: ${getColorByStatus(x.status)}`"
+            >
+              {{ `${x.status_text}` }}
+            </p>
+          </v-timeline-item>
+        </v-timeline>
       </v-row>
-      <v-row justify="center" v-else>
-        <v-btn color="#FF5252" class="white--text" @click="sendToBegin()"
-          >Voltar</v-btn
-        >
+      <v-row
+        class="col-xs-12 offset-xs-0 col-md-6 offset-md-3 my-0 px-6"
+        v-if="order_data.mechanic"
+      >
+        <p class="body-2 col-12 pa-0 ma-0">
+          Mecânico: {{ order_data.mechanic_name }}
+        </p>
       </v-row>
-    </v-card-actions>
-    <loading-tips
-      :type="user_types.cyclist"
-      :time_showing_ms="5000"
-      class="text-justify col-xs-10 offset-xs-1 col-md-6 offset-md-3 mb-xs-0 mb-md-2"
-    ></loading-tips>
-  </v-container>
+      <v-card-actions
+        class="back-forward mt-4 mb-10 col-xs-12 offset-xs-0 col-md-6 offset-md-3"
+      >
+        <v-row justify="space-between" class="mx-1" v-if="!isFinished">
+          <v-btn
+            :disabled="!canCancel"
+            color="#FF5252"
+            class="white--text"
+            @click="cancel"
+            >Cancelar</v-btn
+          >
+          <v-btn
+            v-show="canCancel"
+            :disabled="!can_see_location"
+            color="#1B5E"
+            class="white--text"
+            @click="mapping = true"
+          >
+            <v-icon dark> mdi-map-marker </v-icon></v-btn
+          >
+          <v-badge
+            color="white"
+            dot
+            offset-x="12"
+            offset-y="12"
+            :value="has_new_messages"
+            class="msg-blink"
+          >
+            <v-btn color="#CCCB00" class="button white--text" @click="chat" dot>
+              Chat
+            </v-btn>
+          </v-badge>
+        </v-row>
+        <v-row justify="center" v-else>
+          <v-btn color="#FF5252" class="white--text" @click="sendToBegin()"
+            >Voltar</v-btn
+          >
+        </v-row>
+      </v-card-actions>
+      <loading-tips
+        :type="user_types.cyclist"
+        :time_showing_ms="5000"
+        class="text-justify col-xs-10 offset-xs-1 col-md-6 offset-md-3 mb-xs-0 mb-md-2"
+      ></loading-tips>
+    </v-container>
+    <v-container
+      class="px-10 container elevation-xs-0 elevation-md-10"
+      v-show="mapping && !is_mechanic"
+    >
+      <v-toolbar color="transparent" flat>
+        <v-btn icon light @click="mapping = false">
+          <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
+        </v-btn>
+        <v-toolbar-title class="grey--text text--darken-4">
+          Localização
+        </v-toolbar-title>
+      </v-toolbar>
+      <div class="map-div" v-if="true">
+        <v-row no-gutters>
+          <v-col cols="12">
+            <GmapMap
+              :center="cyclistPosition"
+              :zoom="17"
+              style="width: 100%; height: 550px"
+            >
+              <GmapMarker
+                :position="mechanicPosition"
+                :clickable="true"
+                :draggable="false"
+              />
+              <GmapMarker
+                :position="cyclistPosition"
+                :icon="'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'"
+                :clickable="true"
+                :draggable="false"
+              />
+            </GmapMap>
+          </v-col>
+        </v-row></div
+    ></v-container>
+    <v-container
+      class="fill-height content-container mt-4 mt-md-3 px-7"
+      v-if="is_mechanic"
+    >
+      <v-toolbar color="transparent" flat>
+        <v-btn icon light @click="backButton()">
+          <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
+        </v-btn>
+        <v-toolbar-title class="grey--text text--darken-4">
+          Ops
+        </v-toolbar-title>
+      </v-toolbar>
+      <v-row class="text-center p-16">
+        <v-col cols="12">
+          <div>Você não tem permissão para acessar essa tela.</div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -89,6 +156,11 @@ import { BaseComponent } from "@/utils/component";
 export default class Available extends BaseComponent {
   order_data = {} as IOrder;
   order_id = -1;
+  is_mechanic = false;
+
+  mapping = false;
+  can_see_location = false;
+  mechanicPosition = { lat: -23.585435911394608, lng: -46.45477146101012 };
 
   user_types = user_types;
 
@@ -115,6 +187,23 @@ export default class Available extends BaseComponent {
 
   has_new_messages = false;
 
+  get cyclistPosition() {
+    let coords = JSON.parse(this.order_data.associated_coordinates);
+    return JSON.parse(`{"lat": ${coords.lat}, "lng": ${coords.lng} }`);
+  }
+
+  async get_mechanic_position() {
+    const response = await sosService.getMechanicPosition(this.order_data.id);
+    let coords = JSON.parse(response.coordinates);
+    this.mechanicPosition = JSON.parse(
+      `{"lat": ${coords.lat}, "lng": ${coords.lng} }`
+    );
+  }
+
+  backButton() {
+    this.$router.push({ path: "/sos/home/" });
+  }
+
   get currentColor() {
     if (this.order_data == ({} as IOrder)) {
       return this.colors;
@@ -127,6 +216,11 @@ export default class Available extends BaseComponent {
 
   sendToBegin() {
     this.$router.push({ path: "/sos/home/" });
+  }
+
+  async checkMechanic() {
+    let response = await sosService.checkMechanic();
+    this.is_mechanic = response.is_mechanic;
   }
 
   cancel() {
@@ -224,15 +318,23 @@ export default class Available extends BaseComponent {
 
   created() {
     this.getOpenOrder();
+    this.checkMechanic();
   }
 
   chat() {
     this.$router.push({ path: "/sos/chat/" });
   }
 
+  clearIntervals() {
+    clearInterval(this.interval_1);
+    clearInterval(this.interval_2);
+    clearInterval(this.interval_3);
+  }
+
   setStatus() {
     if (this.order_data.service_status == STATUS_NUMBER.FINISHED) {
       this.current_status = this.status_finished;
+      this.clearIntervals();
     } else {
       this.current_status = this.status;
     }
@@ -265,14 +367,16 @@ export default class Available extends BaseComponent {
     setTimeout(this.refreshingTimeline, 5000);
     this.interval_1 = setInterval(this.hasNewMsg, 5000);
     this.interval_2 = setInterval(this.getOrder, 5000);
+    this.interval_3 = setInterval(this.get_mechanic_position, 7000);
   }
 
   async getOrder() {
     this.order_data = await sosService.getOrder(this.order_id);
     if (this.order_data.service_status == 4) {
-      clearInterval(this.interval_1);
-      clearInterval(this.interval_2);
+      this.clearIntervals();
       this.$router.push({ path: "/sos/rating/" });
+    } else if (this.order_data.service_status >= 2 && !this.can_see_location) {
+      this.can_see_location = true;
     }
   }
 
@@ -283,6 +387,7 @@ export default class Available extends BaseComponent {
 
   interval_1!: any;
   interval_2!: any;
+  interval_3!: any;
 
   refreshingTimeline() {
     this.$forceUpdate();
@@ -290,6 +395,7 @@ export default class Available extends BaseComponent {
   beforeDestroy() {
     clearInterval(this.interval_1);
     clearInterval(this.interval_2);
+    clearInterval(this.interval_3);
   }
 }
 </script>

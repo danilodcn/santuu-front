@@ -12,7 +12,7 @@
         <div class="pa-0 ma-0">
           <div class="pa-0 ma-0 title-chat">Chat - {{ name }}</div>
           <div class="pa-0 ma-0 body-2">
-            #{{ leftPad(order_data.id * 33, 8, "0") }}00
+            #{{ leftPad(order_data.id * 33, 8, "0") }}
           </div>
         </div>
       </v-toolbar-title>

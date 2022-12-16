@@ -56,7 +56,6 @@ class SOSService extends APIAuthBase {
     const data = {
       ...form,
     };
-    console.log(data);
     return await this.request({
       url,
       method: "POST",
@@ -81,7 +80,6 @@ class SOSService extends APIAuthBase {
       },
     });
   }
-
   async sendMechanicReport(dataReport: any) {
     const url = `/api/sos/sos_claim/send_mechanic_report/`;
     const data = {
@@ -117,6 +115,38 @@ class SOSService extends APIAuthBase {
   async getUserLastOrder() {
     const url = `api/sos/sos_claim/user_last_order/`;
     return await this.request({ url, method: "GET" });
+  }
+  async updateMechanicPosition(dataPosition: any) {
+    const url = `/api/sos/mechanic_coordinates/`;
+    const data = {
+      ...dataPosition,
+    };
+    return await this.request({
+      url,
+      method: "PUT",
+      data: data,
+      headers: {
+        ...this.config.headers,
+      },
+    });
+  }
+  async getMechanicPosition(id: number) {
+    const url = `/api/sos/mechanic_coordinates/${id}`;
+    return await this.request({ url, method: "GET" });
+  }
+  async sendSosMechanicPosition(dataPosition: any) {
+    const url = `/api/sos/initial_mechanic_coords/`;
+    const data = {
+      ...dataPosition,
+    };
+    return await this.request({
+      url,
+      method: "PUT",
+      data: data,
+      headers: {
+        ...this.config.headers,
+      },
+    });
   }
 }
 

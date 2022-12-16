@@ -20,7 +20,7 @@
               'no-active-call': !mechanicWithOpenOrder,
             }"
           >
-            <v-icon v-if="is_mechanic" size="100"> mdi-cog </v-icon>
+            <v-icon v-if="is_mechanic" size="140"> mdi-cog </v-icon>
             <v-icon v-else size="100"> mdi-exclamation-thick </v-icon>
             <v-card-text> {{ text }} </v-card-text>
           </v-card>

@@ -9,6 +9,7 @@ export interface IOrder {
   service_text: string;
   service_bike_lane: number;
   service_ref_location: string;
+  associated_coordinates: string;
   mechanic: number;
   mechanic_name: string;
   service_status: number;

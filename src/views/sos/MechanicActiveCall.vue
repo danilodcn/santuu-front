@@ -1,7 +1,7 @@
 <template>
   <v-form>
     <v-container
-      v-if="mapping === false && haveOpenOrder === true"
+      v-if="!mapping && haveOpenOrder && is_mechanic"
       class="content-container justify-center mt-4 mt-md-3 px-7"
     >
       <v-toolbar color="transparent" flat>
@@ -228,6 +228,9 @@
           <v-dialog v-model="dialog" max-width="500" persistent>
             <v-card>
               <v-card-text class="pa-5">
+                <div v-if="callStatus === 'progress'">
+                  Você confirma que está indo ao local?
+                </div>
                 <div v-if="callStatus === 'travel'">
                   Você confirma que chegou no local?
                 </div>
@@ -289,38 +292,46 @@
           Localização
         </v-toolbar-title>
       </v-toolbar>
-      <div v-if="dataMapLoaded">
+      <div v-if="true">
         <v-row no-gutters>
           <v-col cols="12">
-            <iframe
-              width="100%"
-              height="450"
-              frameborder="0"
-              style="border: 1"
-              referrerpolicy="no-referrer-when-downgrade"
-              :src="`https://www.google.com/maps/embed/v1/directions?key=${apiKey}=&origin=${origin}&destination=${destination}&mode=${mode}&zoom=14`"
-              allowfullscreen
+            <GmapMap
+              :center="mechanicPosition"
+              :zoom="17"
+              style="width: 100%; height: 550px"
             >
-            </iframe>
+              <GmapMarker
+                :position="mechanicPosition"
+                :clickable="true"
+                :draggable="false"
+              />
+              <GmapMarker
+                :position="cyclistPosition"
+                :icon="'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'"
+                :clickable="true"
+                :draggable="false"
+              />
+            </GmapMap>
           </v-col>
         </v-row>
       </div>
     </v-container>
     <v-container
       class="fill-height content-container mt-4 mt-md-3 px-7"
-      v-if="haveOpenOrder === false"
+      v-if="!haveOpenOrder || !is_mechanic"
     >
+      <v-toolbar color="transparent" flat>
+        <v-btn icon light @click="backButton()">
+          <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
+        </v-btn>
+        <v-toolbar-title class="grey--text text--darken-4">
+          Ops
+        </v-toolbar-title>
+      </v-toolbar>
       <v-row class="text-center p-16">
         <v-col cols="12">
-          <div>Você não possui chamado aberto.</div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <v-btn color="primary" class="ml-5" @click="backButton()">
-            <v-icon dark left> mdi-arrow-left </v-icon>
-            Voltar
-          </v-btn>
+          <div v-if="is_mechanic">Você não possui chamado aberto.</div>
+          <div v-else>Você não tem permissão para acessar essa tela.</div>
         </v-col>
       </v-row>
     </v-container>
@@ -328,7 +339,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { BaseComponent } from "@/utils/component";
 import EventCard from "@/components/shared/events/EventCard.vue";
 import { sosService } from "@/api/sos";
@@ -347,6 +358,7 @@ export default class Available extends BaseComponent {
   order_status_choices = order_status_choices;
   has_new_messages = false;
 
+  is_mechanic = false;
   mapping = false;
   haveOpenOrder = false;
   imgLocDefault =
@@ -356,7 +368,7 @@ export default class Available extends BaseComponent {
   service_name = "";
   service_type = 1;
   haveImg3 = false;
-  cyclistPosition = { lat: 0.0, lng: 0.0 };
+  cyclistStaticPosition = { lat: -23.585435911394608, lng: -46.45477146101012 };
   dialog = false;
   callStatus = "travel";
   order_data = {} as ISosCallForm;
@@ -367,8 +379,8 @@ export default class Available extends BaseComponent {
   overlay3 = false;
   //map config
   apiKey = "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88";
-  origin = "0.0, 0.0";
-  destination = "0.0, 0.0";
+  mechanicPosition = { lat: -23.585435911394608, lng: -46.45477146101012 };
+  cyclistPosition = { lat: -23.585435911394608, lng: -46.45477146101012 };
   mode = "bicycling";
   buttonStatusText = "";
   mechanic_report = "";
@@ -385,19 +397,28 @@ export default class Available extends BaseComponent {
     ) {
       this.callStatus = order_status_choices.finished;
       this.updateStatus(order_status_choices.finished);
+    } else if (
+      confirm == true &&
+      this.callStatus == order_status_choices.progress
+    ) {
+      this.callStatus = order_status_choices.travel;
+      this.updateStatus(order_status_choices.travel);
     } else {
       this.dialog = false;
     }
     this.get_button_status_text();
   }
 
+  async checkMechanic() {
+    let response = await sosService.checkMechanic();
+    this.is_mechanic = response.is_mechanic;
+  }
+
   async sendMechanicReport() {
-    console.log(this.mechanic_report);
     let data = {
       id: this.order_data.id,
       mechanic_report: this.mechanic_report,
     };
-    console.log(data);
     await sosService.sendMechanicReport(data);
   }
 
@@ -415,7 +436,6 @@ export default class Available extends BaseComponent {
   async get_button_status_text() {
     this.order_data = await sosService.getOrder(this.order_data.id);
     let status = this.order_data.service_status;
-    console.log(status);
     if (status == STATUS_NUMBER.PROGRESS) {
       this.callStatus = "progress";
       this.buttonStatusText = "Indo ao local";
@@ -427,18 +447,20 @@ export default class Available extends BaseComponent {
       this.buttonStatusText = "Finalizar";
     } else {
       clearInterval(this.interval_1);
+      clearInterval(this.interval_2);
+      clearInterval(this.interval_3);
       return "Finalizado";
     }
   }
 
   LocImage() {
-    this.cyclistPosition = JSON.parse(
+    this.cyclistStaticPosition = JSON.parse(
       `${this.order_data.associated_coordinates}`
     );
     let imgAux = this.imgLocDefault;
     this.imgLocDefault = getLocImage(
-      this.cyclistPosition.lat,
-      this.cyclistPosition.lng,
+      this.cyclistStaticPosition.lat,
+      this.cyclistStaticPosition.lng,
       this.apiKey
     );
     if (this.imgLocDefault != imgAux) {
@@ -447,8 +469,16 @@ export default class Available extends BaseComponent {
   }
 
   updateStatusTravel(): void {
+    navigator.geolocation.getCurrentPosition(
+      this.success,
+      this.error,
+      this.options
+    );
     this.updateStatus("travel");
-    this.callStatus = "travel";
+    this.sendSosInitialMechanicPosition(
+      `{"lat":"${this.mechanicPosition.lat}","lng":"${this.mechanicPosition.lng}"}`
+    );
+    this.callStatus == order_status_choices.travel;
     this.get_button_status_text();
   }
 
@@ -469,8 +499,6 @@ export default class Available extends BaseComponent {
           afterFunction: this.updateStatusTravel,
         });
       }
-    } else {
-      console.log("Não há chamado aberto");
     }
     this.service_type = this.order_data.service_type;
     this.service_name =
@@ -479,13 +507,15 @@ export default class Available extends BaseComponent {
       this.haveImg3 = false;
     }
     this.LocImage();
-    this.get_destination();
+    this.get_cyclistPosition();
     this.get_button_status_text();
   }
 
-  get_destination(): void {
+  get_cyclistPosition(): void {
     let coords = JSON.parse(this.order_data.associated_coordinates);
-    this.destination = `${coords.lat},${coords.lng}`;
+    this.cyclistPosition = JSON.parse(
+      `{"lat": ${coords.lat}, "lng": ${coords.lng} }`
+    );
   }
 
   backButton() {
@@ -496,6 +526,13 @@ export default class Available extends BaseComponent {
     await sosService.updateStatus({
       order_id: this.order_data.id,
       status: nextStatus,
+    });
+  }
+
+  async sendSosInitialMechanicPosition(actualCoordinates: string) {
+    await sosService.sendSosMechanicPosition({
+      order_id: this.order_data.id,
+      actual_coordinates: actualCoordinates,
     });
   }
 
@@ -518,16 +555,35 @@ export default class Available extends BaseComponent {
   // eslint-disable-next-line
   success(position: GeolocationPosition) {
     this.coords = position.coords;
-    this.origin = `${this.coords.latitude},${this.coords.longitude}`;
+    if (this.coords.accuracy < 160) {
+      this.mechanicPosition = JSON.parse(
+        `{"lat": ${this.coords.latitude}, "lng": ${this.coords.longitude} }`
+      );
+    }
+    console.log(this.coords.accuracy);
   }
   // eslint-disable-next-line
   error(error: GeolocationPositionError) {
     console.warn(`ERROR(${error.code}): ${error.message}`);
   }
 
-  getLocation() {
-    navigator.geolocation.watchPosition(this.success, this.error, this.options);
+  async sendActualPosition() {
+    if (this.callStatus == order_status_choices.travel) {
+      let position = `{"lat":"${this.mechanicPosition.lat}","lng":"${this.mechanicPosition.lng}"}`;
+      await sosService.updateMechanicPosition({
+        actual_coordinates: position,
+      });
+    }
+  }
+
+  sendLocation() {
+    navigator.geolocation.getCurrentPosition(
+      this.success,
+      this.error,
+      this.options
+    );
     this.dataMapLoaded = true;
+    this.sendActualPosition();
   }
 
   async hasNewMsg() {
@@ -536,10 +592,12 @@ export default class Available extends BaseComponent {
   }
 
   interval_1!: any;
+  interval_3!: any;
   created() {
     this.getOpenOrder();
+    this.checkMechanic();
     this.interval_1 = setInterval(this.getOrder, 5000);
-    this.getLocation();
+    this.interval_3 = setInterval(this.sendLocation, 7000);
   }
 
   sendToBegin() {
@@ -552,6 +610,7 @@ export default class Available extends BaseComponent {
     if (this.order_data.service_status == STATUS_NUMBER.CANCELED) {
       clearInterval(this.interval_1);
       clearInterval(this.interval_2);
+      clearInterval(this.interval_3);
       this.changeMainDialog({
         active: true,
         bntClose: false,
@@ -568,6 +627,7 @@ export default class Available extends BaseComponent {
   beforeDestroy() {
     clearInterval(this.interval_1);
     clearInterval(this.interval_2);
+    clearInterval(this.interval_3);
   }
 }
 </script>
