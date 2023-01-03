@@ -1,5 +1,5 @@
 <template>
-  <v-container class="content-container mt-10 mt-md-3 px-10 align-center">
+  <v-container class="px-4 container">
     <v-toolbar color="transparent" flat>
       <v-btn icon light @click="backButton()">
         <v-icon color="grey darken-2"> mdi-arrow-left </v-icon>
@@ -102,6 +102,7 @@ export default class Available extends BaseComponent {
 
   backButton() {
     this.$router.push({ path: "/sos/home/" });
+    location.reload();
   }
 
   get date(): string {
@@ -170,6 +171,16 @@ export default class Available extends BaseComponent {
 
 <style lang="scss" scoped>
 @import "@/scss/main.scss";
+
+@media (min-width: 600px) {
+  .container {
+    background: #fff;
+    max-width: 600px;
+    margin-top: 30px;
+    border-radius: 10px;
+  }
+}
+
 .call {
   min-height: 400px;
 }
