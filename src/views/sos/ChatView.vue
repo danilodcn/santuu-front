@@ -135,7 +135,7 @@ export default class Available extends Vue {
 </script>
 
 <style lang="scss">
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .container {
     background: #fff;
     max-width: 600px;

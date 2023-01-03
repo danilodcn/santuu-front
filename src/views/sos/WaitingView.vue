@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <section>
     <v-container
-      class="px-10 container elevation-xs-0 elevation-md-10"
+      class="content-container mt-4 mt-md-3 px-7"
       v-show="!mapping && !is_mechanic"
     >
-      <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-8">
-        Acompanhe o seu chamado
-      </v-col>
       <v-row class="ma-0 timeline d-flex align-center col-12">
+        <v-col class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 mt-8">
+          Acompanhe o seu chamado
+        </v-col>
         <v-timeline class="pa-0 col-xs-12 offset-xs-0 col-md-6 offset-md-3">
           <v-timeline-item
             v-for="(x, i) in current_status"
@@ -34,14 +34,12 @@
           Mecânico: {{ order_data.mechanic_name }}
         </p>
       </v-row>
-      <v-card-actions
-        class="back-forward mt-4 mb-10 col-xs-12 offset-xs-0 col-md-6 offset-md-3"
-      >
-        <v-row justify="space-between" class="mx-1" v-if="!isFinished">
+      <v-card-actions class="my-3">
+        <v-row justify="center" class="mx-1" v-if="!isFinished || cancelled">
           <v-btn
             :disabled="!canCancel"
             color="#FF5252"
-            class="white--text"
+            class="white--text mr-2"
             @click="cancel"
             >Cancelar</v-btn
           >
@@ -49,7 +47,7 @@
             v-show="canCancel"
             :disabled="!can_see_location"
             color="#1B5E"
-            class="white--text"
+            class="white--text mx-2"
             @click="mapping = true"
           >
             <v-icon dark> mdi-map-marker </v-icon></v-btn
@@ -62,7 +60,12 @@
             :value="has_new_messages"
             class="msg-blink"
           >
-            <v-btn color="#CCCB00" class="button white--text" @click="chat" dot>
+            <v-btn
+              color="#CCCB00"
+              class="button white--text ml-2"
+              @click="chat"
+              dot
+            >
               Chat
             </v-btn>
           </v-badge>
@@ -95,7 +98,7 @@
         <v-row no-gutters>
           <v-col cols="12">
             <GmapMap
-              :center="cyclistPosition"
+              :center="mechanicPosition"
               :zoom="17"
               style="width: 100%; height: 550px"
             >
@@ -103,10 +106,10 @@
                 :position="mechanicPosition"
                 :clickable="true"
                 :draggable="false"
+                :icon="'https://img.icons8.com/material-two-tone/2x/work.png'"
               />
               <GmapMarker
                 :position="cyclistPosition"
-                :icon="'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'"
                 :clickable="true"
                 :draggable="false"
               />
@@ -132,7 +135,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -161,7 +164,7 @@ export default class Available extends BaseComponent {
   mapping = false;
   can_see_location = false;
   mechanicPosition = { lat: -23.585435911394608, lng: -46.45477146101012 };
-
+  cancelled = false;
   user_types = user_types;
 
   current_status = [
@@ -216,6 +219,7 @@ export default class Available extends BaseComponent {
 
   sendToBegin() {
     this.$router.push({ path: "/sos/home/" });
+    location.reload();
   }
 
   async checkMechanic() {
@@ -242,6 +246,7 @@ export default class Available extends BaseComponent {
     if (!can_cancel) {
       return;
     }
+    this.cancelled = true;
     this.changeLoading(true);
     const response = await sosService.updateStatus({
       order_id: this.order_id,
@@ -401,12 +406,21 @@ export default class Available extends BaseComponent {
 </script>
 
 <style lang="scss">
-@media (min-width: 768px) {
-  .container {
-    background: #fff;
-    max-width: 800px;
-    margin-top: 30px;
+@import "@/scss/main.scss";
+
+@media (min-width: 960px) {
+  .title-content {
+    font-size: 1.3em;
+    font-weight: 500 !important;
+    color: $main-dark-color;
+    margin: 5px auto 0px 10px;
+  }
+  .content-container {
+    margin-left: auto;
+    margin-top: 30px !important;
     border-radius: 10px;
+    background: white;
+    max-width: 600px;
   }
 }
 @keyframes blinking {

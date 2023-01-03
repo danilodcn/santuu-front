@@ -304,10 +304,10 @@
                 :position="mechanicPosition"
                 :clickable="true"
                 :draggable="false"
+                :icon="'https://img.icons8.com/material-two-tone/2x/work.png'"
               />
               <GmapMarker
                 :position="cyclistPosition"
-                :icon="'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'"
                 :clickable="true"
                 :draggable="false"
               />
@@ -468,13 +468,14 @@ export default class Available extends BaseComponent {
     }
   }
 
-  updateStatusTravel(): void {
+  async updateStatusTravel() {
+    this.buttonStatusText = "Cheguei no local";
     navigator.geolocation.getCurrentPosition(
       this.success,
       this.error,
       this.options
     );
-    this.updateStatus("travel");
+    await this.updateStatus("travel");
     this.sendSosInitialMechanicPosition(
       `{"lat":"${this.mechanicPosition.lat}","lng":"${this.mechanicPosition.lng}"}`
     );
@@ -555,7 +556,7 @@ export default class Available extends BaseComponent {
   // eslint-disable-next-line
   success(position: GeolocationPosition) {
     this.coords = position.coords;
-    if (this.coords.accuracy < 160) {
+    if (this.coords.accuracy < 16000) {
       this.mechanicPosition = JSON.parse(
         `{"lat": ${this.coords.latitude}, "lng": ${this.coords.longitude} }`
       );
@@ -592,11 +593,13 @@ export default class Available extends BaseComponent {
   }
 
   interval_1!: any;
+  interval_2!: any;
   interval_3!: any;
   created() {
     this.getOpenOrder();
     this.checkMechanic();
     this.interval_1 = setInterval(this.getOrder, 5000);
+    this.interval_2 = setInterval(this.hasNewMsg, 5000);
     this.interval_3 = setInterval(this.sendLocation, 7000);
   }
 
@@ -604,7 +607,6 @@ export default class Available extends BaseComponent {
     this.$router.push({ path: "/sos/home/" });
   }
 
-  interval_2!: any;
   async getOrder() {
     this.order_data = await sosService.getOrder(this.order_data.id);
     if (this.order_data.service_status == STATUS_NUMBER.CANCELED) {
