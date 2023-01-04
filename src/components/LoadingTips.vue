@@ -30,7 +30,7 @@ export default class LoadingTips extends Vue {
   cyclist_tips = [
     "Você pode avaliar o mecânico após a finalização do chamado",
     "Você pode entrar em contato com o mecânico pelo chat assim que ele estiver a caminho",
-    "A Santuu dispõe serviços de seguros especiais para você, ciclista!",
+    "O Clube Santuu dispõe serviços de seguros especiais para você, ciclista!",
     "Você pode clicar no marcador de localização para acompanhar o mecânico",
   ];
 

@@ -102,7 +102,6 @@ export default class Available extends BaseComponent {
 
   backButton() {
     this.$router.push({ path: "/sos/home/" });
-    location.reload();
   }
 
   get date(): string {
@@ -130,7 +129,7 @@ export default class Available extends BaseComponent {
       });
       this.changeLoading(false);
       this.changeMainDialog({
-        msg: `Muito bem! seu chamado foi avaliado.`,
+        msg: `Muito bem! Seu chamado foi avaliado.`,
         title: "Chamado avaliado",
         persistent: true,
         active: true,
@@ -152,7 +151,7 @@ export default class Available extends BaseComponent {
 
   initDialog(): void {
     this.changeMainDialog({
-      msg: `O chamado #${this.order_data.id} foi finalizado! agora você pode fazer a sua avaliação.`,
+      msg: `O chamado #${this.order_data.id} foi finalizado! Agora você pode fazer a sua avaliação.`,
       title: "Chamado finalizado",
       persistent: false,
       active: true,

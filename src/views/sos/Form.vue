@@ -242,13 +242,13 @@ export default class Available extends BaseComponent {
   obrigatory = [(v: string) => !!v || "Campo obrigatório"];
   files_rules = [
     (f: File) =>
-      (!!f && f?.size < 5e6) ||
-      "Envio de imagem obrigatório com no máximo 5 MB",
+      (!!f && f?.size < 25e6) ||
+      "Envio de imagem obrigatório com no máximo 25 MB",
   ];
   size_rule = [
     (f: File) => {
       if (f) {
-        f?.size < 5e6 || "Tamanho da imagem deve ser menor que 5 MB";
+        f?.size < 25e6 || "Tamanho da imagem deve ser menor que 25 MB";
       }
     },
   ];

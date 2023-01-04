@@ -3,15 +3,20 @@
     <v-card-title> Chamado #{{ data.id }} </v-card-title>
     <v-responsive :aspect-ratio="16 / 8">
       <v-col class="pt-0 pb-0">
-        <iframe
-          :src="`https://maps.google.com/maps?q=${coordinates}&amp;hl=ptbr;z=16.25&amp;output=embed`"
-          style="border: 0"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
+        <v-img
+          :lazy-src="`https://maps.googleapis.com/maps/api/staticmap?\
+                  center=${coordinates}\
+                  &zoom=17&size=400x400\
+                  &markers=color:red%7Clabel:C%7C${coordinates}\
+                  &key=${apiKey}`"
           height="300"
           width="100%"
-        ></iframe>
+          :src="`https://maps.googleapis.com/maps/api/staticmap?\
+                  center=${coordinates}\
+                  &zoom=17&size=400x400\
+                  &markers=color:red%7Clabel:C%7C${coordinates}\
+                  &key=${apiKey}`"
+        ></v-img>
       </v-col>
     </v-responsive>
     <v-card-text class="pt-0">
@@ -109,6 +114,7 @@ export default class SosCard extends BaseComponent {
   profile = {} as any;
   user_types = user_types;
   user_type = -1;
+  apiKey = "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88";
 
   get service_name(): string {
     return items.find((x) => x.id == this.data.service_type)?.name || "";

@@ -95,7 +95,9 @@ export default class Available extends BaseComponent {
   }
 
   backButton() {
-    this.$router.push({ path: "/sos/" });
+    this.$router.push({
+      path: "https://app.clubesantuu.com.br/web/associate/home",
+    });
   }
 
   created() {

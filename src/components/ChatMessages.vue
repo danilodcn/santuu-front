@@ -7,7 +7,11 @@
         class="row-message"
       >
         <div class="message">
-          <v-col class="text"> {{ message.message }} <br /> </v-col>
+          <v-col class="text"
+            ><span style="word-break: break-word">
+              {{ message.message }}</span
+            ></v-col
+          >
           <v-col class="hour">
             {{
               leftPad(new Date(message.time).getHours(), 2, "0") +
