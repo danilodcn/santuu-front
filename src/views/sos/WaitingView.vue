@@ -219,7 +219,6 @@ export default class Available extends BaseComponent {
 
   sendToBegin() {
     this.$router.push({ path: "/sos/home/" });
-    location.reload();
   }
 
   async checkMechanic() {
@@ -372,7 +371,7 @@ export default class Available extends BaseComponent {
     setTimeout(this.refreshingTimeline, 5000);
     this.interval_1 = setInterval(this.hasNewMsg, 5000);
     this.interval_2 = setInterval(this.getOrder, 5000);
-    this.interval_3 = setInterval(this.get_mechanic_position, 7000);
+    this.interval_3 = setInterval(this.get_mechanic_position, 3000);
   }
 
   async getOrder() {

@@ -82,10 +82,12 @@ export default class ChatMessages extends Vue {
   border-radius: 5px;
   font-size: 1em;
   background: #eeeeee;
+  height: fit-content;
 }
 .container-messages {
   max-height: 100%;
   overflow: scroll;
+  height: fit-content;
 }
 .container-messages::-webkit-scrollbar {
   display: none;

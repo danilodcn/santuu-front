@@ -600,7 +600,7 @@ export default class Available extends BaseComponent {
     this.checkMechanic();
     this.interval_1 = setInterval(this.getOrder, 5000);
     this.interval_2 = setInterval(this.hasNewMsg, 5000);
-    this.interval_3 = setInterval(this.sendLocation, 7000);
+    this.interval_3 = setInterval(this.sendLocation, 3000);
   }
 
   sendToBegin() {
