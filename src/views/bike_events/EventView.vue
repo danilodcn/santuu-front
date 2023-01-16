@@ -130,7 +130,7 @@
               v-else-if="!bike_event.registered"
               class="button primary"
               :to="`/bike-events/quiz/?quiz=${quizID}`"
-              v-text="'Quero me inscrever'"
+              v-text="'Continuar inscrição'"
             />
             <span v-else>Você já está cadastrado</span>
             <v-icon

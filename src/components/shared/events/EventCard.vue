@@ -1,9 +1,6 @@
 <template>
   <v-card>
-    <v-card
-      elevation="0"
-      :to="'/bike-events/event?event_id=' + data.id.toString()"
-    >
+    <v-card elevation="0">
       <v-responsive :aspect-ratio="16 / 9">
         <v-img
           class="poster"
@@ -42,9 +39,17 @@
     </v-card>
     <v-container fluid v-if="data.has_raffle">
       <v-btn
+        :to="'/bike-events/event?event_id=' + data.id.toString()"
+        color="primary"
+        width="100%"
+        class="mb-1"
+        >quero me inscrever</v-btn
+      >
+      <v-btn
         @click="handlePresenceConfirmation"
         color="primary"
         width="100%"
+        class="mt-1"
         :disabled="disableButtonConfirmation"
         >quero participar do sorteio</v-btn
       >
