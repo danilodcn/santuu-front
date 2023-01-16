@@ -40,6 +40,15 @@ import { ILane } from "@/types/sos";
 export default class Available extends BaseComponent {
   lanes: ILane[] = [];
   type = this.$route.query.type as string;
+  is_mechanic = false;
+
+  async check_mechanic() {
+    this.changeLoading(true);
+    let response = await sosService.checkMechanic();
+    if(response.is_mechanic){
+      this.$router.push({ path: "/sos/home/" })
+    };
+  }
 
   async getLanes() {
     this.changeLoading(true);
@@ -66,6 +75,7 @@ export default class Available extends BaseComponent {
 
   created() {
     this.getLanes();
+    check_mechanic();
     // this.handle();
   }
 }
