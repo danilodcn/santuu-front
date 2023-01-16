@@ -45,9 +45,9 @@ export default class Available extends BaseComponent {
   async check_mechanic() {
     this.changeLoading(true);
     let response = await sosService.checkMechanic();
-    if(response.is_mechanic){
-      this.$router.push({ path: "/sos/home/" })
-    };
+    if (response.is_mechanic) {
+      this.$router.push({ path: "/sos/home/" });
+    }
   }
 
   async getLanes() {
