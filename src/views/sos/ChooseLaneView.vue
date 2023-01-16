@@ -75,7 +75,7 @@ export default class Available extends BaseComponent {
 
   created() {
     this.getLanes();
-    check_mechanic();
+    this.check_mechanic();
     // this.handle();
   }
 }
