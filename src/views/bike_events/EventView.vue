@@ -126,6 +126,9 @@
             <span v-if="bike_event.status == '3' || bike_event.status == '4'">
               Evento finalizado!
             </span>
+            <v-btn dislabed v-else-if="event_id == '8'">
+              Inscrições encerradas!
+            </v-btn>
             <v-btn
               v-else-if="!bike_event.registered"
               class="button primary"
