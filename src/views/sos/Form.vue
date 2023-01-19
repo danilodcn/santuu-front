@@ -167,7 +167,30 @@
         </v-toolbar-title>
       </v-toolbar>
       <div>
-        <v-row no-gutters>
+        <v-row v-if="center.lat == undefined || center.lng == undefined">
+          <v-col cols="12 px-8">
+            <p>Não foi possível acessar sua localização!</p>
+            <p class="grey--text text--darken-4 text-subtitle-1">
+              Autorize o acesso à localização pelo seu navegador em
+            </p>
+            <p class="grey--text text--darken-4 text-subtitle-1">
+              <span class="font-weight-bold">iPhone:</span> <br />
+              Ajustes » Privacidade » Serviços de Localização » Sites do Safari
+              » Durante o uso do app
+            </p>
+            <p class="grey--text text--darken-4 text-subtitle-1">
+              <span class="font-weight-bold">Android:</span> <br />
+              Configurações » Localização » Navegador utilizado » Permitir
+              durante o uso do app
+            </p>
+            <p class="grey--text text--darken-4 text-subtitle-1">
+              Para que o site possa acessar sua localização, você deve permitir
+              quando perguntado. Caso a pergunta não apareça, você pode permitir
+              através das configurações do site pelo navegador.
+            </p>
+          </v-col>
+        </v-row>
+        <v-row no-gutters v-else>
           <v-col cols="12 px-8">
             <GmapMap
               :center="center"
@@ -184,7 +207,10 @@
           </v-col>
         </v-row>
       </div>
-      <v-row class="mt-1">
+      <v-row
+        class="mt-1"
+        v-if="!(center.lat == undefined || center.lng == undefined)"
+      >
         <v-col cols="12 px-8">
           <div class="text-center">
             <v-btn color="success" @click="buttonConfirmPosition()">
