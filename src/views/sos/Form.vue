@@ -171,15 +171,15 @@
           <v-col cols="12 px-8">
             <p>Não foi possível acessar sua localização!</p>
             <p class="grey--text text--darken-4 text-subtitle-1">
-              Autorize o acesso à localização pelo seu navegador em
+              Autorize o acesso à localização pelo seu navegador em:
             </p>
             <p class="grey--text text--darken-4 text-subtitle-1">
-              <span class="font-weight-bold">iPhone:</span> <br />
+              <span class="font-weight-bold">iPhone</span> <br />
               Ajustes » Privacidade » Serviços de Localização » Sites do Safari
               » Durante o uso do app
             </p>
             <p class="grey--text text--darken-4 text-subtitle-1">
-              <span class="font-weight-bold">Android:</span> <br />
+              <span class="font-weight-bold">Android</span> <br />
               Configurações » Localização » Navegador utilizado » Permitir
               durante o uso do app
             </p>
