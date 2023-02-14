@@ -220,7 +220,9 @@ export default class UpdateProposal extends BaseComponent {
   }
 
   async getData() {
-    const proposal = await proposalService.getProposal(this.proposalId);
+    const proposal = await proposalService.getProposal(
+      Number(this.$route.params.proposal_id)
+    );
     this.userId = proposal.associate.id;
     if (this.userId) {
       const response = await userDataService.getUserData(this.userId);
