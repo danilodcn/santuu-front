@@ -3,7 +3,6 @@
     <v-card
       elevation="0"
       :disabled="!data.operating"
-      v-if="data.active"
       @click="handleLaneClick(data)"
     >
       <div @click="toForm(data)">

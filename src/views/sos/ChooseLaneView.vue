@@ -12,7 +12,13 @@
     <div class="lanes">
       <v-row>
         <template v-for="(lane, i) in lanes">
-          <v-col cols="12" sm="6" md="4" v-if="lane" :key="`lane-${i}`">
+          <v-col
+            cols="12"
+            sm="6"
+            md="4"
+            v-if="lane && lane.active"
+            :key="`lane-${i}`"
+          >
             <lane-card :data="lane" />
           </v-col>
         </template>
