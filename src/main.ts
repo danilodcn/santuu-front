@@ -11,7 +11,7 @@ Vue.directive("mask", VueMaskDirective);
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: "AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ",
+    key: "AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88",
     libraries: "places",
   },
 });

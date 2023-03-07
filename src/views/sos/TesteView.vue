@@ -41,7 +41,7 @@ export default class MapDirections extends Vue {
       origin=-4.951202708685028,-47.50240351692399\
       &destination=-4.951169640013109,-47.50147841208672\
       &mode=bicycling\
-      &key=AIzaSyDkHRIc73aAeYGZrWQ6423o4BTxoNnAGfQ"
+      &key=AIzaSyDVMlhAb27wQjAxWhww-vEKbmUtQXZjE88"
     )
       .then((data) => data.json())
       .catch((err) => console.log(err));
