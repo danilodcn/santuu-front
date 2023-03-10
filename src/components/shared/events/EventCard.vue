@@ -37,8 +37,9 @@
         </v-col>
       </v-card-title>
     </v-card>
-    <v-container fluid v-if="data.has_raffle">
+    <v-container fluid>
       <v-btn
+        v-if="data.final_date > new Date().toISOString()"
         :to="'/bike-events/event?event_id=' + data.id.toString()"
         color="primary"
         width="100%"
@@ -46,6 +47,10 @@
         >quero me inscrever</v-btn
       >
       <v-btn
+        v-if="
+          data.has_raffle &&
+          new Date(data.final_date).getTime() > now_plus_3_days_ms
+        "
         @click="handlePresenceConfirmation"
         color="primary"
         width="100%"
@@ -79,6 +84,8 @@ interface ICardData {
 export default class EventCard extends BaseComponent {
   @Prop() data!: ICardData;
   disableButtonConfirmation = false;
+  now_ms = new Date().getTime();
+  now_plus_3_days_ms = new Date().getTime() - 3 * 24 * 60 * 60 * 1000;
 
   get date(): string {
     return formatDate(this.data.initial_date);
