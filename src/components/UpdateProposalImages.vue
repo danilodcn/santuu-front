@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mt-5 justify-start mb-14" v-if="isMobile">
+  <v-row class="mt-5 justify-start mb-14" v-if="mobile">
     <template v-for="item in missingImages">
       <v-col
         cols="8"
