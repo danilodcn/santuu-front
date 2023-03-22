@@ -81,14 +81,14 @@
           >www.clubesantuu.com.br/web</a
         >) pelo CELULAR.
       </p>
-      <div class="content-send">
+      <div class="send-content">
         <p class="desc-comunicate">
           Para continuar com sua proposta, <br />
           basta fazer o login e <br />
           clicar no botão Propostas em Andamento.
         </p>
       </div>
-      <div class="content-send">
+      <div class="send-content">
         <p class="desc-comunicate">
           Não aceitamos Upload de imagens antigas por questões de segurança.
         </p>

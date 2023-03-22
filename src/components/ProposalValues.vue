@@ -692,7 +692,9 @@ export default class ProposalValues extends Vue {
         enabled: enabled,
       },
     ];
+    this.changeLoading(true);
     const response = await coverageService.updateCoverage(updates);
+    this.changeLoading(false);
     this.getProposal(parseInt(this.proposal_id));
   }
 

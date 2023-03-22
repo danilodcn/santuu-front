@@ -103,7 +103,7 @@ export default class Available extends BaseComponent {
   created() {
     this.check_mechanic();
     this.getOpenOrder();
-    this.interval = setInterval(this.getOpenOrder, 5000);
+    this.interval = setInterval(this.getOpenOrder, 8000);
   }
   beforeUnmount() {
     clearInterval(this.interval);

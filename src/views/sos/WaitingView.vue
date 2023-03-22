@@ -20,20 +20,32 @@
             <p
               class="body-2 font-weight-medium"
               :style="`color: ${getColorByStatus(x.status)}`"
+              v-if="x.position == 0"
+            >
+              {{
+                order_data.mechanic
+                  ? `Seu chamado foi atribuído ao mecânico ${order_data.mechanic_name}`
+                  : `${x.status_text}`
+              }}
+            </p>
+            <p
+              v-else
+              class="body-2 font-weight-medium"
+              :style="`color: ${getColorByStatus(x.status)}`"
             >
               {{ `${x.status_text}` }}
             </p>
           </v-timeline-item>
         </v-timeline>
       </v-row>
-      <v-row
+      <!-- <v-row
         class="col-xs-12 offset-xs-0 col-md-6 offset-md-3 my-0 px-6"
         v-if="order_data.mechanic"
       >
         <p class="body-2 col-12 pa-0 ma-0">
           Mecânico: {{ order_data.mechanic_name }}
         </p>
-      </v-row>
+      </v-row> -->
       <v-card-actions class="my-3">
         <v-row justify="center" class="mx-1" v-if="!isFinished || cancelled">
           <v-btn
@@ -196,11 +208,15 @@ export default class Available extends BaseComponent {
   }
 
   async get_mechanic_position() {
-    const response = await sosService.getMechanicPosition(this.order_data.id);
-    let coords = JSON.parse(response.coordinates);
-    this.mechanicPosition = JSON.parse(
-      `{"lat": ${coords.lat}, "lng": ${coords.lng} }`
-    );
+    if (this.order_data.mechanic) {
+      const response = await sosService.getMechanicPosition(this.order_data.id);
+      let coords = JSON.parse(response.coordinates);
+      this.mechanicPosition = JSON.parse(
+        `{"lat": ${coords.lat}, "lng": ${coords.lng} }`
+      );
+    } else {
+      this.mechanicPosition = JSON.parse(`{"lat": 45.0, "lng": 10.0 }`);
+    }
   }
 
   backButton() {

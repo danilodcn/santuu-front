@@ -86,7 +86,7 @@ export default class MainDialog extends Vue {
     this.dialog.termsAndConditions = false;
     this.dialog.btnOkCancel = false;
     this.dialog.isResponseOk = value;
-    this.$store.commit(MutationTypes.CHANGE_COVERAGES, this.dialog);
+    this.$store.commit(MutationTypes.CHANGE_ENABLED, this.dialog);
   }
 }
 </script>
