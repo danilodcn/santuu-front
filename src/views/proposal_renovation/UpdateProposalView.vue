@@ -90,7 +90,7 @@
                 color="primary"
                 class="mx-2 mx-md-5"
                 @click="sendAllImages()"
-                :disabled="mobile"
+                :disabled="!mobile"
               >
                 Avançar
               </v-btn>
