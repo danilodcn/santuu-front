@@ -126,11 +126,22 @@ interface IProgramImage {
   },
 })
 export default class UpdateProposalImages extends BaseComponent {
-  navigatorData = navigator as any;
-  isMobile = this.navigatorData.userAgentData.mobile;
+  mobile = this.isMobile();
   @Prop() proposal_id?: number;
   missingImages = [] as IProgramImage[];
   imagesConfig = imagesConfig;
+
+  isMobile() {
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   getImageConfig(identifier: number) {
     const imageConfig = imagesConfig.find(

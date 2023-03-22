@@ -113,7 +113,7 @@ export default class Available extends BaseComponent {
   termsAndConditions: Terms[] = [
     {
       message:
-        "Ao marcar este campo, concordo com os dados e valores acima para efetuar o pagamento da proposta.",
+        "Ao marcar este campo, você concorda com os dados e valores acima para efetuar o pagamento da proposta.",
     },
   ];
 
@@ -146,7 +146,7 @@ export default class Available extends BaseComponent {
     if (this.proposal.renewed_by_admin) {
       this.termsAndConditions.push({
         message:
-          "Você só terá direito ao desconto caso o pagamento seja feito com uma parcela",
+          "Você só terá direito ao desconto caso o pagamento seja feito com uma parcela!",
       });
     }
     this.setValues();
@@ -161,7 +161,7 @@ export default class Available extends BaseComponent {
       {
         value: formatDateDetail(this.proposal.proposal_duration),
         description:
-          "A renovação terá vigência a partir do termino da cobertura atual e não a data de pagamento.",
+          "A renovação terá vigência a partir do termino da cobertura atual e não a data de pagamento!",
       },
       {
         value: formatPrice(this.discount.new_iof),
@@ -184,7 +184,7 @@ export default class Available extends BaseComponent {
               }%)`
             : formatPrice(0),
         description: this.proposal.renewed_by_admin
-          ? "O desconto só é aplicado se o pagamento for à vista"
+          ? "O desconto só é aplicado se o pagamento for à vista!"
           : "",
       },
       {
