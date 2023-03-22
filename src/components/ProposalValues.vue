@@ -720,9 +720,9 @@ export default class ProposalValues extends Vue {
       this.changeMainDialog({
         active: true,
         bntClose: true,
-        msg: "Esta cobertura é básica e não pode ser desativada.",
+        msg: "Esta cobertura é básica e não pode ser desativada!",
         persistent: false,
-        title: "Erro",
+        title: "Erro!",
       });
     }
   }
@@ -749,7 +749,7 @@ export default class ProposalValues extends Vue {
         bntClose: true,
         msg: "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
         persistent: false,
-        title: "Erro",
+        title: "Erro!",
       });
     }
   }
@@ -781,12 +781,12 @@ export default class ProposalValues extends Vue {
     if ((this.$route as any).query.has_new_coverage != "false") {
       this.changeMainDialog({
         msg: "Existem novas coberturas disponíveis para essa proposta!",
-        title: "Atenção",
+        title: "Atenção!",
         persistent: false,
         active: true,
         bntClose: true,
         btnOkOnly: true,
-        msgOk: "OK",
+        msgOk: "Ok!",
         ident: false,
       });
     }
@@ -799,7 +799,7 @@ export default class ProposalValues extends Vue {
     if (response.error) {
       this.changeMainDialog({
         msg: "Erro!",
-        title: "Erro",
+        title: "Erro!",
         persistent: true,
         active: true,
         bntClose: true,

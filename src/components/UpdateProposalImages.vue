@@ -292,7 +292,7 @@ export default class UpdateProposalImages extends BaseComponent {
       msg:
         response.axiosError.response.data?.error ||
         "Não foi possível realizar esta ação",
-      title: "Erro",
+      title: "Erro!",
       persistent: false,
       active: true,
       bntClose: true,

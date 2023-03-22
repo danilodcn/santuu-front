@@ -130,7 +130,7 @@ export default class QuizView extends VuePlus {
     this.changeLoading(false);
     this.changeMainDialog({
       msg: response.axiosError.response.data.error,
-      title: "Erro",
+      title: "Erro!",
       persistent: true,
       active: true,
       bntClose: true,

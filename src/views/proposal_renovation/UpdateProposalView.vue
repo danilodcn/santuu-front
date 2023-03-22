@@ -26,7 +26,7 @@
               :update="canUpdateData"
             ></update-data>
             <v-row justify="space-between" class="ma-0 mt-7">
-              <v-btn text class="mx-2 mx-md-5"> Voltar </v-btn>
+              <v-btn text class="mx-2 mx-md-5" @click="back()"> Voltar </v-btn>
               <v-btn
                 color="primary"
                 class="mx-2 mx-md-5"
@@ -148,8 +148,8 @@ export default class UpdateProposal extends BaseComponent {
     this.changeMainDialog({
       msg:
         response.axiosError.response.data?.error ||
-        "Não foi possível continuar com sua renovação",
-      title: "Erro",
+        "Não foi possível continuar com sua renovação!",
+      title: "Erro!",
       persistent: false,
       active: true,
       bntClose: true,
@@ -212,13 +212,13 @@ export default class UpdateProposal extends BaseComponent {
     if (success) {
       if (proposal.status == WAITING_FOR_CUSTOMER_ANALYSIS) {
         this.changeMainDialog({
-          msg: "Sua proposta será analisada pela Santuu",
-          title: "Aguarde",
+          msg: "Sua proposta será analisada pela nossa equipe!",
+          title: "Aguarde!",
           persistent: true,
           active: true,
           bntClose: false,
           btnOkOnly: true,
-          msgOk: "ok",
+          msgOk: "Ok!",
           afterFunction: this.toHomePage,
           ident: false,
         });
@@ -228,7 +228,7 @@ export default class UpdateProposal extends BaseComponent {
     }
   }
 
-  toHomePage(value: boolean) {
+  toHomePage() {
     this.$router.push({ name: "certificates" });
   }
 
@@ -250,7 +250,7 @@ export default class UpdateProposal extends BaseComponent {
     if (response.error) {
       this.changeMainDialog({
         msg: "Erro!",
-        title: "Erro",
+        title: "Erro!",
         persistent: true,
         active: true,
         bntClose: true,
@@ -261,7 +261,9 @@ export default class UpdateProposal extends BaseComponent {
     }
   }
   back() {
-    this.$router.push({ path: `/proposal/proposal-values/${this.proposalId}` });
+    this.$router.push({
+      path: `/renovation/proposal-values/${this.proposalId}`,
+    });
   }
   created() {
     this.getData();

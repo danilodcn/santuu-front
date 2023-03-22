@@ -182,7 +182,7 @@ export default class CertificatesView extends Vue {
       }
       this.changeMainDialog({
         msg: msg,
-        title: "Erro",
+        title: "Erro!",
         persistent: true,
         active: true,
         btnOkOnly: true,
@@ -206,7 +206,7 @@ export default class CertificatesView extends Vue {
       msg:
         response.axiosError.response.data.error ||
         response.axiosError.response.data.detail,
-      title: "Erro",
+      title: "Erro!",
       persistent: true,
       active: true,
       bntClose: true,

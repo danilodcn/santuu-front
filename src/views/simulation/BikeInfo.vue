@@ -602,12 +602,12 @@ export default class BikeInfo extends VuePlus {
         .reverse()
         .join("/");
       message = `O voucher selecionado é válido até o dia ${formattedDate} e possui desconto de <strong>${voucher.discountPercentage}%</strong>`;
-      title = "Sucesso";
+      title = "Sucesso!";
       persistent = false;
     } else {
       this.form.voucher = "";
       message = "Esse voucher não é válido! <strong>Tente outro!</strong>";
-      title = "Erro";
+      title = "Erro!";
       persistent = true;
     }
     this.changeMainDialog({
@@ -705,8 +705,8 @@ export default class BikeInfo extends VuePlus {
       this.$router.push(`/simulation/proposal-values/${proposal_id}`);
     } else {
       this.changeMainDialog({
-        msg: "Validação necessária",
-        title: "Erro",
+        msg: "Validação necessária!",
+        title: "Erro!",
         persistent: false,
         active: true,
         bntClose: true,
@@ -718,8 +718,8 @@ export default class BikeInfo extends VuePlus {
     this.changeMainDialog({
       msg:
         response.axiosError.response.data?.error ||
-        "Não foi possível continuar com a proposta, verifique o valor preenchido e os outros dados",
-      title: "Erro",
+        "Não foi possível continuar com a proposta, verifique o valor preenchido e os outros dados!",
+      title: "Erro!",
       persistent: false,
       active: true,
       bntClose: true,

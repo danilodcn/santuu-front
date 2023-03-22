@@ -556,7 +556,7 @@ export default class ProposalValues extends Vue {
         bntClose: true,
         msg: "Esta cobertura é básica e não pode ser desativada.",
         persistent: false,
-        title: "Erro",
+        title: "Erro!",
       });
     }
   }
@@ -584,7 +584,7 @@ export default class ProposalValues extends Vue {
         bntClose: true,
         msg: "Premio Bruto mínimo atingido e todas as coberturas estão habilitadas. O valor final do seguro não será alterado ao excluir coberturas. Portanto, essa função está desabilitada para o valor da bicicleta inserida.",
         persistent: false,
-        title: "Erro",
+        title: "Erro!",
       });
     }
   }
