@@ -6,7 +6,7 @@
         :key="keyResume"
         class="pb-0 table-Description"
       >
-        Finalizar Renovação <br />
+        Finalizar renovação <br />
         <br />
         <h6>Segue um resumo da sua renovação:</h6>
       </DetailBox>
@@ -164,14 +164,16 @@ export default class Available extends BaseComponent {
           "A renovação terá vigência a partir do termino da cobertura atual e não a data de pagamento!",
       },
       {
-        value: formatPrice(this.discount.new_iof),
+        value: "RS: " + formatPrice(this.discount.new_iof),
         description: "",
       },
       {
-        value: formatPrice(
-          Number(this.proposal.insurance_premium) +
-            Number(this.discount.discount)
-        ),
+        value:
+          "RS: " +
+          formatPrice(
+            Number(this.proposal.insurance_premium) +
+              Number(this.discount.discount)
+          ),
         description: "",
       },
       {
@@ -179,7 +181,8 @@ export default class Available extends BaseComponent {
           this.paymentChoice == "Crédito 1x" ||
           !this.paymentChoice ||
           !this.proposal.renewed_by_admin
-            ? `${formatPrice(this.discount.discount)}(${
+            ? "RS: " +
+              `${formatPrice(this.discount.discount)} (${
                 this.discount.discount_percent_renew
               }%)`
             : formatPrice(0),
@@ -192,8 +195,9 @@ export default class Available extends BaseComponent {
           this.paymentChoice == "Crédito 1x" ||
           !this.paymentChoice ||
           !this.proposal.renewed_by_admin
-            ? formatPrice(this.proposal.insurance_premium)
-            : formatPrice(
+            ? "RS: " + formatPrice(this.proposal.insurance_premium)
+            : "RS: " +
+              formatPrice(
                 Number(this.proposal.insurance_premium) +
                   Number(this.discount.discount)
               ),

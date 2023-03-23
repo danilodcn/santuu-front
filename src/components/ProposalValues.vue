@@ -416,7 +416,7 @@ const titlesBike: IDetailedInfo[] = [
     description: "",
   },
   {
-    value: "Valor da Bicicleta nova",
+    value: "Valor da bicicleta nova",
     description: "",
   },
 ];
@@ -435,7 +435,7 @@ const tableBike = {
 
 const titlesInstallments: IDetailedInfo[] = [
   {
-    value: "Data de Pagamento",
+    value: "Data de pagamento",
     description: "",
   },
   {
