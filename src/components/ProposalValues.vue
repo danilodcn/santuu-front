@@ -338,7 +338,7 @@
         <PriceBox
           :bold="true"
           :good="true"
-          v-if="proposal.proposal_bids"
+          v-if="proposal.number_of_installments"
           :numberInstallments="proposal.number_of_installments"
           :price="finalPrice"
           >Em até<InfoDialog text="Máximo número de parcelas">
@@ -567,9 +567,8 @@ export default class ProposalValues extends Vue {
   setValues() {
     // Criando tabela de resumo da proposta
 
-    if (this.proposal.proposal_bids.length) {
-      const numberInstallments =
-        this.proposal.proposal_bids[0].number_of_installments;
+    if (this.proposal.number_of_installments) {
+      const numberInstallments = this.proposal.number_of_installments;
 
       var installments =
         numberInstallments == null

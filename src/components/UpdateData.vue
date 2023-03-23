@@ -132,7 +132,7 @@
       <v-col cols="12" md="5">
         <v-select
           class="input-info"
-          :rules="[(v) => v != null || 'Campo obrigatório!']"
+          :rules="obrigatory"
           color="grey"
           v-model="form.share_pep_information"
           attach
@@ -360,6 +360,7 @@ export default class UpdateData extends BaseComponent {
       delete response[0].address;
       this.form = response[0];
       this.emailConfirmation = this.form.email;
+      this.form.share_pep_information = "false";
     }
   }
 
