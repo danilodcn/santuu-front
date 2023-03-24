@@ -284,7 +284,10 @@
         class="ma-0 pa-0 d-none d-md-flex"
         v-if="hasVoucherDiscount || hasProgramDiscount"
       >
-        <PriceBox :good="true" :bold="false" :price="proposal.gross_insurance_premium"
+        <PriceBox
+          :good="true"
+          :bold="false"
+          :price="proposal.gross_insurance_premium"
           >Prêmio bruto total
           <InfoDialog
             text="Termo utilizado para definir o preço final em dinheiro que o segurado paga ao segurador, incluídos os encargos (IOF), para que este assuma um determinado conjunto de riscos, pagando-lhe uma indenização em caso de sinistro"
