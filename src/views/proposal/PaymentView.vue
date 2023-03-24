@@ -76,7 +76,7 @@ const titlesDescription: IDetailedInfo[] = [
     description: "",
   },
   {
-    value: "Valor:",
+    value: "Valor sem desconto:",
     description: "",
   },
   {
