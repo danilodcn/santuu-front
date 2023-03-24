@@ -52,6 +52,7 @@ type Proposal = {
   insurance_premium: number;
   proposal_duration: string;
   renewed_by_admin: boolean;
+  original_proposal: number;
 };
 
 type Discount = {
@@ -105,6 +106,7 @@ export default class Available extends BaseComponent {
   id_proposal = this.$route.params.proposal_id;
   paymentModel = {};
   proposal = {} as Proposal;
+  old_proposal = {} as Proposal;
   amount = 0;
   keyResume = 0;
   tableDescription = tableDescription;
@@ -141,6 +143,7 @@ export default class Available extends BaseComponent {
 
   async getProposal() {
     this.proposal = await proposalService.getSimpleProposal(this.id_proposal);
+    this.old_proposal = await proposalService.getSimpleProposal(this.proposal.original_proposal);
     this.discount = await proposalService.getDiscountRenew(this.id_proposal);
     this.amount = this.proposal.insurance_premium;
     if (this.proposal.renewed_by_admin) {
@@ -159,7 +162,7 @@ export default class Available extends BaseComponent {
   setValues() {
     const description = [
       {
-        value: formatDateDetail(this.proposal.proposal_duration),
+        value: formatDateDetail(this.old_proposal.proposal_duration),
         description:
           "A renovação terá vigência a partir do termino da cobertura atual e não a data de pagamento!",
       },
