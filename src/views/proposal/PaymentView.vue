@@ -143,7 +143,9 @@ export default class Available extends BaseComponent {
 
   async getProposal() {
     this.proposal = await proposalService.getSimpleProposal(this.id_proposal);
-    this.old_proposal = await proposalService.getSimpleProposal(this.proposal.original_proposal);
+    this.old_proposal = await proposalService.getSimpleProposal(
+      this.proposal.original_proposal
+    );
     this.discount = await proposalService.getDiscountRenew(this.id_proposal);
     this.amount = this.proposal.insurance_premium;
     if (this.proposal.renewed_by_admin) {
