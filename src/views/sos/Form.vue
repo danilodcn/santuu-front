@@ -284,7 +284,7 @@ export default class Available extends BaseComponent {
   mapping = false;
   cyclistPosition = { lat: -23.585435911394608, lng: -46.45477146101012 };
   imgLocDefault =
-    "https://www.nicepng.com/png/full/10-100907_location-black-black-location-icon-png.png";
+    "https://png.pngtree.com/png-clipart/20190516/original/pngtree-location-vector-icon-png-image_4017380.jpg";
   cardText = "Clique aqui para ativar sua localização";
   img_updated = false;
   profile = {} as any;

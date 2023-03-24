@@ -292,7 +292,37 @@
           Localização
         </v-toolbar-title>
       </v-toolbar>
-      <div v-if="true">
+      <v-row
+        v-if="
+          (mechanicPosition.lat == -23.585435911394608 &&
+            mechanicPosition.lng == -46.45477146101012) ||
+          mechanicPosition.lat == undefined ||
+          mechanicPosition.lng == undefined
+        "
+      >
+        <v-col cols="12 px-8">
+          <p>Não foi possível acessar sua localização!</p>
+          <p class="grey--text text--darken-4 text-subtitle-1">
+            Autorize o acesso à localização pelo seu navegador em:
+          </p>
+          <p class="grey--text text--darken-4 text-subtitle-1">
+            <span class="font-weight-bold">iPhone</span> <br />
+            Ajustes » Privacidade » Serviços de Localização » Sites do Safari »
+            Durante o uso do app
+          </p>
+          <p class="grey--text text--darken-4 text-subtitle-1">
+            <span class="font-weight-bold">Android</span> <br />
+            Configurações » Localização » Navegador utilizado » Permitir durante
+            o uso do app
+          </p>
+          <p class="grey--text text--darken-4 text-subtitle-1">
+            Para que o site possa acessar sua localização, você deve permitir
+            quando perguntado. Caso a pergunta não apareça, você pode permitir
+            através das configurações do site pelo navegador.
+          </p>
+        </v-col>
+      </v-row>
+      <div v-else>
         <v-row no-gutters>
           <v-col cols="12">
             <GmapMap
@@ -362,7 +392,7 @@ export default class Available extends BaseComponent {
   mapping = false;
   haveOpenOrder = false;
   imgLocDefault =
-    "https://www.nicepng.com/png/full/10-100907_location-black-black-location-icon-png.png";
+    "https://png.pngtree.com/png-clipart/20190516/original/pngtree-location-vector-icon-png-image_4017380.jpg";
   img_updated = false;
   cpf = "000.000.000-00";
   service_name = "";
