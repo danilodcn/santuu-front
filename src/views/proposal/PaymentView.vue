@@ -6,7 +6,7 @@
         :key="keyResume"
         class="pb-0 table-Description"
       >
-        Finalizar Renovação <br />
+        Finalizar renovação <br />
         <br />
         <h6>Segue um resumo da sua renovação:</h6>
       </DetailBox>
@@ -113,7 +113,7 @@ export default class Available extends BaseComponent {
   termsAndConditions: Terms[] = [
     {
       message:
-        "Ao marcar este campo, concordo com os dados e valores acima para efetuar o pagamento da proposta.",
+        "Ao marcar este campo, você concorda com os dados e valores acima para efetuar o pagamento da proposta.",
     },
   ];
 
@@ -146,7 +146,7 @@ export default class Available extends BaseComponent {
     if (this.proposal.renewed_by_admin) {
       this.termsAndConditions.push({
         message:
-          "Você só terá direito ao desconto caso o pagamento seja feito com uma parcela",
+          "Você só terá direito ao desconto caso o pagamento seja feito com uma parcela!",
       });
     }
     this.setValues();
@@ -161,17 +161,19 @@ export default class Available extends BaseComponent {
       {
         value: formatDateDetail(this.proposal.proposal_duration),
         description:
-          "A renovação terá vigência a partir do termino da cobertura atual e não a data de pagamento.",
+          "A renovação terá vigência a partir do termino da cobertura atual e não a data de pagamento!",
       },
       {
-        value: formatPrice(this.discount.new_iof),
+        value: "RS: " + formatPrice(this.discount.new_iof),
         description: "",
       },
       {
-        value: formatPrice(
-          Number(this.proposal.insurance_premium) +
-            Number(this.discount.discount)
-        ),
+        value:
+          "RS: " +
+          formatPrice(
+            Number(this.proposal.insurance_premium) +
+              Number(this.discount.discount)
+          ),
         description: "",
       },
       {
@@ -179,12 +181,13 @@ export default class Available extends BaseComponent {
           this.paymentChoice == "Crédito 1x" ||
           !this.paymentChoice ||
           !this.proposal.renewed_by_admin
-            ? `${formatPrice(this.discount.discount)}(${
+            ? "RS: " +
+              `${formatPrice(this.discount.discount)} (${
                 this.discount.discount_percent_renew
               }%)`
             : formatPrice(0),
         description: this.proposal.renewed_by_admin
-          ? "O desconto só é aplicado se o pagamento for à vista"
+          ? "O desconto só é aplicado se o pagamento for à vista!"
           : "",
       },
       {
@@ -192,8 +195,9 @@ export default class Available extends BaseComponent {
           this.paymentChoice == "Crédito 1x" ||
           !this.paymentChoice ||
           !this.proposal.renewed_by_admin
-            ? formatPrice(this.proposal.insurance_premium)
-            : formatPrice(
+            ? "RS: " + formatPrice(this.proposal.insurance_premium)
+            : "RS: " +
+              formatPrice(
                 Number(this.proposal.insurance_premium) +
                   Number(this.discount.discount)
               ),

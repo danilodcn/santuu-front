@@ -322,7 +322,7 @@ export default class ProfileView extends BaseComponent {
 
       let title = "Sucesso!";
       if (error) {
-        title = "Erro ao atualizar o perfil";
+        title = "Erro ao atualizar o perfil!";
       }
       this.changeMainDialog({
         active: true,
@@ -336,8 +336,8 @@ export default class ProfileView extends BaseComponent {
       this.changeMainDialog({
         active: true,
         bntClose: true,
-        title: "Erro na validação do formulário",
-        msg: "Campos obrigatórios não preenchidos",
+        title: "Erro na validação do formulário!",
+        msg: "Campos obrigatórios não preenchidos!",
         persistent: false,
       });
     }

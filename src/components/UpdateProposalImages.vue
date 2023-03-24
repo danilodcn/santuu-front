@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mt-5 justify-start mb-14" v-if="isMobile">
+  <v-row class="mt-5 justify-start mb-14" v-if="mobile">
     <template v-for="item in missingImages">
       <v-col
         cols="8"
@@ -81,14 +81,14 @@
           >www.clubesantuu.com.br/web</a
         >) pelo CELULAR.
       </p>
-      <div class="content-send">
+      <div class="send-content">
         <p class="desc-comunicate">
           Para continuar com sua proposta, <br />
           basta fazer o login e <br />
           clicar no botão Propostas em Andamento.
         </p>
       </div>
-      <div class="content-send">
+      <div class="send-content">
         <p class="desc-comunicate">
           Não aceitamos Upload de imagens antigas por questões de segurança.
         </p>
@@ -126,11 +126,22 @@ interface IProgramImage {
   },
 })
 export default class UpdateProposalImages extends BaseComponent {
-  navigatorData = navigator as any;
-  isMobile = this.navigatorData.userAgentData.mobile;
+  mobile = this.isMobile();
   @Prop() proposal_id?: number;
   missingImages = [] as IProgramImage[];
   imagesConfig = imagesConfig;
+
+  isMobile() {
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   getImageConfig(identifier: number) {
     const imageConfig = imagesConfig.find(
@@ -281,7 +292,7 @@ export default class UpdateProposalImages extends BaseComponent {
       msg:
         response.axiosError.response.data?.error ||
         "Não foi possível realizar esta ação",
-      title: "Erro",
+      title: "Erro!",
       persistent: false,
       active: true,
       bntClose: true,

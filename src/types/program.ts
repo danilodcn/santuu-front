@@ -6,4 +6,5 @@ export interface IProgram {
   image_program: string;
   minimal_premium: number;
   iof_tax_rate: number;
+  number_of_installments: number;
 }

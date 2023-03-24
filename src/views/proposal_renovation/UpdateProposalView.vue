@@ -12,7 +12,7 @@
               class="update-button"
               elevation="0"
               color="white"
-              @click="updateData = true"
+              @click="canUpdateData = true"
               v-if="step == 1"
               >Editar</v-btn
             >
@@ -23,10 +23,10 @@
             <update-data
               ref="updateData"
               :userId="userId"
-              :update="updateData"
+              :update="canUpdateData"
             ></update-data>
             <v-row justify="space-between" class="ma-0 mt-7">
-              <v-btn text class="mx-2 mx-md-5"> Voltar </v-btn>
+              <v-btn text class="mx-2 mx-md-5" @click="back()"> Voltar </v-btn>
               <v-btn
                 color="primary"
                 class="mx-2 mx-md-5"
@@ -43,7 +43,7 @@
               class="update-button"
               elevation="0"
               color="white"
-              @click="updateAddress = true"
+              @click="canUpdateAddress = true"
               v-if="step == 2"
               >Editar</v-btn
             >
@@ -54,7 +54,7 @@
             <update-address
               ref="updateAddress"
               :addressId="addressId"
-              :update="updateAddress"
+              :update="canUpdateAddress"
             ></update-address>
             <v-row justify="space-between" class="ma-0 mt-7">
               <v-btn text class="mx-2 mx-md-5" @click="step--"> Voltar </v-btn>
@@ -71,7 +71,7 @@
           <v-stepper-step
             :complete="step > 3"
             step="3"
-            v-show="missingImages.length > 0"
+            v-if="missingImages && missingImages.length > 0"
           >
             Você deve enviar as seguintes fotos para continuar com a renovação
             <small>
@@ -90,7 +90,7 @@
                 color="primary"
                 class="mx-2 mx-md-5"
                 @click="sendAllImages()"
-                :disabled="!isMobile"
+                :disabled="!mobile"
               >
                 Avançar
               </v-btn>
@@ -130,15 +130,13 @@ const proposalService = new ProposalService();
   },
 })
 export default class UpdateProposal extends BaseComponent {
-  navigatorData = navigator as any;
-  isMobile = this.navigatorData.userAgentData.mobile;
-  updateData = false;
-  updateAddress = false;
+  canUpdateData = false;
+  canUpdateAddress = false;
   proposalId = Number(this.$route.params.proposal_id);
   userId?: number;
   addressId?: number;
   missingImages = [] as IProgramImage[];
-
+  mobile = false;
   step = 1;
 
   isValidCPF = isValidCPF;
@@ -150,8 +148,8 @@ export default class UpdateProposal extends BaseComponent {
     this.changeMainDialog({
       msg:
         response.axiosError.response.data?.error ||
-        "Não foi possível continuar com sua renovação",
-      title: "Erro",
+        "Não foi possível continuar com sua renovação!",
+      title: "Erro!",
       persistent: false,
       active: true,
       bntClose: true,
@@ -159,11 +157,30 @@ export default class UpdateProposal extends BaseComponent {
     this.changeLoading(false);
   }
 
+  isMobile() {
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   async associateData() {
     const associated = await (this.$refs.updateData as any).associateData();
+    console.log(associated);
     if (associated) {
       this.step++;
     }
+  }
+  async mounted() {
+    this.mobile = this.isMobile();
+    const response = await proposalImagesService.getMissingImages(
+      Number(this.$route.params.proposal_id)
+    );
+    this.missingImages = response;
   }
 
   async associateAddress() {
@@ -176,13 +193,9 @@ export default class UpdateProposal extends BaseComponent {
   }
 
   async handleImages() {
-    if (this.proposalId) {
-      const response = await proposalImagesService.getMissingImages(
-        this.proposalId
-      );
-      this.missingImages = response;
+    if (this.$route.params.proposal_id) {
       if (this.missingImages.length > 0) {
-        this.step++;
+        this.step = 3;
       } else {
         this.nextPage(this.proposalId);
       }
@@ -199,13 +212,13 @@ export default class UpdateProposal extends BaseComponent {
     if (success) {
       if (proposal.status == WAITING_FOR_CUSTOMER_ANALYSIS) {
         this.changeMainDialog({
-          msg: "Sua proposta será analisada pela Santuu",
-          title: "Aguarde",
+          msg: "Sua proposta será analisada pela nossa equipe!",
+          title: "Aguarde!",
           persistent: true,
           active: true,
           bntClose: false,
           btnOkOnly: true,
-          msgOk: "ok",
+          msgOk: "Ok!",
           afterFunction: this.toHomePage,
           ident: false,
         });
@@ -215,7 +228,7 @@ export default class UpdateProposal extends BaseComponent {
     }
   }
 
-  toHomePage(value: boolean) {
+  toHomePage() {
     this.$router.push({ name: "certificates" });
   }
 
@@ -237,7 +250,7 @@ export default class UpdateProposal extends BaseComponent {
     if (response.error) {
       this.changeMainDialog({
         msg: "Erro!",
-        title: "Erro",
+        title: "Erro!",
         persistent: true,
         active: true,
         bntClose: true,
@@ -248,7 +261,9 @@ export default class UpdateProposal extends BaseComponent {
     }
   }
   back() {
-    this.$router.push({ path: `/proposal/proposal-values/${this.proposalId}` });
+    this.$router.push({
+      path: `/renovation/proposal-values/${this.proposalId}`,
+    });
   }
   created() {
     this.getData();

@@ -7,7 +7,7 @@
           filled
           label="CPF"
           v-mask="'###.###.###-##'"
-          :rules="obrigatory.concat([(v) => isValidCPF(v) || 'CPF inválido'])"
+          :rules="obrigatory.concat([(v) => isValidCPF(v) || 'CPF inválido!'])"
           v-model="form.cpf"
           clearable
           hide-spin-buttons
@@ -64,7 +64,7 @@
           validate-on-blur
           :rules="
             emailRule.concat([
-              (v) => v == form.email || 'Os emails devem coincidir',
+              (v) => v == form.email || 'Os emails devem coincidir!',
             ])
           "
           clearable
@@ -109,7 +109,7 @@
             <v-text-field
               :rules="
                 obrigatory.concat([
-                  (v) => datePast(form.birth_date) || 'Deve estar no passado',
+                  (v) => datePast(form.birth_date) || 'Deve estar no passado!',
                 ])
               "
               v-model="dateFormatted"
@@ -132,7 +132,7 @@
       <v-col cols="12" md="5">
         <v-select
           class="input-info"
-          :rules="[(v) => v != null || 'Campo obrigatório']"
+          :rules="obrigatory"
           color="grey"
           v-model="form.share_pep_information"
           attach
@@ -186,7 +186,7 @@
           color="grey"
           filled
           v-mask="'###.###.###-##'"
-          :rules="obrigatory.concat([(v) => isValidCPF(v) || 'CPF inválido'])"
+          :rules="obrigatory.concat([(v) => isValidCPF(v) || 'CPF inválido!'])"
           label="CPF do relacionado"
           v-model="form.cpf_related"
           clearable
@@ -247,7 +247,7 @@
         <v-text-field
           color="grey"
           filled
-          label="Profissão do relacionado"
+          label="Profissão do(a) relacionado(a)"
           v-model="form.occupation_related"
           clearable
           hide-spin-buttons
@@ -340,7 +340,7 @@ export default class UpdateData extends BaseComponent {
       msg:
         response.axiosError.response.data?.error ||
         "Não foi possível realizar esta ação",
-      title: "Erro",
+      title: "Erro!",
       persistent: false,
       active: true,
       bntClose: true,
@@ -348,11 +348,11 @@ export default class UpdateData extends BaseComponent {
   }
 
   emailRule = [
-    (v: string) => !!v || "Campo obrigatório",
-    (v: string) => validateEmail(v) || "Formato inválido",
+    (v: string) => !!v || "Campo obrigatório!",
+    (v: string) => validateEmail(v) || "Formato inválido!",
   ];
 
-  obrigatory = [(v: string) => !!v || "Campo obrigatório"];
+  obrigatory = [(v: string) => !!v || "Campo obrigatório!"];
 
   async getData() {
     if (this.userId) {
@@ -360,6 +360,7 @@ export default class UpdateData extends BaseComponent {
       delete response[0].address;
       this.form = response[0];
       this.emailConfirmation = this.form.email;
+      this.form.share_pep_information = "false";
     }
   }
 

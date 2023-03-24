@@ -270,7 +270,7 @@ export default class Available extends Vue {
       msg:
         response.axiosError.response.data?.error ||
         "Não foi possível continuar com seu check-in",
-      title: "Erro",
+      title: "Erro!",
       persistent: false,
       active: true,
       bntClose: true,
