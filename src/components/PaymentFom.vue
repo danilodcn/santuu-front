@@ -130,6 +130,7 @@ type Proposal = {
   id: number;
   insurance_premium: number;
   proposal_duration: string;
+  original_proposal: number;
 };
 
 type Terms = {
@@ -140,6 +141,7 @@ type Terms = {
 @Component
 export default class EventCard extends BaseComponent {
   @Prop() proposal!: Proposal;
+  @Prop() old_proposal!: Proposal;
   @Prop() amount!: number;
   @Prop() linkNext!: string;
   @Prop({ default: () => [] }) terms!: Terms[];
@@ -152,7 +154,7 @@ export default class EventCard extends BaseComponent {
   date: IFormDate = {};
 
   get dateFormatted() {
-    return formatDateDetail(this.proposal.proposal_duration);
+    return formatDateDetail(this.old_proposal.proposal_duration);
   }
 
   formIsValid() {
@@ -284,7 +286,7 @@ export default class EventCard extends BaseComponent {
             msg:
               "A renovação terá vigência a partir do vencimento da antiga proposta: " +
               this.dateFormatted +
-              " e não da data de pagamento.",
+              " e não a data de pagamento.",
             persistent: false,
             title: "Aviso!",
             ident: false,
