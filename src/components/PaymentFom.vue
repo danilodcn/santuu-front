@@ -105,7 +105,7 @@ import { paymentService } from "@/api/payment";
 import { formatDateDetail } from "@/utils/utils";
 import { RenewalService } from "@/api/renewal";
 import { MutationTypes } from "@/store";
-
+import dayjs from "dayjs";
 const renewalService = new RenewalService();
 
 interface IInstallment {
@@ -154,7 +154,11 @@ export default class EventCard extends BaseComponent {
   date: IFormDate = {};
 
   get dateFormatted() {
-    return formatDateDetail(this.old_proposal.proposal_duration);
+    var data = dayjs();
+    this.old_proposal.proposal_duration;
+    data = data.add(0, "day");
+    data = data.add(3, "hour");
+    return formatDateDetail(data.format("YYYY-MM-DDTHH:mm:ss"));
   }
 
   formIsValid() {
