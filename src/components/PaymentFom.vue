@@ -3,7 +3,7 @@
     <h3 class="mt-5 pb-0">Efetuar pagamento</h3>
     <v-form ref="form">
       <v-row align="center" class="ma-4">
-        <v-col cols="4">
+        <v-col cols="12" md="4" lg="4" xl="4" class="py-0">
           <v-text-field
             color="primary"
             :rules="[rules.required]"
@@ -14,7 +14,7 @@
             hide-spin-buttons
           ></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4" lg="4" xl="4" class="py-0">
           <v-text-field
             color="primary"
             :rules="[rules.required]"
@@ -27,7 +27,7 @@
           ></v-text-field>
         </v-col>
 
-        <v-col cols="4">
+        <v-col cols="12" md="4" lg="4" xl="4" class="py-0">
           <v-menu
             v-model="menu"
             :close-on-content-click="false"
@@ -39,7 +39,7 @@
               <v-text-field
                 :rules="[rules.required]"
                 v-model="model.date"
-                label="Data de vencimento:"
+                label="Data de vencimento"
                 prepend-inner-icon="mdi-calendar"
                 readonly
                 color="grey"
@@ -60,7 +60,7 @@
             ></v-date-picker>
           </v-menu>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4" lg="4" xl="4" class="py-0">
           <v-text-field
             color="primary"
             :rules="[rules.required]"
@@ -72,7 +72,7 @@
             v-mask="securityCodeMask"
           ></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4" lg="4" xl="4" class="py-0">
           <v-select
             color="primary"
             :rules="[rules.required]"
@@ -86,7 +86,7 @@
             @change="updateValues($event)"
           ></v-select>
         </v-col>
-        <v-col class="mb-4" align="center">
+        <v-col class="py-0" align="center" cols="12" md="4" lg="4" xl="4">
           <v-btn color="primary" @click="paymentSubmit()"
             >Confirmar pagamento</v-btn
           >
