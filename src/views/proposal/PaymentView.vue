@@ -25,6 +25,7 @@
       <payment-form
         v-model="paymentModel"
         :proposal="proposal"
+        :old_proposal="old_proposal"
         :amount="amount"
         :terms="termsAndConditions"
         :linkNext="`/web/associate/proposal/payment/sucess?proposal=${id_proposal}&email_check=true&cell_check=true`"
